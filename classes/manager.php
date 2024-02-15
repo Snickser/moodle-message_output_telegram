@@ -67,26 +67,13 @@ class manager {
             return true;
         }
 
-$today=date("Y-m-d H:i:s");
-$message = strip_tags($message,"<b><strong><i><em><a><u><ins><code><pre><blockquote><tg-spoiler><tg-emoji>");
+if(!empty($this->config('parsemode'))) {
+    $message = strip_tags($message,"<b><strong><i><em><a><u><ins><code><pre><blockquote><tg-spoiler><tg-emoji>");
+}
 $message = mb_substr($message,0,4096,'UTF-8');
 
-        $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message, 'parse_mode' => 'HTML']);
-
-$buff = $today." ".$userid." ".$chatid." ".mb_strlen($message);
-if($response->ok == true) {
-    $buff .= " ".$response->result->message_id;
- } else {
-    $buff .= " ".$response->error_code." ".$response->description;
- }
-$buff .= "\n";
-global $CFG;
-$fname = $CFG->dataroot.'/telegram.log';
-file_put_contents($fname, $buff, FILE_APPEND|LOCK_EX);
-// for external sender
-$ttime=microtime(true);
-$fname = $CFG->dataroot.'/telegram/spool/'.$ttime;
-file_put_contents($fname, $chatid."\n".$message, FILE_APPEND|LOCK_EX);
+        $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message,.
+            'parse_mode' => $this->config('parsemode')]);
        
         return (!empty($response) && isset($response->ok) && ($response->ok == true));
     }
