@@ -67,10 +67,14 @@ class manager {
             return true;
         }
 
-        $message = strip_tags($message);
-        $message = mb_substr($message,0,4096,'UTF-8');
-        
-        $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message]);
+if(!empty($this->config('parsemode'))) {
+    $message = strip_tags($message,"<b><strong><i><em><a><u><ins><code><pre><blockquote><tg-spoiler><tg-emoji>");
+}
+$message = mb_substr($message,0,4096,'UTF-8');
+
+        $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message,.
+            'parse_mode' => $this->config('parsemode')]);
+       
         return (!empty($response) && isset($response->ok) && ($response->ok == true));
     }
 
@@ -111,6 +115,7 @@ class manager {
             $url = new \moodle_url($this->redirect_uri(), ['action' => 'removechatid', 'userid' => $userid,
                 'sesskey' => sesskey()]);
             $configbutton = '<a href="'.$url.'">' . get_string('removetelegram', 'message_telegram') . '</a>';
+$configbutton .= '<br><br>Current telegram_chatid: ' . get_user_preferences('message_processor_telegram_chatid','', $userid);            
         }
 
         return $configbutton;
