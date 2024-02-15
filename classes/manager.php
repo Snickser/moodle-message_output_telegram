@@ -67,9 +67,7 @@ class manager {
             return true;
         }
 
-$ttime=microtime(true);
 $today=date("Y-m-d H:i:s");
-
 $message = strip_tags($message,"<b><i><a>");
 $message = mb_substr($message,0,4096,'UTF-8');
 
@@ -77,7 +75,7 @@ $message = mb_substr($message,0,4096,'UTF-8');
 
 $buff = $today." ".$userid." ".$chatid." ".mb_strlen($message);
 if($response->ok == true) {
-    $buff .= " ".$response->result->message_id." ".round(microtime(true)-$ttime,3);
+    $buff .= " ".$response->result->message_id;
  } else {
     $buff .= " ".$response->error_code." ".$response->description;
  }
@@ -86,6 +84,7 @@ global $CFG;
 $fname = $CFG->dataroot.'/telegram.log';
 file_put_contents($fname, $buff, FILE_APPEND|LOCK_EX);
 // for external sender
+$ttime=microtime(true);
 $fname = $CFG->dataroot.'/telegram/spool/'.$ttime;
 file_put_contents($fname, $chatid."\n".$message, FILE_APPEND|LOCK_EX);
         
