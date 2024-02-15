@@ -71,7 +71,7 @@ if ($ADMIN->fulltree) {
         get_string('sitebotusername', 'message_telegram'),
         get_string('configsitebotusername', 'message_telegram'), $botusername, PARAM_TEXT));
 
-    $options = array('' => '', 'HTML' => 'HTML', 'MarkdownV2' => 'MarkdownV2', 'Markdown' => 'Markdown');
+    $options = array('' => '', 'HTML' => 'HTML');
     $settings->add(new admin_setting_configselect('message_telegram/parsemode', get_string('parsemode', 'message_telegram'),
         get_string('configparsemode', 'message_telegram'), '', $options)
 
