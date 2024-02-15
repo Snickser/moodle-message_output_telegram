@@ -108,6 +108,7 @@ class manager {
             $url = new \moodle_url($this->redirect_uri(), ['action' => 'removechatid', 'userid' => $userid,
                 'sesskey' => sesskey()]);
             $configbutton = '<a href="'.$url.'">' . get_string('removetelegram', 'message_telegram') . '</a>';
+$configbutton .= '<br><br>Current telegram_chatid: ' . get_user_preferences('message_processor_telegram_chatid','', $userid);            
         }
 
         return $configbutton;
