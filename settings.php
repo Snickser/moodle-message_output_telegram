@@ -75,7 +75,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect('message_telegram/parsemode', get_string('parsemode', 'message_telegram'),
         get_string('configparsemode', 'message_telegram'), '', $options)
 
-    $url = new moodle_url('/message/output/telegram/telegramconnect.php', ['sesskey' => sesskey(), 'action' => 'setwebhook']);
-    $link = html_writer::link($url, get_string('setwebhook', 'message_telegram'));
-    $settings->add(new admin_setting_heading('setwebhook', '', $link));
+//    $url = new moodle_url('/message/output/telegram/telegramconnect.php', ['sesskey' => sesskey(), 'action' => 'setwebhook']);
+//    $link = html_writer::link($url, get_string('setwebhook', 'message_telegram'));
+//    $settings->add(new admin_setting_heading('setwebhook', '', $link));
 }
