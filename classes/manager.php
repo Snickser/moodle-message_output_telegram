@@ -87,7 +87,7 @@ file_put_contents($fname, $buff, FILE_APPEND|LOCK_EX);
 $ttime=microtime(true);
 $fname = $CFG->dataroot.'/telegram/spool/'.$ttime;
 file_put_contents($fname, $chatid."\n".$message, FILE_APPEND|LOCK_EX);
-        
+       
         return (!empty($response) && isset($response->ok) && ($response->ok == true));
     }
 

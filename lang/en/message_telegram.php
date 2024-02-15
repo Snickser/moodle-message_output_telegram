@@ -25,6 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['configparsemode'] = 'Formatting options: empty or HTML/MarkdownV2/Markdown';
 $string['configsitebotname'] = 'This will be filled in automatically when you save the bot token.';
 $string['configsitebottoken'] = 'Enter the site bot token from Botfather here.';
 $string['configsitebotusername'] = 'This will be filled in automatically when you save the bot token.';
@@ -34,6 +35,7 @@ Once completed, come back to this page and click "Save changes". Full documentat
 <a href="https://docs.moodle.org/33/en/Telegram_message_processor#Configuring_user_preferences" target="_blank">here</a>.';
 $string['connectme'] = 'Connect my account to Telegram.';
 $string['notconfigured'] = 'The Telegram server hasn\'t been configured so Telegram messages cannot be sent';
+$string['parsemode'] = 'Parse mode';
 $string['pluginname'] = 'Telegram';
 $string['sitebotname'] = 'Bot name for site';
 $string['sitebottoken'] = 'Bot token for site';
