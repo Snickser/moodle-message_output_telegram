@@ -67,6 +67,9 @@ class manager {
             return true;
         }
 
+        $message = strip_tags($message,"<b><strong><i><em><a><u><ins><code><pre><blockquote><tg-spoiler><tg-emoji>");
+        $message = mb_substr($message,0,4096,'UTF-8');
+        
         $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message]);
         return (!empty($response) && isset($response->ok) && ($response->ok == true));
     }
