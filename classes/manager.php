@@ -67,13 +67,15 @@ class manager {
             return true;
         }
 
-if(!empty($this->config('parsemode'))) {
+if($this->config('parsemode')=='HTML') {
     $message = strip_tags($message,"<b><strong><i><em><a><u><ins><code><pre><blockquote><tg-spoiler><tg-emoji>");
+} else {
+    $message = strip_tags($message);
 }
 $message = mb_substr($message,0,4096,'UTF-8');
 
-        $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message, 
-            'parse_mode' => $this->config('parsemode')]);
+        $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message,
+                                            'parse_mode' => $this->config('parsemode')]);
 
         return (!empty($response) && isset($response->ok) && ($response->ok == true));
     }
