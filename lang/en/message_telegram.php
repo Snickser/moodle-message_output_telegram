@@ -36,6 +36,8 @@ Once completed, come back to this page and click "Save changes". Full documentat
 $string['connectme'] = 'Connect my account to Telegram.';
 $string['notconfigured'] = 'The Telegram server hasn\'t been configured so Telegram messages cannot be sent';
 $string['parsemode'] = 'Parse mode';
+$string['parse_text'] = 'Text';
+$string['parse_html'] = 'HTML format';
 $string['pluginname'] = 'Telegram';
 $string['sitebotname'] = 'Bot name for site';
 $string['sitebottoken'] = 'Bot token for site';
