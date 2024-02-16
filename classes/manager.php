@@ -76,8 +76,8 @@ $today=date("Y-m-d H:i:s");
         }
         $message = mb_substr($message,0,4096,'UTF-8');
 
-        $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message,.
-            'parse_mode' => $this->config('parsemode')]);
+        $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message,
+                                            'parse_mode' => $this->config('parsemode')]);
 
 $buff = $today." ".$userid." ".$chatid." ".mb_strlen($message);
 if($response->ok == true) {
