@@ -71,6 +71,9 @@ if ($ADMIN->fulltree) {
         get_string('sitebotusername', 'message_telegram'),
         get_string('configsitebotusername', 'message_telegram'), $botusername, PARAM_TEXT));
 
+    $settings->add(new admin_setting_configcheckbox('message_telegram/striptags',
+        get_string('striptags', 'message_telegram'),
+        get_string('configstriptags', 'message_telegram'), true));
     $options = array('' => get_string('parse_text', 'message_telegram'), 'HTML' => get_string('parse_html', 'message_telegram'));
     $settings->add(new admin_setting_configselect('message_telegram/parsemode', get_string('parsemode', 'message_telegram'),
         get_string('configparsemode', 'message_telegram'), '', $options));
