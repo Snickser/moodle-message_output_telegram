@@ -69,7 +69,7 @@ class manager {
 
         if($this->config('parsemode')=='HTML') {
             $message = strip_tags($message,"<b><strong><i><em><a><u><ins><code><pre><blockquote><tg-spoiler><tg-emoji>");
-        } else if(istrue($this->config('striptags'))){
+        } else if($this->config('striptags')){
             $message = strip_tags($message);
         }
         $message = mb_substr($message,0,4096,'UTF-8');
