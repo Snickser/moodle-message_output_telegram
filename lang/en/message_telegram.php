@@ -42,6 +42,7 @@ $string['parse_html'] = 'HTML format';
 $string['striptags'] = 'Strip tags';
 $string['configstriptags'] = 'Strip all HTML tags from Text formatted message.';
 
+$string['pluginname'] = 'Telegram';
 $string['sitebotname'] = 'Bot name for site';
 $string['sitebottoken'] = 'Bot token for site';
 $string['sitebottokennotsetup'] = 'Bot token for site must be specified in plugin settings.';
