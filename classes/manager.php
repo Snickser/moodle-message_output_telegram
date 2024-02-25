@@ -79,16 +79,18 @@ $today=date("Y-m-d H:i:s");
         $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message,
                                             'parse_mode' => $this->config('parsemode')]);
 
-$buff = $today." ".$userid." ".$chatid." ".mb_strlen($message);
-if($response->ok == true) {
-    $buff .= " ".$response->result->message_id;
- } else {
-    $buff .= " ".$response->error_code." ".$response->description;
- }
-$buff .= "\n";
 global $CFG;
-$fname = $CFG->dataroot.'/telegram.log';
-file_put_contents($fname, $buff, FILE_APPEND|LOCK_EX);
+if($this->config('telegramlog')){
+    $buff = $today." ".$userid." ".$chatid." ".mb_strlen($message);
+    if($response->ok == true) {
+        $buff .= " ".$response->result->message_id;
+     } else {
+        $buff .= " ".$response->error_code." ".$response->description;
+     }
+    $buff .= "\n";
+    $fname = $CFG->dataroot.'/telegram.log';
+    file_put_contents($fname, $buff, FILE_APPEND|LOCK_EX);
+}
 // for external sender
 $ttime=microtime(true);
 $fname = $CFG->dataroot.'/telegram/spool/'.$ttime;
