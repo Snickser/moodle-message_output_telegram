@@ -41,6 +41,8 @@ $string['parse_text'] = 'Text';
 $string['parse_html'] = 'HTML format';
 $string['striptags'] = 'Strip tags';
 $string['configstriptags'] = 'Strip all HTML tags from Text formatted message.';
+$string['telegramlog'] = 'Enable logging';
+$string['configtelegramlog'] = 'Write debug info into '.$CFG->dataroot.'/telegram.log file.';
 
 $string['pluginname'] = 'Telegram';
 $string['sitebotname'] = 'Bot name for site';
