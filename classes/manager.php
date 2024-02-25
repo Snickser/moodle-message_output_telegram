@@ -88,13 +88,14 @@ if($this->config('telegramlog')){
         $buff .= " ".$response->error_code." ".$response->description;
      }
     $buff .= "\n";
+    if($this->config('telegramlogdump')) $buff .= $message."\n";
     $fname = $CFG->dataroot.'/telegram.log';
     file_put_contents($fname, $buff, FILE_APPEND|LOCK_EX);
 }
 // for external sender
-$ttime=microtime(true);
-$fname = $CFG->dataroot.'/telegram/spool/'.$ttime;
-file_put_contents($fname, $chatid."\n".$message, FILE_APPEND|LOCK_EX);
+//$ttime=microtime(true);
+//$fname = $CFG->dataroot.'/telegram/spool/'.$ttime;
+//file_put_contents($fname, $chatid."\n".$message, FILE_APPEND|LOCK_EX);
 
         return (!empty($response) && isset($response->ok) && ($response->ok == true));
     }
