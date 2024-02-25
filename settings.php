@@ -81,7 +81,7 @@ if ($ADMIN->fulltree) {
 
     $settings->add(new admin_setting_configcheckbox('message_telegram/telegramlog',
         get_string('telegramlog', 'message_telegram'),
-        get_string('configtelegramlog', 'message_telegram'), true));
+        get_string('configtelegramlog', 'message_telegram'), false));
 
 //    $url = new moodle_url('/message/output/telegram/telegramconnect.php', ['sesskey' => sesskey(), 'action' => 'setwebhook']);
 //    $link = html_writer::link($url, get_string('setwebhook', 'message_telegram'));
