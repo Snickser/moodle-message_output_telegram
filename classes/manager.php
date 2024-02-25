@@ -76,8 +76,16 @@ $today=date("Y-m-d H:i:s");
         }
         $message = mb_substr($message,0,4096,'UTF-8');
 
+if($this->config('tgext')){
+    $handle = popen($this->config('tgext'), "wb");
+    if($handle){
+      fwrite($handle, $chatid."\n".$message);
+      pclose($handle);
+    }
+} else {
         $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message,
                                             'parse_mode' => $this->config('parsemode')]);
+}
 
 global $CFG;
 if($this->config('telegramlog')){
