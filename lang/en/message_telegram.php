@@ -43,6 +43,10 @@ $string['striptags'] = 'Strip tags';
 $string['configstriptags'] = 'Strip all HTML tags from Text formatted message.';
 $string['telegramlog'] = 'Enable logging';
 $string['configtelegramlog'] = 'Write debug info into '.$CFG->dataroot.'/telegram.log file.';
+$string['telegramlogdump'] = 'Dump message to log';
+$string['configtelegramlogdump'] = 'For debugging purposes, write the message to a log file.';
+$string['tgext'] = 'Path to external sender';
+$string['configtgext'] = 'You may need to use an external messaging service, such as bypass ratelimite, or ensure that messages are delivered.';
 
 $string['pluginname'] = 'Telegram';
 $string['sitebotname'] = 'Bot name for site';
