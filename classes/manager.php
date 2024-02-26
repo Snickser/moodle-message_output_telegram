@@ -76,7 +76,7 @@ $today=date("Y-m-d H:i:s");
         }
         $message = mb_substr($message,0,4096,'UTF-8');
 
-if(is_executable($this->config('tgext'))){
+if(is_file($this->config('tgext')) and is_executable($this->config('tgext'))){
     if($fp = popen($this->config('tgext'), "wb")){
         fwrite($fp, $chatid."\n".$message);
         pclose($fp);
