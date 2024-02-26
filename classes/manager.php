@@ -76,15 +76,15 @@ $today=date("Y-m-d H:i:s");
         }
         $message = mb_substr($message,0,4096,'UTF-8');
 
-if($this->config('tgext')){
-    $handle = popen($this->config('tgext'), "wb");
-    if($handle){
-      fwrite($handle, $chatid."\n".$message);
-      pclose($handle);
+if(is_executable($this->config('tgext'))){
+    if($fp = popen($this->config('tgext'), "wb")){
+        fwrite($fp, $chatid."\n".$message);
+        pclose($fp);
+        $response = array('ok' => true);
     }
 } else {
-        $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message,
-                                            'parse_mode' => $this->config('parsemode')]);
+    $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message,
+                                        'parse_mode' => $this->config('parsemode')]);
 }
 
 global $CFG;
@@ -92,9 +92,9 @@ if($this->config('telegramlog')){
     $buff = $today." ".$userid." ".$chatid." ".mb_strlen($message);
     if($response->ok == true) {
         $buff .= " ".$response->result->message_id;
-     } else {
+    } else {
         $buff .= " ".$response->error_code." ".$response->description;
-     }
+    }
     $buff .= "\n";
     if($this->config('telegramlogdump')) $buff .= $message."\n";
     $fname = $CFG->dataroot.'/telegram.log';
