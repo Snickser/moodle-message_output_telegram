@@ -76,11 +76,14 @@ $today=date("Y-m-d H:i:s");
         }
         $message = mb_substr($message,0,4096,'UTF-8');
 
-if(is_file($this->config('tgext')) and is_executable($this->config('tgext'))){
-    if($fp = popen($this->config('tgext'), "wb")){
+if($this->config('tgext')){
+    if(is_file($this->config('tgext')) and is_executable($this->config('tgext'))){
+        $fp = popen($this->config('tgext'), "wb");
         fwrite($fp, $chatid."\n".$message);
         pclose($fp);
-        $response = array('ok' => true);
+        $response = (object)["ok" => true];
+    } else {
+        $response = (object)["ok" => false, "error_code" => '404', "description" => $this->config('tgext')];
     }
 } else {
     $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message,
