@@ -1,3 +1,5 @@
+![изображение](https://github.com/Snickser/moodle-message_output_telegram/assets/88129688/1905e4fb-5a62-43c1-9df3-219d8e001d05)
+
 [![Build Status](https://travis-ci.org/mchurchward/moodle-message_output_telegram.png?branch=MOODLE_32_BETA)](https://travis-ci.org/mchurchward/moodle-message_output_telegram)
 
 This plugin experiments with providing a Moodle message provider plugin for Telegram.
