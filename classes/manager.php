@@ -76,7 +76,7 @@ $today=date("Y-m-d H:i:s");
         }
         $message = mb_substr($message,0,4096,'UTF-8');
 
-if($this->config('tgext')){
+if ($this->config('tgext')) {
     if(is_file($this->config('tgext')) and is_executable($this->config('tgext'))){
         $fp = popen($this->config('tgext'), "wb");
         fwrite($fp, $chatid."\n".$message);
@@ -91,12 +91,12 @@ if($this->config('tgext')){
 }
 
 global $CFG;
-if($this->config('telegramlog')){
+if ($this->config('telegramlog')) {
     $buff = $today." ".$userid." ".$chatid." ".mb_strlen($message);
     if($response->ok == true) {
         $buff .= " ".$response->result->message_id;
     } else {
-        $buff .= " ".$response->error_code." ".$response->description;
+        $buff .= " ".$response." ".$response->error_code." ".$response->description;
     }
     $buff .= "\n";
     if($this->config('telegramlogdump')) $buff .= $message."\n";
@@ -340,9 +340,13 @@ if($this->config('telegramlog')){
             return false;
         }
 
-        $this->curl = new \curl();
+        $curl = new \curl();
 
-        $response = $this->curl->get('https://api.telegram.org/bot'.$this->config('sitebottoken').'/'.$command, $params);
+        $response = $curl->get('https://api.telegram.org/bot'.$this->config('sitebottoken').'/'.$command, $params);
+
+	if (!empty($curl->errno)) {
+	    return $curl->error;
+	}
 
         return json_decode($response);
     }
