@@ -340,10 +340,10 @@ if($this->config('telegramlog')){
             return false;
         }
 
-        if ($this->curl === null) {
-            $this->curl = new \curl();
-        }
+        $this->curl = new \curl();
 
-        return json_decode($this->curl->get('https://api.telegram.org/bot'.$this->config('sitebottoken').'/'.$command, $params));
+        $response = $this->curl->get('https://api.telegram.org/bot'.$this->config('sitebottoken').'/'.$command, $params);
+
+        return json_decode($response);
     }
 }
