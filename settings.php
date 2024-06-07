@@ -74,9 +74,22 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('message_telegram/striptags',
         get_string('striptags', 'message_telegram'),
         get_string('configstriptags', 'message_telegram'), true));
+
     $options = array('' => get_string('parse_text', 'message_telegram'), 'HTML' => get_string('parse_html', 'message_telegram'));
     $settings->add(new admin_setting_configselect('message_telegram/parsemode', get_string('parsemode', 'message_telegram'),
         get_string('configparsemode', 'message_telegram'), '', $options));
+
+    $settings->add(new admin_setting_configcheckbox('message_telegram/telegramlog',
+        get_string('telegramlog', 'message_telegram'),
+        get_string('configtelegramlog', 'message_telegram'), false));
+
+    $settings->add(new admin_setting_configcheckbox('message_telegram/telegramlogdump',
+        get_string('telegramlogdump', 'message_telegram'),
+        get_string('configtelegramlogdump', 'message_telegram'), false));
+
+    $settings->add(new admin_setting_configexecutable('message_telegram/tgext',
+        get_string('tgext', 'message_telegram'),
+        get_string('configtgext', 'message_telegram'), '', PARAM_TEXT));
 
 //    $url = new moodle_url('/message/output/telegram/telegramconnect.php', ['sesskey' => sesskey(), 'action' => 'setwebhook']);
 //    $link = html_writer::link($url, get_string('setwebhook', 'message_telegram'));
