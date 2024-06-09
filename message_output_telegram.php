@@ -63,11 +63,15 @@ class message_output_telegram extends message_output {
             debugging('$CFG->noemailever is active, no telegram message sent.', DEBUG_MINIMAL);
             return true;
         }
-        if(!empty($eventdata->fullmessagehtml)){
-            return $this->manager->send_message($eventdata->fullmessagehtml, $eventdata->userto->id);
-        } else {
-            return $this->manager->send_message($eventdata->fullmessage, $eventdata->userto->id);
-        }
+
+file_put_contents("/tmp/bbbb", serialize($eventdata)."\n", FILE_APPEND|LOCK_EX);
+
+if(!empty($eventdata->fullmessagehtml)){
+        return $this->manager->send_message($eventdata->fullmessagehtml, $eventdata->userto->id);
+} else {
+        return $this->manager->send_message($eventdata->fullmessage, $eventdata->userto->id);
+}
+
     }
 
     /**
