@@ -96,7 +96,7 @@ if ($this->config('telegramlog')) {
     if($response->ok == true) {
         $buff .= " ".$response->result->message_id;
     } else {
-        $buff .= " ".$response." ".$response->error_code." ".$response->description;
+        $buff .= " ERROR ".$response." ".$response->error_code." ".$response->description;
     }
     $buff .= "\n";
     if($this->config('telegramlogdump')) $buff .= $message."\n";
