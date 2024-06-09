@@ -26,7 +26,7 @@
 namespace message_telegram;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot.'/lib/filelib.php');
+require_once($CFG->dirroot . '/lib/filelib.php');
 
 /**
  * Telegram helper manager class
@@ -36,7 +36,6 @@ require_once($CFG->dirroot.'/lib/filelib.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class manager {
-
     /**
      * @var $secretprefix A variable used to identify that chatid had not been set for the user.
      */
@@ -67,46 +66,48 @@ class manager {
             return true;
         }
 
-$today=date("Y-m-d H:i:s");
+        $today = date("Y-m-d H:i:s");
 
-        if($this->config('parsemode')=='HTML') {
-            $message = strip_tags($message,"<b><strong><i><em><a><u><ins><code><pre><blockquote><tg-spoiler><tg-emoji>");
-        } else if($this->config('striptags')){
+        if ($this->config('parsemode') == 'HTML') {
+            $message = strip_tags($message, "<b><strong><i><em><a><u><ins><code><pre><blockquote><tg-spoiler><tg-emoji>");
+        } else if ($this->config('striptags')) {
             $message = strip_tags($message);
         }
-        $message = mb_substr($message,0,4096,'UTF-8');
+        $message = mb_substr($message, 0, 4096, 'UTF-8');
 
-if ($this->config('tgext')) {
-    if(is_file($this->config('tgext')) and is_executable($this->config('tgext'))){
-        $fp = popen($this->config('tgext'), "wb");
-        fwrite($fp, $chatid."\n".$message);
-        pclose($fp);
-        $response = (object)["ok" => true];
-    } else {
-        $response = (object)["ok" => false, "error_code" => '404', "description" => $this->config('tgext')];
-    }
-} else {
-    $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message,
+        if ($this->config('tgext')) {
+            if (is_file($this->config('tgext')) and is_executable($this->config('tgext'))) {
+                $fp = popen($this->config('tgext'), "wb");
+                fwrite($fp, $chatid . "\n" . $message);
+                pclose($fp);
+                $response = (object)["ok" => true];
+            } else {
+                $response = (object)["ok" => false, "error_code" => '404', "description" => $this->config('tgext')];
+            }
+        } else {
+            $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message,
                                         'parse_mode' => $this->config('parsemode')]);
-}
+        }
 
-global $CFG;
-if ($this->config('telegramlog')) {
-    $buff = $today." ".$userid." ".$chatid." ".mb_strlen($message);
-    if($response->ok == true) {
-        $buff .= " ".$response->result->message_id;
-    } else {
-        $buff .= " ERROR ".$response." ".$response->error_code." ".$response->description;
-    }
-    $buff .= "\n";
-    if($this->config('telegramlogdump')) $buff .= $message."\n";
-    $fname = $CFG->dataroot.'/telegram.log';
-    file_put_contents($fname, $buff, FILE_APPEND|LOCK_EX);
-}
-// for external sender
-//$ttime=microtime(true);
-//$fname = $CFG->dataroot.'/telegram/spool/'.$ttime;
-//file_put_contents($fname, $chatid."\n".$message, FILE_APPEND|LOCK_EX);
+        global $CFG;
+        if ($this->config('telegramlog')) {
+            $buff = $today . " " . $userid . " " . $chatid . " " . mb_strlen($message);
+            if ($response->ok == true) {
+                $buff .= " " . $response->result->message_id;
+            } else {
+                $buff .= " ERROR " . $response . " " . $response->error_code . " " . $response->description;
+            }
+            $buff .= "\n";
+            if ($this->config('telegramlogdump')) {
+                $buff .= $message . "\n";
+            }
+            $fname = $CFG->dataroot . '/telegram.log';
+            file_put_contents($fname, $buff, FILE_APPEND | LOCK_EX);
+        }
+        // for external sender
+        // $ttime=microtime(true);
+        // $fname = $CFG->dataroot.'/telegram/spool/'.$ttime;
+        // file_put_contents($fname, $chatid."\n".$message, FILE_APPEND|LOCK_EX);
 
         return (!empty($response) && isset($response->ok) && ($response->ok == true));
     }
@@ -135,19 +136,19 @@ if ($this->config('telegramlog')) {
      * @param int $userid Moodle id of the user in question.
      * @return string The HTML for the form.
      */
-    public function config_form ($preferences, $userid) {
+    public function config_form($preferences, $userid) {
         // If the chatid is not set, display the link to do this.
         if (!$this->is_chatid_set($userid, $preferences)) {
             // Temporarily set the user's chatid to the sesskey value for security.
             $this->set_usersecret($userid);
-            $url = 'https://telegram.me/'.$this->config('sitebotusername').'?start='.$this->usersecret();
+            $url = 'https://telegram.me/' . $this->config('sitebotusername') . '?start=' . $this->usersecret();
             $configbutton = get_string('connectinstructions', 'message_telegram', $this->config('sitebotname'));
-            $configbutton .= '<div align="center"><a href="'.$url.'" target="_blank">'.
+            $configbutton .= '<div align="center"><a href="' . $url . '" target="_blank">' .
                 get_string('connectme', 'message_telegram') . '</a></div>';
         } else {
             $url = new \moodle_url($this->redirect_uri(), ['action' => 'removechatid', 'userid' => $userid,
                 'sesskey' => sesskey()]);
-            $configbutton = '<a href="'.$url.'">' . get_string('removetelegram', 'message_telegram') . '</a>';
+            $configbutton = '<a href="' . $url . '">' . get_string('removetelegram', 'message_telegram') . '</a>';
         }
 
         return $configbutton;
@@ -224,7 +225,7 @@ if ($this->config('telegramlog')) {
     public function redirect_uri() {
         global $CFG;
 
-        return $CFG->wwwroot.'/message/output/telegram/telegramconnect.php';
+        return $CFG->wwwroot . '/message/output/telegram/telegramconnect.php';
     }
 
     /**
@@ -342,11 +343,11 @@ if ($this->config('telegramlog')) {
 
         $this->curl = new \curl();
 
-        $response = $this->curl->get('https://api.telegram.org/bot'.$this->config('sitebottoken').'/'.$command, $params);
+        $response = $this->curl->get('https://api.telegram.org/bot' . $this->config('sitebottoken') . '/' . $command, $params);
 
-	if (!empty($this->curl->errno)) {
-	    return $this->curl->error;
-	}
+        if (!empty($this->curl->errno)) {
+            return $this->curl->error;
+        }
 
         return json_decode($response);
     }
