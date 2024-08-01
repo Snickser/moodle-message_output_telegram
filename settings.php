@@ -70,6 +70,7 @@ if ($ADMIN->fulltree) {
         $sitebottoken,
         PARAM_TEXT
     ));
+
     $settings->add(new admin_setting_configtext(
         'message_telegram/sitebotname',
         get_string('sitebotname', 'message_telegram'),
@@ -77,12 +78,20 @@ if ($ADMIN->fulltree) {
         $botname,
         PARAM_TEXT
     ));
+
     $settings->add(new admin_setting_configtext(
         'message_telegram/sitebotusername',
         get_string('sitebotusername', 'message_telegram'),
         get_string('configsitebotusername', 'message_telegram'),
         $botusername,
         PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'message_telegram/fullmessagehtml',
+        get_string('fullmessagehtml', 'message_telegram'),
+        get_string('configfullmessagehtml', 'message_telegram'),
+        false
     ));
 
     $settings->add(new admin_setting_configcheckbox(
@@ -100,6 +109,7 @@ if ($ADMIN->fulltree) {
         '',
         $options
     ));
+
 
     $settings->add(new admin_setting_configcheckbox(
         'message_telegram/telegramlog',
