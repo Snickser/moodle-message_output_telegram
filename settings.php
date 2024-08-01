@@ -88,13 +88,6 @@ if ($ADMIN->fulltree) {
     ));
 
     $settings->add(new admin_setting_configcheckbox(
-        'message_telegram/fullmessagehtml',
-        get_string('fullmessagehtml', 'message_telegram'),
-        get_string('configfullmessagehtml', 'message_telegram'),
-        false
-    ));
-
-    $settings->add(new admin_setting_configcheckbox(
         'message_telegram/striptags',
         get_string('striptags', 'message_telegram'),
         get_string('configstriptags', 'message_telegram'),
@@ -110,6 +103,12 @@ if ($ADMIN->fulltree) {
         $options
     ));
 
+    $settings->add(new admin_setting_configcheckbox(
+        'message_telegram/fullmessagehtml',
+        get_string('fullmessagehtml', 'message_telegram'),
+        get_string('configfullmessagehtml', 'message_telegram'),
+        false
+    ));
 
     $settings->add(new admin_setting_configcheckbox(
         'message_telegram/telegramlog',
