@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/message/output/lib.php');
-require_once($CFG->dirroot.'/lib/filelib.php');
+require_once($CFG->dirroot . '/message/output/lib.php');
+require_once($CFG->dirroot . '/lib/filelib.php');
 
 /**
  * The telegram message processor
@@ -36,7 +36,6 @@ require_once($CFG->dirroot.'/lib/filelib.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class message_output_telegram extends message_output {
-
     /**
      * Constructor to add needed properties to the Slack app.
      */
@@ -63,10 +62,13 @@ class message_output_telegram extends message_output {
             debugging('$CFG->noemailever is active, no telegram message sent.', DEBUG_MINIMAL);
             return true;
         }
-        if(!empty($eventdata->fullmessagehtml)){
-            return $this->manager->send_message($eventdata->fullmessagehtml, $eventdata->userto->id);
+
+//file_put_contents("/tmp/bbbb", serialize($eventdata)."\n\n", FILE_APPEND|LOCK_EX);
+
+        if (!empty($eventdata->fullmessagehtml) && $this->manager->config->fullmessagehtml) {
+                return $this->manager->send_message($eventdata->fullmessagehtml, $eventdata->userto->id);
         } else {
-            return $this->manager->send_message($eventdata->fullmessage, $eventdata->userto->id);
+                return $this->manager->send_message($eventdata->fullmessage, $eventdata->userto->id);
         }
     }
 

@@ -42,7 +42,7 @@ $string['parse_html'] = 'HTML format';
 $string['striptags'] = 'Strip tags';
 $string['configstriptags'] = 'Strip all HTML tags from Text formatted message.';
 $string['telegramlog'] = 'Enable logging';
-$string['configtelegramlog'] = 'Write debug info into '.$CFG->dataroot.'/telegram.log file.';
+$string['configtelegramlog'] = 'Write debug info into ' . $CFG->dataroot . '/telegram.log file.';
 $string['telegramlogdump'] = 'Dump message to log';
 $string['configtelegramlogdump'] = 'For debugging purposes, write the message to a log file.';
 $string['tgext'] = 'Path to external sender';
@@ -62,3 +62,6 @@ Use the "/newbot" command in Telegram to start creating the bot. You will need t
 unique bot username, for example "{$a->username}". Full documentation
 <a href="https://docs.moodle.org/33/en/Telegram_message_processor" target="_blank">here</a>.';
 $string['setwebhook'] = 'Setup Telegram webhook';
+
+$string['fullmessagehtml'] = 'Use fullmessagehtml';
+$string['configfullmessagehtml'] = 'Get message from "$eventdata->fullmessagehtml" (if available), or from "fullmessage" if not set.';

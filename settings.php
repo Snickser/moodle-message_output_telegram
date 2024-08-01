@@ -55,7 +55,7 @@ if ($ADMIN->fulltree) {
         $botusername = substr($botusername, 0, 29) . 'Bot';
 
         $url = 'https://telegram.me/botfather';
-        $link = '<p><a href="'.$url.'" target="_blank">'.$url.'</a></p>';
+        $link = '<p><a href="' . $url . '" target="_blank">' . $url . '</a></p>';
         $a = new stdClass();
         $a->name = $uniquename;
         $a->username = $botusername;
@@ -63,35 +63,76 @@ if ($ADMIN->fulltree) {
         $settings->add(new admin_setting_heading('setuptelegram', '', $text . $link));
     }
 
-    $settings->add(new admin_setting_configtext('message_telegram/sitebottoken', get_string('sitebottoken', 'message_telegram'),
-        get_string('configsitebottoken', 'message_telegram'), $sitebottoken, PARAM_TEXT));
-    $settings->add(new admin_setting_configtext('message_telegram/sitebotname', get_string('sitebotname', 'message_telegram'),
-        get_string('configsitebotname', 'message_telegram'), $botname, PARAM_TEXT));
-    $settings->add(new admin_setting_configtext('message_telegram/sitebotusername',
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/sitebottoken',
+        get_string('sitebottoken', 'message_telegram'),
+        get_string('configsitebottoken', 'message_telegram'),
+        $sitebottoken,
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/sitebotname',
+        get_string('sitebotname', 'message_telegram'),
+        get_string('configsitebotname', 'message_telegram'),
+        $botname,
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/sitebotusername',
         get_string('sitebotusername', 'message_telegram'),
-        get_string('configsitebotusername', 'message_telegram'), $botusername, PARAM_TEXT));
+        get_string('configsitebotusername', 'message_telegram'),
+        $botusername,
+        PARAM_TEXT
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('message_telegram/striptags',
+    $settings->add(new admin_setting_configcheckbox(
+        'message_telegram/striptags',
         get_string('striptags', 'message_telegram'),
-        get_string('configstriptags', 'message_telegram'), true));
+        get_string('configstriptags', 'message_telegram'),
+        true
+    ));
 
-    $options = array('' => get_string('parse_text', 'message_telegram'), 'HTML' => get_string('parse_html', 'message_telegram'));
-    $settings->add(new admin_setting_configselect('message_telegram/parsemode', get_string('parsemode', 'message_telegram'),
-        get_string('configparsemode', 'message_telegram'), '', $options));
+    $options = ['' => get_string('parse_text', 'message_telegram'), 'HTML' => get_string('parse_html', 'message_telegram')];
+    $settings->add(new admin_setting_configselect(
+        'message_telegram/parsemode',
+        get_string('parsemode', 'message_telegram'),
+        get_string('configparsemode', 'message_telegram'),
+        '',
+        $options
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('message_telegram/telegramlog',
+    $settings->add(new admin_setting_configcheckbox(
+        'message_telegram/fullmessagehtml',
+        get_string('fullmessagehtml', 'message_telegram'),
+        get_string('configfullmessagehtml', 'message_telegram'),
+        false
+    ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'message_telegram/telegramlog',
         get_string('telegramlog', 'message_telegram'),
-        get_string('configtelegramlog', 'message_telegram'), false));
+        get_string('configtelegramlog', 'message_telegram'),
+        false
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('message_telegram/telegramlogdump',
+    $settings->add(new admin_setting_configcheckbox(
+        'message_telegram/telegramlogdump',
         get_string('telegramlogdump', 'message_telegram'),
-        get_string('configtelegramlogdump', 'message_telegram'), false));
+        get_string('configtelegramlogdump', 'message_telegram'),
+        false
+    ));
 
-    $settings->add(new admin_setting_configexecutable('message_telegram/tgext',
+    $settings->add(new admin_setting_configexecutable(
+        'message_telegram/tgext',
         get_string('tgext', 'message_telegram'),
-        get_string('configtgext', 'message_telegram'), '', PARAM_TEXT));
+        get_string('configtgext', 'message_telegram'),
+        '',
+        PARAM_TEXT
+    ));
 
-//    $url = new moodle_url('/message/output/telegram/telegramconnect.php', ['sesskey' => sesskey(), 'action' => 'setwebhook']);
-//    $link = html_writer::link($url, get_string('setwebhook', 'message_telegram'));
-//    $settings->add(new admin_setting_heading('setwebhook', '', $link));
+// $url = new moodle_url('/message/output/telegram/telegramconnect.php', ['sesskey' => sesskey(), 'action' => 'setwebhook']);
+// $link = html_writer::link($url, get_string('setwebhook', 'message_telegram'));
+// $settings->add(new admin_setting_heading('setwebhook', '', $link));
 }
