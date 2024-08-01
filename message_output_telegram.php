@@ -63,7 +63,9 @@ class message_output_telegram extends message_output {
             return true;
         }
 
-        if (!empty($eventdata->fullmessagehtml)) {
+file_put_contents("/tmp/bbbb", serialize($eventdata)."\n\n", FILE_APPEND|LOCK_EX);
+
+        if (!empty($eventdata->fullmessagehtml) && $this->manager->config->fullmessagehtml) {
                 return $this->manager->send_message($eventdata->fullmessagehtml, $eventdata->userto->id);
         } else {
                 return $this->manager->send_message($eventdata->fullmessage, $eventdata->userto->id);

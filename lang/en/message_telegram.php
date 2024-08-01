@@ -62,3 +62,6 @@ Use the "/newbot" command in Telegram to start creating the bot. You will need t
 unique bot username, for example "{$a->username}". Full documentation
 <a href="https://docs.moodle.org/33/en/Telegram_message_processor" target="_blank">here</a>.';
 $string['setwebhook'] = 'Setup Telegram webhook';
+
+$string['fullmessagehtml'] = 'Use fullmessagehtml';
+$string['configfullmessagehtml'] = 'Get message from "$eventdata->fullmessagehtml" if set, or "fullmessage" if not set.';
