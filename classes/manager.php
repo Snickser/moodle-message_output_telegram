@@ -59,6 +59,7 @@ class manager {
      * @param int $userid The Moodle user id that is being sent to.
      */
     public function send_message($message, $userid) {
+        global $CFG;
 
         if (empty($this->config('sitebottoken'))) {
             return true;
@@ -89,7 +90,6 @@ class manager {
                                         'parse_mode' => $this->config('parsemode')]);
         }
 
-        global $CFG;
         if ($this->config('telegramlog')) {
             $buff = $today . " " . $userid . " " . $chatid . " " . mb_strlen($message);
             if ($response->ok == true) {
