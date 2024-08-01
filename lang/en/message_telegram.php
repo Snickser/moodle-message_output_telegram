@@ -64,4 +64,4 @@ unique bot username, for example "{$a->username}". Full documentation
 $string['setwebhook'] = 'Setup Telegram webhook';
 
 $string['fullmessagehtml'] = 'Use fullmessagehtml';
-$string['configfullmessagehtml'] = 'Get message from "$eventdata->fullmessagehtml" if set, or "fullmessage" if not set.';
+$string['configfullmessagehtml'] = 'Get message from "$eventdata->fullmessagehtml" (if available), or from "fullmessage" if not set.';
