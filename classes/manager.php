@@ -96,8 +96,8 @@ class manager {
                 ]
             );
             if ($response->ok != true) {
-        	$fname = $CFG->dataroot . '/telegram/' . microtime(1);
-        	file_put_contents($fname, $chatid . "\n" . $message, FILE_APPEND | LOCK_EX);
+                $fname = $CFG->dataroot . '/telegram/' . microtime(1);
+                file_put_contents($fname, $chatid . "\n" . $message, FILE_APPEND | LOCK_EX);
             }
         }
 
