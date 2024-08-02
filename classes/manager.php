@@ -93,6 +93,7 @@ class manager {
                  'text' => $message,
                  'parse_mode' => $this->config('parsemode'),
                  'link_preview_options' => '{"is_disabled":true}',
+                 'disable_web_page_preview' => 'True',
                 ]
             );
         }
