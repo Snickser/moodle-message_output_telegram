@@ -343,8 +343,16 @@ class manager {
 
         $this->curl = new \curl();
 
-        $response = $this->curl->get('https://api.telegram.org/bot' . $this->config('sitebottoken') .
-         '/' . $command, $params);
+        $options = [
+         'CURLOPT_RETURNTRANSFER' => true,
+         'CURLOPT_TIMEOUT' => 30,
+         'CURLOPT_HTTP_VERSION' => CURL_HTTP_VERSION_1_1,
+         'CURLOPT_SSLVERSION' => CURL_SSLVERSION_TLSv1_2,
+        ];
+
+        $location = 'https://api.telegram.org/bot' . $this->config('sitebottoken') . '/' . $command;
+
+        $response = $this->curl->post($location, $params, $options);
 
         if (!empty($this->curl->errno)) {
             return $this->curl->error;
