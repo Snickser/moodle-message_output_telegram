@@ -37,10 +37,10 @@ $string['notconfigured'] = 'The Telegram server hasn\'t been configured so Teleg
 
 $string['configparsemode'] = 'Formatting options: Text or HTML.';
 $string['parsemode'] = 'Parse mode';
-$string['parse_text'] = 'Text';
+$string['parse_text'] = 'Text only';
 $string['parse_html'] = 'HTML format';
 $string['striptags'] = 'Strip tags';
-$string['configstriptags'] = 'Strip all HTML tags from Text formatted message.';
+$string['configstriptags'] = 'Strip all html tags from "Text" formatted message (in "HTML" mode unresolved tags are always removed).';
 $string['telegramlog'] = 'Enable logging';
 $string['configtelegramlog'] = 'Write debug info into ' . $CFG->dataroot . '/telegram.log file.';
 $string['telegramlogdump'] = 'Dump message to log';
