@@ -109,7 +109,7 @@ class manager {
                 $buff .= $message . "\n";
             }
             $fname = $CFG->dataroot . '/telegram.log';
-            file_put_contents($fname, $buff, FILE_APPEND | LOCK_EX);
+            file_put_contents($fname, $buff . "\n", FILE_APPEND | LOCK_EX);
         }
         // for external sender
         // $ttime=microtime(true);
