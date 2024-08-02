@@ -86,8 +86,15 @@ class manager {
                 $response = (object)["ok" => false, "error_code" => '404', "description" => $this->config('tgext')];
             }
         } else {
-            $response = $this->send_api_command('sendMessage', ['chat_id' => $chatid, 'text' => $message,
-                                        'parse_mode' => $this->config('parsemode')]);
+            $response = $this->send_api_command(
+                'sendMessage',
+                [
+                 'chat_id' => $chatid,
+                 'text' => $message,
+                 'parse_mode' => $this->config('parsemode'),
+                 'link_preview_options' => '{"is_disabled":true}',
+                ]
+            );
         }
 
         if ($this->config('telegramlog')) {
