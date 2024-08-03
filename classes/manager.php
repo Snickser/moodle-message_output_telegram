@@ -89,7 +89,7 @@ class manager {
             $response = $this->send_api_command(
                 'sendMessage',
                 [
-//                 'chat_id' => $chatid,
+                 'chat_id' => $chatid,
                  'text' => $message,
                  'parse_mode' => $this->config('parsemode'),
                  'link_preview_options' => '{"is_disabled":true}',
