@@ -15,20 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Telegram message plugin version information.
+ * Tasks
  *
- * @package message_telegram
- * @author  Mike Churchward
- * @copyright  2017 onwards Mike Churchward (mike.churchward@poetgroup.org)
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   message_telegram
+ * @copyright 2024 Alex Orlov <snickser@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
-
-$plugin->version  = 3024080300;
-$plugin->requires = 2016111500;
-
-$plugin->component = 'message_telegram';
-
-$plugin->release  = '3.3 (Build - 2024022500)';
-$plugin->maturity  = MATURITY_STABLE;
+$tasks = [
+    [
+        'classname' => 'message_telegram\task\telegram_sender',
+        'blocking' => 0,
+        'minute' => '*/10',
+        'hour' => '*',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*',
+    ],
+];

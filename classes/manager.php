@@ -95,6 +95,10 @@ class manager {
                  'link_preview_options' => '{"is_disabled":true}',
                 ]
             );
+            if ($response->ok != true) {
+                $fname = $CFG->dataroot . '/telegram/' . uniqid(time(), true);
+                file_put_contents($fname, $chatid . "\n" . $message, FILE_APPEND | LOCK_EX);
+            }
         }
 
         if ($this->config('telegramlog')) {
@@ -102,14 +106,14 @@ class manager {
             if ($response->ok == true) {
                 $buff .= " " . $response->result->message_id;
             } else {
-                $buff .= " ERROR " . $response . " " . $response->error_code . " " . $response->description;
+                $buff .= " ERROR " . serialize($response);// . " " . $response->error_code . " " . $response->description;
             }
             $buff .= "\n";
             if ($this->config('telegramlogdump')) {
                 $buff .= $message . "\n";
             }
             $fname = $CFG->dataroot . '/telegram.log';
-            file_put_contents($fname, $buff, FILE_APPEND | LOCK_EX);
+            file_put_contents($fname, $buff . "\n", FILE_APPEND | LOCK_EX);
         }
         // for external sender
         // $ttime=microtime(true);
@@ -364,7 +368,6 @@ class manager {
         if (!empty($this->curl->errno)) {
             return $this->curl->error;
         }
-
-        return json_decode($response);
+        return json_decode($response, false);
     }
 }
