@@ -68,7 +68,7 @@ class telegram_sender extends \core\task\scheduled_task {
                 while (($buff = fgets($fh)) !== false) {
                     $text .= $buff;
                 }
-                $ret = $this->sendmsg($token, $pmode, $chatid, $text, $dir . '/' . $file);
+                $this->sendmsg($token, $pmode, $chatid, $text, $dir . '/' . $file);
                 usleep(50000);
             }
             closedir($dh);
@@ -101,15 +101,16 @@ class telegram_sender extends \core\task\scheduled_task {
 
             if (!empty($this->curl->errno)) {
                 mtrace($this->curl->error);
-                return;
+                return false;
             }
 
             if ($response->ok == true) {
-                $buff = $response->result->message_id;
+                mtrace($response->result->message_id);
                 unlink($file);
+                return true;
             } else {
-                $buff = $response->error_code . " " . $response->description;
+                mtrace($file . " " . serialize($response));
+                return false;
             }
-            mtrace($buff);
     }
 }

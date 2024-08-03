@@ -26,7 +26,7 @@ $tasks = [
     [
         'classname' => 'message_telegram\task\telegram_sender',
         'blocking' => 0,
-        'minute' => '*/5',
+        'minute' => '*/10',
         'hour' => '*',
         'day' => '*',
         'dayofweek' => '*',

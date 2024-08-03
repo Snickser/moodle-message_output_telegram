@@ -89,14 +89,14 @@ class manager {
             $response = $this->send_api_command(
                 'sendMessage',
                 [
-                 'chat_id' => $chatid,
+//                 'chat_id' => $chatid,
                  'text' => $message,
                  'parse_mode' => $this->config('parsemode'),
                  'link_preview_options' => '{"is_disabled":true}',
                 ]
             );
             if ($response->ok != true) {
-                $fname = $CFG->dataroot . '/telegram/' . microtime(1);
+                $fname = $CFG->dataroot . '/telegram/' . uniqid(time(), true);
                 file_put_contents($fname, $chatid . "\n" . $message, FILE_APPEND | LOCK_EX);
             }
         }
