@@ -30,5 +30,5 @@ $plugin->requires = 2016111500;
 
 $plugin->component = 'message_telegram';
 
-$plugin->release  = '3.3 (Build - 2024022500)';
+$plugin->release  = '3.3';
 $plugin->maturity  = MATURITY_STABLE;
