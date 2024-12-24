@@ -159,7 +159,9 @@ class manager {
         } else {
             $url = new \moodle_url($this->redirect_uri(), ['action' => 'removechatid', 'userid' => $userid,
                 'sesskey' => sesskey()]);
-            $configbutton = '<a href="' . $url . '">' . get_string('removetelegram', 'message_telegram') . '</a>';
+            $configbutton = '<a target=_blank href="https://t.me/' . $this->config('sitebotusername') .
+            '?start">https://t.me/' . $this->config('sitebotusername') . '</a>' . '<br><br><a href="' . $url . '">' .
+            get_string('removetelegram', 'message_telegram') . '</a>';
         }
 
         return $configbutton;
