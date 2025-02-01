@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * recurrent payments
+ * telegram sender
  *
  * @package    message_telegram
  * @copyright  2024 Alex Orlov <snicker@gmail.com>
@@ -79,6 +79,11 @@ class telegram_sender extends \core\task\scheduled_task {
 
     /**
      * Send.
+     * @param string $token
+     * @param string $pmode
+     * @param int $chatid
+     * @param string $text
+     * @param string $file
      */
     private function sendmsg($token, $pmode, $chatid, $text, $file) {
 
