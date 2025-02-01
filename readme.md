@@ -1,7 +1,6 @@
 ![изображение](https://github.com/Snickser/moodle-message_output_telegram/assets/88129688/a8dc39a0-a3e3-479a-8b96-35ac3d301c65)
 
-[![Build Status](https://github.com/Snickser/moodle-message_output_telegram/actions/workflows/moodle-ci.yml/badge.svg)](https://gith
-ub.com/Snickser/moodle-message_output_telegram/actions/workflows/moodle-ci.yml)
+[![Build Status](https://github.com/Snickser/moodle-message_output_telegram/actions/workflows/moodle-ci.yml/badge.svg)](https://github.com/Snickser/moodle-message_output_telegram/actions/workflows/moodle-ci.yml)
 
 This plugin experiments with providing a Moodle message provider plugin for Telegram.
 
