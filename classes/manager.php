@@ -77,7 +77,7 @@ class manager {
         $message = mb_substr($message, 0, 4096, 'UTF-8');
 
         if ($this->config('tgext')) {
-            if (is_file($this->config('tgext')) and is_executable($this->config('tgext'))) {
+            if (is_file($this->config('tgext')) && is_executable($this->config('tgext'))) {
                 $fp = popen($this->config('tgext'), "wb");
                 fwrite($fp, $chatid . "\n" . $message);
                 pclose($fp);
@@ -96,11 +96,11 @@ class manager {
                 ]
             );
             if ($response->ok != true) {
-        	$fname = $CFG->tempdir . '/telegram/';
-        	// Cehck if spool dir not exest.
-        	if (!is_dir($fname)) {
-        	    mkdir($fname);
-        	}
+                $fname = $CFG->tempdir . '/telegram/';
+            // Cehck if spool dir not exest.
+                if (!is_dir($fname)) {
+                    mkdir($fname);
+                }
                 $fname .= uniqid(time(), true);
                 file_put_contents($fname, $chatid . "\n" . $message, FILE_APPEND | LOCK_EX);
             }
@@ -120,7 +120,7 @@ class manager {
             $fname = $CFG->tempdir . '/telegram.log';
             file_put_contents($fname, $buff . "\n", FILE_APPEND | LOCK_EX);
         }
-        // for external sender
+        // For external sender.
         // $ttime=microtime(true);
         // $fname = $CFG->dataroot.'/telegram/spool/'.$ttime;
         // file_put_contents($fname, $chatid."\n".$message, FILE_APPEND|LOCK_EX);
