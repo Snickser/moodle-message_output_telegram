@@ -87,7 +87,7 @@ class manager {
             }
         } else {
             $response = $this->send_api_command(
-                'sendMessage',
+                'sendMessage1',
                 [
                  'chat_id' => $chatid,
                  'text' => $message,
@@ -96,7 +96,12 @@ class manager {
                 ]
             );
             if ($response->ok != true) {
-                $fname = $CFG->dataroot . '/telegram/' . uniqid(time(), true);
+        	$fname = $CFG->tempdir . '/telegram/';
+        	// Cehck if spool dir not exest.
+        	if (!is_dir($fname)) {
+        	    mkdir($fname);
+        	}
+                $fname .= uniqid(time(), true);
                 file_put_contents($fname, $chatid . "\n" . $message, FILE_APPEND | LOCK_EX);
             }
         }
@@ -112,7 +117,7 @@ class manager {
             if ($this->config('telegramlogdump')) {
                 $buff .= $message . "\n";
             }
-            $fname = $CFG->dataroot . '/telegram.log';
+            $fname = $CFG->tempdir . '/telegram.log';
             file_put_contents($fname, $buff . "\n", FILE_APPEND | LOCK_EX);
         }
         // for external sender
