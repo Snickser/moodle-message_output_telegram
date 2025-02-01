@@ -87,7 +87,7 @@ class manager {
             }
         } else {
             $response = $this->send_api_command(
-                'sendMessage1',
+                'sendMessage',
                 [
                  'chat_id' => $chatid,
                  'text' => $message,
@@ -97,7 +97,7 @@ class manager {
             );
             if ($response->ok != true) {
                 $fname = $CFG->tempdir . '/telegram/';
-            // Cehck if spool dir not exest.
+            // Check if spool dir not exest.
                 if (!is_dir($fname)) {
                     mkdir($fname);
                 }
