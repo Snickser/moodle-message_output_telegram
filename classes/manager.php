@@ -111,7 +111,7 @@ class manager {
             if ($response->ok == true) {
                 $buff .= " " . $response->result->message_id;
             } else {
-                $buff .= " ERROR " . serialize($response);// . " " . $response->error_code . " " . $response->description;
+                $buff .= " ERROR " . serialize($response);
             }
             $buff .= "\n";
             if ($this->config('telegramlogdump')) {
@@ -120,10 +120,6 @@ class manager {
             $fname = $CFG->tempdir . '/telegram.log';
             file_put_contents($fname, $buff . "\n", FILE_APPEND | LOCK_EX);
         }
-        // For external sender.
-        // $ttime=microtime(true);
-        // $fname = $CFG->dataroot.'/telegram/spool/'.$ttime;
-        // file_put_contents($fname, $chatid."\n".$message, FILE_APPEND|LOCK_EX);
 
         return (!empty($response) && isset($response->ok) && ($response->ok == true));
     }
