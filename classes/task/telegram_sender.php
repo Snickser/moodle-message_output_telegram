@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * recurrent payments
+ * telegram sender
  *
  * @package    message_telegram
  * @copyright  2024 Alex Orlov <snicker@gmail.com>

@@ -97,7 +97,7 @@ class manager {
             );
             if ($response->ok != true) {
                 $fname = $CFG->tempdir . '/telegram/';
-            // Check if spool dir not exest.
+                // Check if spool dir not exest.
                 if (!is_dir($fname)) {
                     mkdir($fname);
                 }
