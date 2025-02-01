@@ -53,11 +53,11 @@ class telegram_sender extends \core\task\scheduled_task {
         $token = get_config('message_telegram', 'sitebottoken');
         $pmode = get_config('message_telegram', 'parsemode');
 
-        $dir = $CFG->dataroot . '/telegram';
+        $dir = $CFG->tempdir . '/telegram';
 
         if ($dh = opendir($dir)) {
             while (($file = readdir($dh)) !== false) {
-                if ($file == '..' or $file == '.') {
+                if ($file == '..' || $file == '.') {
                     continue;
                 }
                 $fh = fopen($dir . '/' . $file, "r");
@@ -77,6 +77,9 @@ class telegram_sender extends \core\task\scheduled_task {
         }
     }
 
+    /**
+     * Send.
+     */
     private function sendmsg($token, $pmode, $chatid, $text, $file) {
 
             $this->curl = new \curl();

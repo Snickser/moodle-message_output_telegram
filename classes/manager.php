@@ -77,7 +77,7 @@ class manager {
         $message = mb_substr($message, 0, 4096, 'UTF-8');
 
         if ($this->config('tgext')) {
-            if (is_file($this->config('tgext')) and is_executable($this->config('tgext'))) {
+            if (is_file($this->config('tgext')) && is_executable($this->config('tgext'))) {
                 $fp = popen($this->config('tgext'), "wb");
                 fwrite($fp, $chatid . "\n" . $message);
                 pclose($fp);
@@ -96,7 +96,12 @@ class manager {
                 ]
             );
             if ($response->ok != true) {
-                $fname = $CFG->dataroot . '/telegram/' . uniqid(time(), true);
+                $fname = $CFG->tempdir . '/telegram/';
+            // Check if spool dir not exest.
+                if (!is_dir($fname)) {
+                    mkdir($fname);
+                }
+                $fname .= uniqid(time(), true);
                 file_put_contents($fname, $chatid . "\n" . $message, FILE_APPEND | LOCK_EX);
             }
         }
@@ -106,19 +111,15 @@ class manager {
             if ($response->ok == true) {
                 $buff .= " " . $response->result->message_id;
             } else {
-                $buff .= " ERROR " . serialize($response);// . " " . $response->error_code . " " . $response->description;
+                $buff .= " ERROR " . serialize($response);
             }
             $buff .= "\n";
             if ($this->config('telegramlogdump')) {
                 $buff .= $message . "\n";
             }
-            $fname = $CFG->dataroot . '/telegram.log';
+            $fname = $CFG->tempdir . '/telegram.log';
             file_put_contents($fname, $buff . "\n", FILE_APPEND | LOCK_EX);
         }
-        // for external sender
-        // $ttime=microtime(true);
-        // $fname = $CFG->dataroot.'/telegram/spool/'.$ttime;
-        // file_put_contents($fname, $chatid."\n".$message, FILE_APPEND|LOCK_EX);
 
         return (!empty($response) && isset($response->ok) && ($response->ok == true));
     }
@@ -159,7 +160,9 @@ class manager {
         } else {
             $url = new \moodle_url($this->redirect_uri(), ['action' => 'removechatid', 'userid' => $userid,
                 'sesskey' => sesskey()]);
-            $configbutton = '<a href="' . $url . '">' . get_string('removetelegram', 'message_telegram') . '</a>';
+            $configbutton = '<a target=_blank href="https://t.me/' . $this->config('sitebotusername') .
+            '?start">https://t.me/' . $this->config('sitebotusername') . '</a>' . '<br><br><a href="' . $url . '">' .
+            get_string('removetelegram', 'message_telegram') . '</a>';
         }
 
         return $configbutton;
