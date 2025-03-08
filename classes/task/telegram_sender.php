@@ -62,13 +62,13 @@ class telegram_sender extends \core\task\scheduled_task {
                 }
                 $fh = fopen($dir . '/' . $file, "r");
                 $chatid = '';
-                $chatid = fgets($fh);
+                $chatid = trim(fgets($fh));
                 $buff = '';
                 $text = '';
                 while (($buff = fgets($fh)) !== false) {
                     $text .= $buff;
                 }
-                $this->sendmsg($token, $pmode, $chatid, $text, $dir . '/' . $file);
+                $error = $this->sendmsg($token, $pmode, $chatid, $text, $dir . '/' . $file);
                 usleep(50000);
             }
             closedir($dh);
@@ -86,39 +86,50 @@ class telegram_sender extends \core\task\scheduled_task {
      * @param string $file
      */
     private function sendmsg($token, $pmode, $chatid, $text, $file) {
+        global $DB, $CFG;
 
-            $this->curl = new \curl();
+        $this->curl = new \curl();
 
-            $location = 'https://api.telegram.org/bot' . $token . '/sendMessage';
+        $location = 'https://api.telegram.org/bot' . $token . '/sendMessage';
 
-            $params = [
-             'chat_id' => $chatid,
-             'parse_mode' => $pmode,
-             'text' => $text,
-             'link_preview_options' => '{"is_disabled":true}',
-            ];
+        $params = [
+         'chat_id' => $chatid,
+         'parse_mode' => $pmode,
+         'text' => $text,
+         'link_preview_options' => '{"is_disabled":true}',
+        ];
 
-            $options = [
-             'CURLOPT_RETURNTRANSFER' => true,
-             'CURLOPT_TIMEOUT' => 30,
-             'CURLOPT_HTTP_VERSION' => CURL_HTTP_VERSION_1_1,
-             'CURLOPT_SSLVERSION' => CURL_SSLVERSION_TLSv1_2,
-            ];
+        $options = [
+         'CURLOPT_RETURNTRANSFER' => true,
+         'CURLOPT_TIMEOUT' => 30,
+         'CURLOPT_HTTP_VERSION' => CURL_HTTP_VERSION_1_1,
+         'CURLOPT_SSLVERSION' => CURL_SSLVERSION_TLSv1_2,
+        ];
 
-            $response = json_decode($this->curl->post($location, $params, $options));
+        $response = json_decode($this->curl->post($location, $params, $options));
 
-            if (!empty($this->curl->errno)) {
-                mtrace($this->curl->error);
-                return false;
-            }
+        // Ckeck curl error.
+        if (!empty($this->curl->errno)) {
+            mtrace($this->curl->error);
+            return true;
+        }
 
-            if ($response->ok == true) {
-                mtrace($response->result->message_id);
+        // Check telegram error.
+        if ($response->ok == true) {
+            mtrace($response->result->message_id);
+            unlink($file);
+            return false;
+        } else {
+            // Delete file and chatid if forbidden.
+            if ($response->error_code == 403) {
+                $DB->delete_records(
+                    'user_preferences',
+                    [ 'name' => 'message_processor_telegram_chatid', 'value' => $chatid]
+                );
                 unlink($file);
-                return true;
-            } else {
-                mtrace($file . " " . serialize($response));
-                return false;
+                mtrace('delete forbidden ' . $chatid);
             }
+            return true;
+        }
     }
 }
