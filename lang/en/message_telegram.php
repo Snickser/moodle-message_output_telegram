@@ -65,3 +65,11 @@ $string['setwebhook'] = 'Setup Telegram webhook';
 
 $string['fullmessagehtml'] = 'Use fullmessagehtml';
 $string['configfullmessagehtml'] = 'Get message from "$eventdata->fullmessagehtml" (if available), or from "fullmessage" if not set.';
+$string['donate'] = '<div>Plugin version: {$a->release} ({$a->versiondisk})</br>
+You can find new versions of the plugin at <a href=https://github.com/Snickser/moodle-message_output_telegram>GitHub.com</a>
+<img src="https://img.shields.io/github/v/release/Snickser/moodle-message_output_telegram.svg"><br>
+Please send me some <a href="https://yoomoney.ru/fundraise/143H2JO3LLE.240720">donate</a>😊</div>
+TON UQA1vhoJmBLgzTHKbJuuscr6UPwnP9TEH3eJYFKIiVgUIaro<br>
+BTC 1GFTTPCgRTC8yYL1gU7wBZRfhRNRBdLZsq<br>
+<iframe src="https://yoomoney.ru/quickpay/fundraise/button?billNumber=143H2JO3LLE.240720"
+width="330" height="50" frameborder="0" allowtransparency="true" scrolling="no"></iframe>';
