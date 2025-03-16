@@ -132,4 +132,12 @@ if ($ADMIN->fulltree) {
         PARAM_TEXT
     ));
 
+    $plugininfo = \core_plugin_manager::instance()->get_plugin_info('message_telegram');
+    $donate = get_string('donate', 'message_telegram', $plugininfo);
+
+    $settings->add(new admin_setting_heading(
+        'message_telegram',
+        '',
+        $donate,
+    ));
 }
