@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 3025030800;
+$plugin->version  = 3025032300;
 $plugin->requires = 2016111500;
 
 $plugin->component = 'message_telegram';
