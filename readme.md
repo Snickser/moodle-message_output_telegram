@@ -6,11 +6,6 @@
 This plugin experiments with providing a Moodle message provider plugin for Telegram.
 
 -----
-*** This is a BETA release, and is not intended to be used in any production environment ***
-
-If you wish to contribute in any way, message me on github or to mike.churchward@poetgroup.org. All collaboration and comments welcome.
-
------
 
 If you have an earlier version than BETA 3.2.4 uninstall and delete it, and start over with 3.2.4 or higher!
 
