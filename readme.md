@@ -1,11 +1,12 @@
-![изображение](https://github.com/Snickser/moodle-message_output_telegram/assets/88129688/a8dc39a0-a3e3-479a-8b96-35ac3d301c65)
-
 [![](https://img.shields.io/github/v/release/Snickser/moodle-message_output_telegram.svg)](https://github.com/Snickser/moodle-message_output_telegram/releases)
 [![Build Status](https://github.com/Snickser/moodle-message_output_telegram/actions/workflows/moodle-ci.yml/badge.svg)](https://github.com/Snickser/moodle-message_output_telegram/actions/workflows/moodle-ci.yml)
 
 This plugin experiments with providing a Moodle message provider plugin for Telegram.
 
 -----
+![изображение](https://github.com/Snickser/moodle-message_output_telegram/assets/88129688/a8dc39a0-a3e3-479a-8b96-35ac3d301c65)
+
+----
 
 If you have an earlier version than BETA 3.2.4 uninstall and delete it, and start over with 3.2.4 or higher!
 
