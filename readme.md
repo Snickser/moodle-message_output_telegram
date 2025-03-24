@@ -1,7 +1,7 @@
+## Impruved Telegram message output plugin for Moodle.
+
 [![](https://img.shields.io/github/v/release/Snickser/moodle-message_output_telegram.svg)](https://github.com/Snickser/moodle-message_output_telegram/releases)
 [![Build Status](https://github.com/Snickser/moodle-message_output_telegram/actions/workflows/moodle-ci.yml/badge.svg)](https://github.com/Snickser/moodle-message_output_telegram/actions/workflows/moodle-ci.yml)
-
-## Impruved Telegram message output plugin for Moodle.
 
 This plugin experiments with providing a Moodle message provider plugin for Telegram.
 
