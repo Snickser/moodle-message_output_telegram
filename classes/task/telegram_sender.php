@@ -80,9 +80,8 @@ class telegram_sender extends \core\task\scheduled_task {
      * Send.
      * @param string $token
      * @param string $pmode
-     * @param int $chatid
-     * @param string $text
      * @param string $file
+     * @return boolean
      */
     private function sendmsg($token, $pmode, $file) {
         global $DB, $CFG;
