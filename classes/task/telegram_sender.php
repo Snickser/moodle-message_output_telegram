@@ -65,15 +65,9 @@ class telegram_sender extends \core\task\scheduled_task {
                 if ($file == '..' || $file == '.') {
                     continue;
                 }
-                $fh = fopen($dir . '/' . $file, "r");
-                $chatid = '';
-                $chatid = trim(fgets($fh));
-                $buff = '';
-                $text = '';
-                while (($buff = fgets($fh)) !== false) {
-                    $text .= $buff;
-                }
-                $error = $this->sendmsg($token, $pmode, $chatid, $text, $dir . '/' . $file);
+
+                $this->sendmsg($token, $pmode, $dir . '/' . $file);
+
                 usleep(50000);
             }
             closedir($dh);
@@ -90,8 +84,22 @@ class telegram_sender extends \core\task\scheduled_task {
      * @param string $text
      * @param string $file
      */
-    private function sendmsg($token, $pmode, $chatid, $text, $file) {
+    private function sendmsg($token, $pmode, $file) {
         global $DB, $CFG;
+
+        $chatid = '';
+        $text   = '';
+
+        $fh = fopen($file, "r+");
+        if (flock($fh, LOCK_EX | LOCK_NB)) {
+            $chatid = trim(fgets($fh));
+            while (($buff = fgets($fh)) !== false) {
+                $text .= $buff;
+            }
+        } else {
+            mtrace($file . ' no file or locked');
+            return true;
+        }
 
         $this->curl = new \curl();
 
@@ -115,6 +123,7 @@ class telegram_sender extends \core\task\scheduled_task {
 
         // Ckeck curl error.
         if (!empty($this->curl->errno)) {
+            fclose($fh);
             mtrace($this->curl->error);
             return true;
         }
@@ -123,6 +132,7 @@ class telegram_sender extends \core\task\scheduled_task {
         if ($response->ok == true) {
             mtrace($response->result->message_id);
             unlink($file);
+            fclose($fh);
             return false;
         } else {
             // Delete file and chatid if forbidden.
@@ -132,6 +142,7 @@ class telegram_sender extends \core\task\scheduled_task {
                     [ 'name' => 'message_processor_telegram_chatid', 'value' => $chatid]
                 );
                 unlink($file);
+                fclose($fh);
                 mtrace('delete forbidden ' . $chatid);
             }
             return true;
