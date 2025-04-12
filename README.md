@@ -3,7 +3,7 @@
 [![](https://img.shields.io/github/v/release/Snickser/moodle-message_output_telegram.svg)](https://github.com/Snickser/moodle-message_output_telegram/releases)
 [![Build Status](https://github.com/Snickser/moodle-message_output_telegram/actions/workflows/moodle-ci.yml/badge.svg)](https://github.com/Snickser/moodle-message_output_telegram/actions/workflows/moodle-ci.yml)
 
-This plugin experiments with providing a Moodle message provider plugin for Telegram.
+This plugin provides Moodle messaging provider for Telegram.
 
 - Delayed sending function (queue) when the rate-limit is reached
 - Automatic disabling of the user's subscription when the user blocks the bot.
