@@ -50,6 +50,11 @@ class telegram_sender extends \core\task\scheduled_task {
     public function execute() {
         global $DB, $CFG;
 
+        // Unfortunately this may take a long time, it should not be interrupted,
+        // otherwise users get duplicate notification.
+        \core_php_time_limit::raise();
+        \raise_memory_limit(MEMORY_HUGE);
+
         $token = get_config('message_telegram', 'sitebottoken');
         $pmode = get_config('message_telegram', 'parsemode');
 
