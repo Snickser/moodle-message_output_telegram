@@ -50,6 +50,11 @@ class telegram_sender extends \core\task\scheduled_task {
     public function execute() {
         global $DB, $CFG;
 
+        // Unfortunately this may take a long time, it should not be interrupted,
+        // otherwise users get duplicate notification.
+        \core_php_time_limit::raise();
+        \raise_memory_limit(MEMORY_HUGE);
+
         $token = get_config('message_telegram', 'sitebottoken');
         $pmode = get_config('message_telegram', 'parsemode');
 
@@ -60,15 +65,9 @@ class telegram_sender extends \core\task\scheduled_task {
                 if ($file == '..' || $file == '.') {
                     continue;
                 }
-                $fh = fopen($dir . '/' . $file, "r");
-                $chatid = '';
-                $chatid = trim(fgets($fh));
-                $buff = '';
-                $text = '';
-                while (($buff = fgets($fh)) !== false) {
-                    $text .= $buff;
-                }
-                $error = $this->sendmsg($token, $pmode, $chatid, $text, $dir . '/' . $file);
+
+                $this->sendmsg($token, $pmode, $dir . '/' . $file);
+
                 usleep(50000);
             }
             closedir($dh);
@@ -81,12 +80,25 @@ class telegram_sender extends \core\task\scheduled_task {
      * Send.
      * @param string $token
      * @param string $pmode
-     * @param int $chatid
-     * @param string $text
      * @param string $file
+     * @return boolean
      */
-    private function sendmsg($token, $pmode, $chatid, $text, $file) {
+    private function sendmsg($token, $pmode, $file) {
         global $DB, $CFG;
+
+        $chatid = '';
+        $text   = '';
+
+        $fh = fopen($file, "r+");
+        if (flock($fh, LOCK_EX | LOCK_NB)) {
+            $chatid = trim(fgets($fh));
+            while (($buff = fgets($fh)) !== false) {
+                $text .= $buff;
+            }
+        } else {
+            mtrace($file . ' no file or locked');
+            return true;
+        }
 
         $this->curl = new \curl();
 
@@ -110,6 +122,7 @@ class telegram_sender extends \core\task\scheduled_task {
 
         // Ckeck curl error.
         if (!empty($this->curl->errno)) {
+            fclose($fh);
             mtrace($this->curl->error);
             return true;
         }
@@ -118,6 +131,7 @@ class telegram_sender extends \core\task\scheduled_task {
         if ($response->ok == true) {
             mtrace($response->result->message_id);
             unlink($file);
+            fclose($fh);
             return false;
         } else {
             // Delete file and chatid if forbidden.
@@ -127,6 +141,7 @@ class telegram_sender extends \core\task\scheduled_task {
                     [ 'name' => 'message_processor_telegram_chatid', 'value' => $chatid]
                 );
                 unlink($file);
+                fclose($fh);
                 mtrace('delete forbidden ' . $chatid);
             }
             return true;
