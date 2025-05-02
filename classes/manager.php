@@ -46,7 +46,10 @@ class manager {
      */
     private $curl = null;
 
+    /** @var string */
     private $config;
+
+    /** @var string */
     private $courseid;
 
     /**
