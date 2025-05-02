@@ -37,6 +37,7 @@ require_once($CFG->dirroot . '/lib/filelib.php');
  */
 class message_output_telegram extends message_output {
 
+    /** @var string */
     protected mixed $manager;
 
     /**
