@@ -46,6 +46,9 @@ class manager {
      */
     private $curl = null;
 
+    private $config;
+    private $courseid;
+
     /**
      * Constructor. Loads all needed data.
      */

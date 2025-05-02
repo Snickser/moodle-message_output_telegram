@@ -36,6 +36,9 @@ require_once($CFG->dirroot . '/lib/filelib.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class message_output_telegram extends message_output {
+
+    protected mixed $manager;
+
     /**
      * Constructor to add needed properties to the Slack app.
      */
