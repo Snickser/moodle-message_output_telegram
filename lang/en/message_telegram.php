@@ -73,4 +73,4 @@ TON UQA1vhoJmBLgzTHKbJuuscr6UPwnP9TEH3eJYFKIiVgUIaro<br>
 BTC 1GFTTPCgRTC8yYL1gU7wBZRfhRNRBdLZsq<br>
 <iframe src="https://yoomoney.ru/quickpay/fundraise/button?billNumber=143H2JO3LLE.240720"
 width="330" height="50" frameborder="0" allowtransparency="true" scrolling="no"></iframe>';
-$string['welcome'] = '✅ Your Moodle account has been successfully linked!';
+$string['welcome'] = '✅ Your account has been successfully linked!';
