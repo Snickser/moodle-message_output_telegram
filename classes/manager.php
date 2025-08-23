@@ -47,10 +47,10 @@ class manager {
     private $curl = null;
 
     /** @var string */
-    private $config;
+    public $config;
 
     /** @var string */
-    private $courseid;
+    public $courseid;
 
     /**
      * Constructor. Loads all needed data.
@@ -78,7 +78,7 @@ class manager {
         if ($this->config('parsemode') == 'HTML') {
             $message = strip_tags($message, "<b><strong><i><em><a><u><ins><code><pre><blockquote><tg-spoiler><tg-emoji>");
         } else if ($this->config('striptags')) {
-            $message = strip_tags($message);
+            $message = html_to_text($message);
         }
         $message = mb_substr($message, 0, 4096, 'UTF-8');
 
@@ -288,6 +288,7 @@ class manager {
                     if (isset($object->message)) {
                         if ($this->usersecret_match(substr($object->message->text, strlen('/start ')))) {
                             set_user_preference('message_processor_telegram_chatid', $object->message->chat->id, $userid);
+                            $this->send_message(get_string('welcome', 'message_telegram'), $userid);
                             break;
                         }
                     }
