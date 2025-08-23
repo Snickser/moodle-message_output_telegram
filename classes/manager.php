@@ -288,6 +288,7 @@ class manager {
                     if (isset($object->message)) {
                         if ($this->usersecret_match(substr($object->message->text, strlen('/start ')))) {
                             set_user_preference('message_processor_telegram_chatid', $object->message->chat->id, $userid);
+                            $this->send_message(get_string('welcome', 'message_telegram'), $userid);
                             break;
                         }
                     }
