@@ -14,16 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+/**
+ * Telegram message plugin version information.
+ *
+ * @package message_telegram
+ * @author  Mike Churchward
+ * @copyright  2017 onwards Mike Churchward (mike.churchward@poetgroup.org)
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Adds navigation items to user profile.
+ *
+ * @param stdClass $navigation
+ * @param stdClass $user The user object
+ * @param stdClass $context
+ */
 function message_telegram_extend_navigation_user_settings($navigation, $user, $context) {
     global $DB, $USER, $CFG;
 
     if ($USER->id !== $user->id) {
-        return; // показываем только владельцу своего профиля.
+        return;
     }
 
-    // Проверим, связан ли уже аккаунт.
     $manager = new \message_telegram\manager();
     $chatid = $manager->is_chatid_set($USER->id);
 
@@ -38,7 +53,6 @@ function message_telegram_extend_navigation_user_settings($navigation, $user, $c
             'telegram_connected'
         );
     } else {
-        // Генерируем deep-link ссылку.
         $botname = get_config('message_telegram', 'sitebotname');
         if (empty($botname)) {
             return;
