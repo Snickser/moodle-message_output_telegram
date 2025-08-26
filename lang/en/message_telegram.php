@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['alreadyconnected'] = '✅ Your Telegram account is linked!';
+$string['alreadyconnected'] = '✅ Your Telegram account is linked';
 $string['configsitebotname'] = 'This will be filled in automatically when you save the bot token.';
 $string['configsitebottoken'] = 'Enter the site bot token from Botfather here.';
 $string['configsitebotusername'] = 'This will be filled in automatically when you save the bot token.';
