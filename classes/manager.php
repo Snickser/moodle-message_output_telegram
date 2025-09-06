@@ -114,6 +114,8 @@ class manager {
                 }
                 $fname .= uniqid(time(), true);
                 file_put_contents($fname, $chatid . "\n" . $message, FILE_APPEND | LOCK_EX);
+            } else {
+                $this->set_customprofile_username($userid, $response->result->chat->username);
             }
         }
 
@@ -278,7 +280,7 @@ class manager {
      * @return boolean Success.
      */
     public function set_chatid($userid = null) {
-        global $DB, $USER;
+        global $USER;
 
         if ($userid === null) {
             $userid = $USER->id;
@@ -293,21 +295,7 @@ class manager {
                     if (isset($object->message)) {
                         if ($this->usersecret_match(substr($object->message->text, strlen('/start ')))) {
                             set_user_preference('message_processor_telegram_chatid', $object->message->chat->id, $userid);
-                            if ($field = $DB->get_record('user_info_field', ['shortname' => 'telegram_username'])) {
-                                $record = $DB->get_record('user_info_data', ['userid' => $userid, 'fieldid' => $field->id]);
-                                if ($record) {
-                                    $record->data = $object->message->from->username;
-                                    $record->dataformat = 0;
-                                    $DB->update_record('user_info_data', $record);
-                                } else {
-                                    $newrecord = new \stdClass();
-                                    $newrecord->userid = $userid;
-                                    $newrecord->fieldid = $field->id;
-                                    $newrecord->data = $object->message->from->username;
-                                    $newrecord->dataformat = 0;
-                                    $DB->insert_record('user_info_data', $newrecord);
-                                }
-                            }
+                            $this->set_customprofile_username($userid, $object->message->from->username);
                             $this->send_message(get_string('welcome', 'message_telegram'), $userid);
                             break;
                         }
@@ -399,5 +387,36 @@ class manager {
             return $this->curl->error;
         }
         return json_decode($response, false);
+    }
+
+    /**
+     * Set custom profile field.
+     * @param string $userid.
+     * @param string $username.
+     * @return boolean Success or failure.
+     */
+    private function set_customprofile_username($userid, $username = null) {
+        global $DB;
+        if ($username == null) {
+            return false;
+        }
+        if ($field = $DB->get_record('user_info_field', ['shortname' => 'telegram_username'])) {
+            $record = $DB->get_record('user_info_data', ['userid' => $userid, 'fieldid' => $field->id]);
+            if ($record) {
+                if ($record->data != $username) {
+                    $record->data = $username;
+                    $record->dataformat = 0;
+                    $DB->update_record('user_info_data', $record);
+                }
+            } else {
+                $newrecord = new \stdClass();
+                $newrecord->userid = $userid;
+                $newrecord->fieldid = $field->id;
+                $newrecord->data = $username;
+                $newrecord->dataformat = 0;
+                $DB->insert_record('user_info_data', $newrecord);
+            }
+        }
+        return true;
     }
 }
