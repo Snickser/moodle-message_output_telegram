@@ -391,8 +391,8 @@ class manager {
 
     /**
      * Set custom profile field.
-     * @param string $userid.
-     * @param string $username.
+     * @param string $userid userid.
+     * @param string $username username.
      * @return boolean Success or failure.
      */
     private function set_customprofile_username($userid, $username = null) {
