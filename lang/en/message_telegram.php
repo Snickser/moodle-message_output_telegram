@@ -75,6 +75,7 @@ You can find new versions of the plugin at <a href=https://github.com/Snickser/m
 Please send me some <a href="https://yoomoney.ru/fundraise/143H2JO3LLE.240720">donate</a>😊</div>
 TON UQA1vhoJmBLgzTHKbJuuscr6UPwnP9TEH3eJYFKIiVgUIaro<br>
 BTC 1GFTTPCgRTC8yYL1gU7wBZRfhRNRBdLZsq<br>
+TRX TRGMc3b63Lus6ehLasbbHxsb2rHky5LbPe<br>
 <iframe src="https://yoomoney.ru/quickpay/fundraise/button?billNumber=143H2JO3LLE.240720"
 width="330" height="50" frameborder="0" allowtransparency="true" scrolling="no"></iframe>';
 $string['welcome'] = '✅ Your account has been successfully linked!';
