@@ -28,6 +28,11 @@ namespace message_telegram;
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/lib/filelib.php');
 
+require_once($CFG->dirroot . '/user/editlib.php');
+require_once($CFG->dirroot . '/user/profile/lib.php');
+require_once($CFG->dirroot . '/user/lib.php');
+
+
 /**
  * Telegram helper manager class
  *
@@ -159,7 +164,7 @@ class manager {
         if (!$this->is_chatid_set($userid, $preferences)) {
             // Temporarily set the user's chatid to the sesskey value for security.
             $this->set_usersecret($userid);
-            $url = 'https://telegram.me/' . $this->config('sitebotusername') . '?start=' . $this->usersecret();
+            $url = 'https://t.me/' . $this->config('sitebotusername') . '?start=' . $this->usersecret();
             $configbutton = get_string('connectinstructions', 'message_telegram', $this->config('sitebotname'));
             $configbutton .= '<div align="center"><a href="' . $url . '" target="_blank">' .
                 get_string('connectme', 'message_telegram') . '</a></div>';
@@ -273,7 +278,7 @@ class manager {
      * @return boolean Success.
      */
     public function set_chatid($userid = null) {
-        global $USER;
+        global $DB, $USER;
 
         if ($userid === null) {
             $userid = $USER->id;
@@ -288,6 +293,21 @@ class manager {
                     if (isset($object->message)) {
                         if ($this->usersecret_match(substr($object->message->text, strlen('/start ')))) {
                             set_user_preference('message_processor_telegram_chatid', $object->message->chat->id, $userid);
+                            if ($field = $DB->get_record('user_info_field', ['shortname' => 'telegram_username'])) {
+                                $record = $DB->get_record('user_info_data', ['userid' => $userid, 'fieldid' => $field->id]);
+                                if ($record) {
+                                    $record->data = $object->message->from->username;
+                                    $record->dataformat = 0;
+                                    $DB->update_record('user_info_data', $record);
+                                } else {
+                                    $newrecord = new \stdClass();
+                                    $newrecord->userid = $userid;
+                                    $newrecord->fieldid = $field->id;
+                                    $newrecord->data = $object->message->from->username;
+                                    $newrecord->dataformat = 0;
+                                    $DB->insert_record('user_info_data', $newrecord);
+                                }
+                            }
                             $this->send_message(get_string('welcome', 'message_telegram'), $userid);
                             break;
                         }
