@@ -300,9 +300,9 @@ class manager {
                                     $record->dataformat = 0;
                                     $DB->update_record('user_info_data', $record);
                                 } else {
-                                    $newrecord = new stdClass();
+                                    $newrecord = new \stdClass();
                                     $newrecord->userid = $userid;
-                                    $newrecord->fieldid = $fieldid;
+                                    $newrecord->fieldid = $field->id;
                                     $newrecord->data = $object->message->from->username;
                                     $newrecord->dataformat = 0;
                                     $DB->insert_record('user_info_data', $newrecord);
