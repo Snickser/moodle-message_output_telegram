@@ -25,6 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['alreadyconnected'] = '✅ Your Telegram account is linked';
 $string['configsitebotname'] = 'This will be filled in automatically when you save the bot token.';
 $string['configsitebottoken'] = 'Enter the site bot token from Botfather here.';
 $string['configsitebotusername'] = 'This will be filled in automatically when you save the bot token.';
@@ -32,7 +33,8 @@ $string['connectinstructions'] = 'Once you have clicked the link below, you will
 your Telegram account. In Telegram, click the "Start" button in the "{$a}" chat that opens to connect your account to Moodle.
 Once completed, come back to this page and click "Save changes". Full documentation
 <a href="https://docs.moodle.org/33/en/Telegram_message_processor#Configuring_user_preferences" target="_blank">here</a>.';
-$string['connectme'] = 'Connect my account to Telegram.';
+$string['connectme'] = 'Connect my account to Telegram';
+$string['connectmemenu'] = 'Connect my account to Telegram';
 $string['notconfigured'] = 'The Telegram server hasn\'t been configured so Telegram messages cannot be sent';
 
 $string['configparsemode'] = 'Formatting options: Text or HTML.';
@@ -73,4 +75,4 @@ TON UQA1vhoJmBLgzTHKbJuuscr6UPwnP9TEH3eJYFKIiVgUIaro<br>
 BTC 1GFTTPCgRTC8yYL1gU7wBZRfhRNRBdLZsq<br>
 <iframe src="https://yoomoney.ru/quickpay/fundraise/button?billNumber=143H2JO3LLE.240720"
 width="330" height="50" frameborder="0" allowtransparency="true" scrolling="no"></iframe>';
-$string['welcome'] = '✅ Your Moodle account has been successfully linked!';
+$string['welcome'] = '✅ Your account has been successfully linked!';
