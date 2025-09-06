@@ -35,6 +35,8 @@ Once completed, come back to this page and click "Save changes". Full documentat
 <a href="https://docs.moodle.org/33/en/Telegram_message_processor#Configuring_user_preferences" target="_blank">here</a>.';
 $string['connectme'] = 'Connect my account to Telegram';
 $string['connectmemenu'] = 'Connect my account to Telegram';
+$string['customfield'] = 'If there is an additional user profile field "telegram_username", it will be filled in automatically.';
+
 $string['notconfigured'] = 'The Telegram server hasn\'t been configured so Telegram messages cannot be sent';
 
 $string['configparsemode'] = 'Formatting options: Text or HTML.';

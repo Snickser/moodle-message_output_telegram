@@ -26,6 +26,12 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
+    $settings->add(new admin_setting_heading(
+        'message_telegram_head',
+        null,
+        get_string('customfield', 'message_telegram')
+    ));
+
     $telegrammanager = new message_telegram\manager();
 
     $sitebottoken = $telegrammanager->config('sitebottoken');
