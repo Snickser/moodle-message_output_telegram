@@ -31,7 +31,7 @@
  * @param stdClass $context
  */
 function message_telegram_extend_navigation_user_settings($navigation, $user, $context) {
-    global $DB, $USER, $CFG;
+    global $USER;
 
     if ($USER->id !== $user->id) {
         return;
@@ -61,7 +61,7 @@ function message_telegram_extend_navigation_user_settings($navigation, $user, $c
             $url,
             navigation_node::TYPE_CUSTOM,
             null,
-            'tamtam_connect'
+            'telegram_disconnected'
         );
     }
 }
