@@ -26,7 +26,7 @@
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot . '/lib/filelib.php');
 
-$action = optional_param('action', 'setwebhook', PARAM_TEXT);
+$action = optional_param('action', 'removechatid', PARAM_TEXT);
 
 $PAGE->set_url(new moodle_url('/message/output/telegram/telegramconnect.php'));
 $PAGE->set_context(context_system::instance());
