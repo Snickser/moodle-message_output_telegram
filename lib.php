@@ -33,8 +33,10 @@
 function message_telegram_extend_navigation_user_settings($navigation, $user, $context) {
     global $USER;
 
-    if ($USER->id !== $user->id) {
-        return;
+    if (!is_siteadmin()) {
+        if ($USER->id !== $user->id) {
+            return;
+        }
     }
 
     $manager = new \message_telegram\manager();
