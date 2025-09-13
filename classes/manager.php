@@ -376,7 +376,7 @@ class manager {
      * @param array $params The parameters to send to the API command. Can be ommited.
      * @return object The JSON decoded return object.
      */
-    private function send_api_command($command, $params = null) {
+    public function send_api_command($command, $params = null) {
         if (empty($this->config('sitebottoken'))) {
             return false;
         }
@@ -481,4 +481,28 @@ class manager {
 
         return false;
     }
+
+    /**
+     * Get userid by chatid.
+     * @param  string $chatid
+     * @return boolean|int $userid
+     */
+    public function get_userid_by_chatid($chatid) {
+	global $DB;
+	
+	$userid = null;
+
+	$sql = "name = :name AND " . $DB->sql_compare_text('value') . " = :secret";
+            $params = [
+            'name'   => 'message_processor_telegram_chatid',
+            'secret' => $chatid,
+            ];
+
+        if ($record = $DB->get_record_select('user_preferences', $sql, $params, 'id, userid')) {
+            $userid = $record->userid;
+        }
+	
+	return $userid;
+    }
+
 }
