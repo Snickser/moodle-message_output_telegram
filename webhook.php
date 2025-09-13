@@ -22,17 +22,15 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(__DIR__ . '/../../../config.php');
+require_once(__DIR__ . '/../../../config.php'); // @codingStandardsIgnoreLine
 
 $headers = getallheaders();
 
 $update = file_get_contents("php://input");
-// $update = json_decode($update, true);
 
 file_put_contents('/tmp/tttt', $headers['X-Telegram-Bot-Api-Secret-Token'] . "\n" . $update . "\n\n", FILE_APPEND | LOCK_EX);
 
 $telegrammanager = new message_telegram\manager();
-
 
 http_response_code(200);
 echo "OK";
