@@ -80,6 +80,6 @@ TRX TRGMc3b63Lus6ehLasbbHxsb2rHky5LbPe<br>
 width="330" height="50" frameborder="0" allowtransparency="true" scrolling="no"></iframe>';
 $string['welcome'] = '✅ Your account has been successfully linked!';
 $string['telegramwebhook'] = 'Webhook';
-$string['configtelegramwebhook'] = 'This webhook is for tests, do not enable!';
+$string['configtelegramwebhook'] = 'This Telegram webhook is for testing purposes, do not enable it, otherwise push button twice!';
 $string['sitebotsecret'] = 'Webhook secret';
 $string['configsitebotsecret'] = 'Generated randomly and automatically if empty.';
