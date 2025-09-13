@@ -44,8 +44,8 @@ if ($action == 'setwebhook') {
         if (empty(get_config('message_telegram', 'webhook'))) {
             $message = $telegrammanager->set_webhook();
         } else {
-	    $message = $telegrammanager->remove_webhook();
-	}
+            $message = $telegrammanager->remove_webhook();
+        }
     }
     redirect(new moodle_url('/admin/settings.php', ['section' => 'messagesettingtelegram']), $message);
 } else if ($action == 'removechatid') {

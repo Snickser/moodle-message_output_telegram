@@ -334,10 +334,10 @@ class manager {
         if (empty($this->config('sitebottoken'))) {
             $message = get_string('sitebottokennotsetup', 'message_telegram');
         } else {
-	    $url = new \moodle_url('/message/output/telegram/webhook.php');
+            $url = new \moodle_url('/message/output/telegram/webhook.php');
             $response = $this->send_api_command('setWebhook', ['url' => $url, 'allowed_updates' => 'message',
-		    'secret_token' => $this->config('sitebotsecret'),
-		    ]);
+            'secret_token' => $this->config('sitebotsecret'),
+            ]);
             if (!empty($response) && isset($response->ok) && ($response->ok == true)) {
                 $this->set_config('webhook', '1');
                 $message = 'webhook is set';
@@ -433,9 +433,8 @@ class manager {
             $message = 'webhook removed';
         } else if (!empty($response) && isset($response->error_code) && isset($response->description)) {
             $message = $response->description;
-	}
-	
-	return $message;
-    }
+        }
 
+        return $message;
+    }
 }

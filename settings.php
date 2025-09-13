@@ -40,8 +40,8 @@ if ($ADMIN->fulltree) {
     $botusername = $telegrammanager->config('sitebotusername');
 
     if (empty($sitebotsecret)) {
-	$sitebotsecret = bin2hex(random_bytes(32));
-	set_config('sitebotsecret', $sitebotsecret, 'message_telegram');
+        $sitebotsecret = bin2hex(random_bytes(32));
+        set_config('sitebotsecret', $sitebotsecret, 'message_telegram');
     }
 
     if (!empty($sitebottoken)) {
