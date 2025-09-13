@@ -349,7 +349,7 @@ class manager {
             ]);
             if (!empty($response) && isset($response->ok) && ($response->ok == true)) {
                 $this->set_config('webhook', '1');
-                $message = 'webhook is set';
+                $message = 'Webhook is set successfully';
             } else if (!empty($response) && isset($response->error_code) && isset($response->description)) {
                 $message = $response->description;
             }
@@ -439,7 +439,7 @@ class manager {
         $response = $this->send_api_command('deleteWebhook');
         if (!empty($response) && isset($response->ok) && ($response->ok == true)) {
             $this->set_config('webhook', '0');
-            $message = 'webhook removed';
+            $message = 'Webhook removed';
         } else if (!empty($response) && isset($response->error_code) && isset($response->description)) {
             $message = $response->description;
         }
@@ -448,9 +448,11 @@ class manager {
     }
 
     /**
-     * Only needed if webHook has been created.
-     * @param  $key The token of the user in question.
-     * @return boolean Success.
+     * Only if webHook has been created.
+     * @param  string $chatid
+     * @param  string $text
+     * @param  string $username
+     * @return boolean|string Success.
      */
     public function set_webhook_chatid($chatid = null, $text = null, $username = null) {
         global $DB;
