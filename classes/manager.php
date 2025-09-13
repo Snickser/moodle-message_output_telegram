@@ -397,7 +397,7 @@ class manager {
      */
     private function set_customprofile_username($userid, $username = null) {
         global $DB;
-        if ($username == null) {
+        if (empty($username)) {
             return false;
         }
         if ($field = $DB->get_record('user_info_field', ['shortname' => 'telegram_username'])) {
