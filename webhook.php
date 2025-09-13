@@ -32,25 +32,75 @@ $headers = getallheaders();
 $update = file_get_contents("php://input");
 $data = json_decode($update, false);
 
+file_put_contents('/tmp/tttt', serialize($data) . "\n\n", FILE_APPEND | LOCK_EX);
+
 $config = get_config('message_telegram');
 
 if ($headers['X-Telegram-Bot-Api-Secret-Token'] != $config->sitebotsecret) {
     http_response_code(200);
-    echo "ERROR";
+    echo "OK";
     die;
 }
 
-$telegrammanager = new message_telegram\manager();
+$tg = new message_telegram\manager();
 
-$chatid = clean_param($data->message->from->id, PARAM_INT);
-$key = clean_param($data->message->text, PARAM_TEXT);
-$username = clean_param($data->message->from->username, PARAM_TEXT);
 
-if (strpos($secret, '/start') === 0) {
-    $telegrammanager->set_webhook_chatid($chatid, $secret, $username);
+if (isset($data->message)) {
+    $chatid = clean_param($data->message->from->id, PARAM_INT);
+    $userid = $tg->get_userid_by_chatid($chatid);
+    $text = clean_param($data->message->text, PARAM_TEXT);
+    $username = clean_param($data->message->from->username, PARAM_TEXT);
+
+
+if (strpos($text, '/start') === 0) {
+    $data = $tg->set_webhook_chatid($chatid, $text, $username);
+} else if (strpos($text, '/pay') === 0) {
+    $tg->send_message('Pay', $userid);
+    
+    $data = $tg->send_api_command('sendInvoice', [
+       "chat_id" => $chatid,
+    "title" => "YourTitle",
+
+    "description" => "YourDescription",
+
+    "payload" => "YourPayload",
+
+    "provider_token" => "381764678:TEST:141557",
+
+    "currency" => "RUB",
+
+    "start_parameter" => "test",
+
+    "prices" => json_encode([
+        [
+            "label"  => "К оплате",
+            "amount" => 99000   // сумма указывается в "копейках" (минимальных единицах)
+        ]
+    ])
+
+    ]);
+} else if (strpos($text, '/help') === 0) {
+    $tg->send_message('Help', $userid);
 } else {
-    file_put_contents('/tmp/tttt', print_r($data, true) . "\n\n", FILE_APPEND | LOCK_EX);
+    $tg->send_message('Не знаю что это такое', $userid);
 }
+
+
+} else if(isset($data->pre_checkout_query)) {
+    $chatid = clean_param($data->pre_checkout_query->from->id, PARAM_INT);
+    $userid = $tg->get_userid_by_chatid($chatid);
+
+if (isset($data->pre_checkout_query->id)) {
+    $data = $tg->send_api_command('answerPreCheckoutQuery', [
+       "pre_checkout_query_id" => $data->pre_checkout_query->id,
+       "ok" => 'True'
+    ]);
+}
+
+}
+
+file_put_contents('/tmp/tttt', print_r($data,true) . "\n\n", FILE_APPEND | LOCK_EX);
+
 
 http_response_code(200);
 echo "OK";
