@@ -24,13 +24,26 @@
 
 require_once(__DIR__ . '/../../../config.php'); // @codingStandardsIgnoreLine
 
+\core\session\manager::init_empty_session();
+\core\session\manager::set_user(get_admin());
+
 $headers = getallheaders();
 
 $update = file_get_contents("php://input");
+$data = json_decode($update, false);
 
-file_put_contents('/tmp/tttt', $headers['X-Telegram-Bot-Api-Secret-Token'] . "\n" . $update . "\n\n", FILE_APPEND | LOCK_EX);
+$config = get_config('message_telegram');
+
+if ($headers['X-Telegram-Bot-Api-Secret-Token'] != $config->sitebotsecret) {
+    http_response_code(200);
+    echo "ERROR";
+    die;
+}
+
+//file_put_contents('/tmp/tttt', $headers['X-Telegram-Bot-Api-Secret-Token'] . "\n" . print_r($data, true) . "\n\n", FILE_APPEND | LOCK_EX);
 
 $telegrammanager = new message_telegram\manager();
+$telegrammanager->set_webhook_chatid($data->message->from->id, $data->message->text, $data->message->from->username);
 
 http_response_code(200);
 echo "OK";

@@ -165,8 +165,9 @@ class manager {
         // If the chatid is not set, display the link to do this.
         if (!$this->is_chatid_set($userid, $preferences)) {
             // Temporarily set the user's chatid to the sesskey value for security.
-            $this->set_usersecret($userid);
-            $url = 'https://t.me/' . $this->config('sitebotusername') . '?start=' . $this->usersecret();
+	    $key = $this->set_usersecret($userid);
+            $url = 'https://t.me/' . $this->config('sitebotusername') . '?start=' . $key;
+
             $configbutton = get_string('connectinstructions', 'message_telegram', $this->config('sitebotname'));
             $configbutton .= '<div align="center"><a href="' . $url . '" target="_blank">' .
                 get_string('connectme', 'message_telegram') . '</a></div>';
@@ -186,7 +187,11 @@ class manager {
      * @return string A constructed variable for this user (Moodle's sesskey).
      */
     public function usersecret() {
-        return sesskey();
+	if ($this->config('webhook')) {
+	    return bin2hex(random_bytes(8));
+	} else {
+    	    return sesskey();
+        }
     }
 
     /**
@@ -205,7 +210,11 @@ class manager {
             require_capability('moodle/site:config', \context_system::instance());
         }
 
-        return set_user_preference('message_processor_telegram_chatid', $this->secretprefix . $this->usersecret(), $userid);
+	$secret = $this->usersecret();
+        if (set_user_preference('message_processor_telegram_chatid', $this->secretprefix . $secret, $userid)) {
+    	    return $secret;
+    	}
+        return false;
     }
 
     /**
@@ -437,4 +446,45 @@ class manager {
 
         return $message;
     }
+
+    /**
+     * Only needed if webHook has been created.
+     * @param  $key The token of the user in question.
+     * @return boolean Success.
+     */
+    public function set_webhook_chatid($chatid = null, $text = null, $username = null) {
+        global $DB;
+
+        if (empty($this->config('sitebottoken')) || empty($chatid) || empty($text)) {
+            return false;
+        } else {
+
+	$key = substr($text, 7);
+	
+
+$sql = "name = :name AND " . $DB->sql_compare_text('value') . " = :secret";
+$params = [
+    'name'   => 'message_processor_telegram_chatid',
+    'secret' => $this->secretprefix . $key,
+];
+
+if ($record = $DB->get_record_select('user_preferences', $sql, $params, 'id, userid')) {
+    $userid = $record->userid;
+}
+
+            if ($this->usersecret_match($key, $userid)) {
+
+//file_put_contents('/tmp/tttt', print_r($userid, true) . "\n\n", FILE_APPEND | LOCK_EX);
+
+
+        	set_user_preference('message_processor_telegram_chatid', $chatid, $userid);
+                $this->set_customprofile_username($userid, $username);
+                $this->send_message(get_string('welcome', 'message_telegram'), $userid);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
