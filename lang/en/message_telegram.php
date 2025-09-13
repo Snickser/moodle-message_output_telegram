@@ -83,4 +83,3 @@ $string['telegramwebhook'] = 'telegramwebhook';
 $string['configtelegramwebhook'] = 'telegramwebhook';
 $string['sitebotsecret'] = 'sitebotsecret';
 $string['configsitebotsecret'] = 'configsitebotsecret';
-
