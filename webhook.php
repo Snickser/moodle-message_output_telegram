@@ -46,7 +46,11 @@ $chatid = clean_param($data->message->from->id, PARAM_INT);
 $key = clean_param($data->message->text, PARAM_TEXT);
 $username = clean_param($data->message->from->username, PARAM_TEXT);
 
-$telegrammanager->set_webhook_chatid($chatid, $key, $username);
+if (strpos($secret, '/start') === 0) {
+    $telegrammanager->set_webhook_chatid($chatid, $secret, $username);
+} else {
+    file_put_contents('/tmp/tttt', print_r($data, true) . "\n\n", FILE_APPEND | LOCK_EX);
+}
 
 http_response_code(200);
 echo "OK";
