@@ -77,6 +77,21 @@ if ($ADMIN->fulltree) {
         PARAM_TEXT
     ));
 
+    $settings->add(new admin_setting_configcheckbox(
+        'message_telegram/telegramwebhook',
+        get_string('telegramwebhook', 'message_telegram'),
+        get_string('configtelegramwebhook', 'message_telegram'),
+        false
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/sitebotsecret',
+        get_string('sitebotsecret', 'message_telegram'),
+        get_string('configsitebotsecret', 'message_telegram'),
+        null,
+        PARAM_TEXT
+    ));
+
     $settings->add(new admin_setting_configtext(
         'message_telegram/sitebotname',
         get_string('sitebotname', 'message_telegram'),

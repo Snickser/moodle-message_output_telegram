@@ -79,3 +79,8 @@ TRX TRGMc3b63Lus6ehLasbbHxsb2rHky5LbPe<br>
 <iframe src="https://yoomoney.ru/quickpay/fundraise/button?billNumber=143H2JO3LLE.240720"
 width="330" height="50" frameborder="0" allowtransparency="true" scrolling="no"></iframe>';
 $string['welcome'] = '✅ Your account has been successfully linked!';
+$string['telegramwebhook'] = 'telegramwebhook';
+$string['configtelegramwebhook'] = 'telegramwebhook';
+$string['sitebotsecret'] = 'sitebotsecret';
+$string['configsitebotsecret'] = 'configsitebotsecret';
+
