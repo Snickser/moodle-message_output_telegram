@@ -42,7 +42,11 @@ if ($headers['X-Telegram-Bot-Api-Secret-Token'] != $config->sitebotsecret) {
 
 $telegrammanager = new message_telegram\manager();
 
-$telegrammanager->set_webhook_chatid($data->message->from->id, $data->message->text, $data->message->from->username);
+$chatid = clean_param($data->message->from->id, PARAM_INT);
+$key = clean_param($data->message->text, PARAM_TEXT);
+$username = clean_param($data->message->from->username, PARAM_TEXT);
+
+$telegrammanager->set_webhook_chatid($chatid, $key, $username);
 
 http_response_code(200);
 echo "OK";
