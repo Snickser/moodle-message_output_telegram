@@ -35,12 +35,19 @@ if ($ADMIN->fulltree) {
     $telegrammanager = new message_telegram\manager();
 
     $sitebottoken = $telegrammanager->config('sitebottoken');
+    $sitebotsecret = $telegrammanager->config('sitebotsecret');
     $botname = $telegrammanager->config('sitebotname');
     $botusername = $telegrammanager->config('sitebotusername');
+
+    if (empty($sitebotsecret)) {
+	$sitebotsecret = bin2hex(random_bytes(32));
+	set_config('sitebotsecret', $sitebotsecret, 'message_telegram');
+    }
 
     if (!empty($sitebottoken)) {
         $telegrammanager->update_bot_info();
     }
+
 
     $telegrammanager = new message_telegram\manager();
     if (empty($sitebottoken)) {
@@ -80,12 +87,11 @@ if ($ADMIN->fulltree) {
     $url = new moodle_url('/message/output/telegram/telegramconnect.php', ['sesskey' => sesskey(), 'action' => 'setwebhook']);
     $link = html_writer::link($url, get_string('setwebhook', 'message_telegram'));
     $settings->add(new admin_setting_configcheckbox(
-        'message_telegram/telegramwebhook',
+        'message_telegram/webhook',
         get_string('telegramwebhook', 'message_telegram'),
         get_string('configtelegramwebhook', 'message_telegram') . '<br>' . $link,
         false
     ));
-
 
     $settings->add(new admin_setting_configtext(
         'message_telegram/sitebotsecret',

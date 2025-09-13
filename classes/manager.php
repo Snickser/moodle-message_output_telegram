@@ -331,14 +331,16 @@ class manager {
      * @return string Empty if successful, otherwise the error message.
      */
     public function set_webhook() {
-        return 'This feature is still under development... Stand by.';
         if (empty($this->config('sitebottoken'))) {
             $message = get_string('sitebottokennotsetup', 'message_telegram');
         } else {
-            $response = $this->send_api_command('setWebhook', ['url' => $this->redirect_uri(), 'allowed_updates' => 'message']);
+	    $url = new \moodle_url('/message/output/telegram/webhook.php');
+            $response = $this->send_api_command('setWebhook', ['url' => $url, 'allowed_updates' => 'message',
+		    'secret_token' => $this->config('sitebotsecret'),
+		    ]);
             if (!empty($response) && isset($response->ok) && ($response->ok == true)) {
                 $this->set_config('webhook', '1');
-                $message = '';
+                $message = 'webhook is set';
             } else if (!empty($response) && isset($response->error_code) && isset($response->description)) {
                 $message = $response->description;
             }
@@ -419,4 +421,21 @@ class manager {
         }
         return true;
     }
+
+    /**
+     * Remove the webhook for this site into the Telegram Bot.
+     * @return string Empty if successful, otherwise the error message.
+     */
+    public function remove_webhook() {
+        $response = $this->send_api_command('deleteWebhook');
+        if (!empty($response) && isset($response->ok) && ($response->ok == true)) {
+            $this->set_config('webhook', '0');
+            $message = 'webhook removed';
+        } else if (!empty($response) && isset($response->error_code) && isset($response->description)) {
+            $message = $response->description;
+	}
+	
+	return $message;
+    }
+
 }
