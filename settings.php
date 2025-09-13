@@ -77,12 +77,15 @@ if ($ADMIN->fulltree) {
         PARAM_TEXT
     ));
 
+    $url = new moodle_url('/message/output/telegram/telegramconnect.php', ['sesskey' => sesskey(), 'action' => 'setwebhook']);
+    $link = html_writer::link($url, get_string('setwebhook', 'message_telegram'));
     $settings->add(new admin_setting_configcheckbox(
         'message_telegram/telegramwebhook',
         get_string('telegramwebhook', 'message_telegram'),
-        get_string('configtelegramwebhook', 'message_telegram'),
+        get_string('configtelegramwebhook', 'message_telegram') . '<br>' . $link,
         false
     ));
+
 
     $settings->add(new admin_setting_configtext(
         'message_telegram/sitebotsecret',
@@ -152,6 +155,7 @@ if ($ADMIN->fulltree) {
         '',
         PARAM_TEXT
     ));
+
 
     $plugininfo = \core_plugin_manager::instance()->get_plugin_info('message_telegram');
     $donate = get_string('donate', 'message_telegram', $plugininfo);
