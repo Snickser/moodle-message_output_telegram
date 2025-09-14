@@ -49,7 +49,7 @@ if (isset($data->message)) {
     $chatid = clean_param($data->message->from->id, PARAM_INT);
     $userid = $tg->get_userid_by_chatid($chatid);
     if (!$userid) {
-	$tg->send_message('Вначале зарегистрируйтесь на сайте https://academy.bhaktilata.ru', $userid);
+        $tg->send_message('Вначале зарегистрируйтесь на сайте https://academy.bhaktilata.ru', $userid);
         echo "OK";
         die;
     }
@@ -76,13 +76,13 @@ if (isset($data->message)) {
         "prices" => json_encode([
         [
             "label"  => "К оплате",
-            "amount" => 99000, // сумма указывается в "копейках" (минимальных единицах)
+            "amount" => 99000,
         ],
            ]),
 
         ]);
     } else if (strpos($text, '/courses') === 0) {
-        $courses = get_courses(null, true); // Возвращает массив всех курсов
+        $courses = get_courses(null, true);
         $list = null;
         foreach ($courses as $course) {
             if ($course->visible) {
@@ -103,17 +103,17 @@ if (isset($data->message)) {
             $userid
         );
     } else if (strpos($text, '/info') === 0) {
-        $tg->send_message('инфо', $userid);
+        $tg->send_message($CFG->wwwroot, $userid);
     } else if (isset($data->message->successful_payment)) {
         // Done.
     } else {
-        $tg->send_message('Не знаю что это такое', $userid);
+        $tg->send_message('Не знаю что это такое 🤷', $userid);
     }
 } else if (isset($data->pre_checkout_query)) {
     $chatid = clean_param($data->pre_checkout_query->from->id, PARAM_INT);
     $userid = $tg->get_userid_by_chatid($chatid);
     if (!$userid) {
-	$tg->send_message('Вначале зарегистрируйтесь на сайте https://academy.bhaktilata.ru', $userid);
+        $tg->send_message('Вначале зарегистрируйтесь на сайте https://academy.bhaktilata.ru', $userid);
         echo "OK";
         die;
     }
