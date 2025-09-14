@@ -488,21 +488,20 @@ class manager {
      * @return boolean|int $userid
      */
     public function get_userid_by_chatid($chatid) {
-	global $DB;
-	
-	$userid = null;
+        global $DB;
 
-	$sql = "name = :name AND " . $DB->sql_compare_text('value') . " = :secret";
+        $userid = null;
+
+        $sql = "name = :name AND " . $DB->sql_compare_text('value') . " = :secret";
             $params = [
             'name'   => 'message_processor_telegram_chatid',
             'secret' => $chatid,
             ];
 
-        if ($record = $DB->get_record_select('user_preferences', $sql, $params, 'id, userid')) {
-            $userid = $record->userid;
-        }
-	
-	return $userid;
-    }
+            if ($record = $DB->get_record_select('user_preferences', $sql, $params, 'id, userid')) {
+                $userid = $record->userid;
+            }
 
+            return $userid;
+    }
 }
