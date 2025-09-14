@@ -80,7 +80,7 @@ if ($ADMIN->fulltree) {
         'message_telegram/sitebottoken',
         get_string('sitebottoken', 'message_telegram'),
         get_string('configsitebottoken', 'message_telegram'),
-        $sitebottoken,
+        null,
         PARAM_TEXT
     ));
 
@@ -111,7 +111,7 @@ if ($ADMIN->fulltree) {
         'message_telegram/sitebotname',
         get_string('sitebotname', 'message_telegram'),
         get_string('configsitebotname', 'message_telegram'),
-        $botname,
+        null,
         PARAM_TEXT
     ));
 
@@ -119,7 +119,7 @@ if ($ADMIN->fulltree) {
         'message_telegram/sitebotusername',
         get_string('sitebotusername', 'message_telegram'),
         get_string('configsitebotusername', 'message_telegram'),
-        $botusername,
+        null,
         PARAM_TEXT
     ));
 
