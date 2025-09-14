@@ -48,6 +48,10 @@ $tg = new message_telegram\manager();
 if (isset($data->message)) {
     $chatid = clean_param($data->message->from->id, PARAM_INT);
     $userid = $tg->get_userid_by_chatid($chatid);
+    if (!$userid) {
+        echo "OK";
+	die;
+    }
     $text = clean_param($data->message->text, PARAM_TEXT);
     $username = clean_param($data->message->from->username, PARAM_TEXT);
 
@@ -109,6 +113,10 @@ foreach ($courses as $course) {
 } else if(isset($data->pre_checkout_query)) {
     $chatid = clean_param($data->pre_checkout_query->from->id, PARAM_INT);
     $userid = $tg->get_userid_by_chatid($chatid);
+    if (!$userid) {
+        echo "OK";
+	die;
+    }
 
 if (isset($data->pre_checkout_query->id)) {
     $data = $tg->send_api_command('answerPreCheckoutQuery', [
