@@ -44,17 +44,12 @@ if ($headers['X-Telegram-Bot-Api-Secret-Token'] != $config->sitebotsecret) {
 
 $tg = new message_telegram\manager();
 
-
 if (isset($data->message)) {
     $chatid = clean_param($data->message->from->id, PARAM_INT);
-    $userid = $tg->get_userid_by_chatid($chatid);
-    if (!$userid) {
-        $tg->send_message('Вначале зарегистрируйтесь на сайте https://academy.bhaktilata.ru', $userid);
-        echo "OK";
-        die;
-    }
     $text = clean_param($data->message->text, PARAM_TEXT);
     $username = clean_param($data->message->from->username, PARAM_TEXT);
+
+    $userid = $tg->get_userid_by_chatid($chatid);
 
     if (strpos($text, '/start') === 0) {
         $data = $tg->set_webhook_chatid($chatid, $text, $username);
@@ -81,7 +76,8 @@ if (isset($data->message)) {
            ]),
 
         ]);
-    } else if (strpos($text, '/courses') === 0) {
+
+    } else if (strpos($text, '/courses') === 0 && $userid) {
         $courses = get_courses(null, true);
         $list = null;
         foreach ($courses as $course) {
@@ -92,9 +88,9 @@ if (isset($data->message)) {
                 }
             }
         }
-
         $tg->send_message($list, $userid);
-    } else if (strpos($text, '/help') === 0) {
+
+    } else if (strpos($text, '/help') === 0 && $userid) {
         $tg->send_message(
             "Подсказки
 /info - информация о платформе
@@ -102,22 +98,23 @@ if (isset($data->message)) {
 ",
             $userid
         );
-    } else if (strpos($text, '/info') === 0) {
+
+    } else if (strpos($text, '/info') === 0 && $userid) {
         $tg->send_message($CFG->wwwroot, $userid);
+
     } else if (isset($data->message->successful_payment)) {
         // Done.
-    } else {
+
+    } else if($userid) {
         $tg->send_message('Не знаю что это такое 🤷', $userid);
-    }
-} else if (isset($data->pre_checkout_query)) {
-    $chatid = clean_param($data->pre_checkout_query->from->id, PARAM_INT);
-    $userid = $tg->get_userid_by_chatid($chatid);
-    if (!$userid) {
-        $tg->send_message('Вначале зарегистрируйтесь на сайте https://academy.bhaktilata.ru', $userid);
-        echo "OK";
-        die;
+
+    } else {
+	http_response_code(200);
+	echo "OK";
     }
 
+} else if (isset($data->pre_checkout_query)) {
+    $chatid = clean_param($data->pre_checkout_query->from->id, PARAM_INT);
     if (isset($data->pre_checkout_query->id)) {
         $data = $tg->send_api_command('answerPreCheckoutQuery', [
            "pre_checkout_query_id" => $data->pre_checkout_query->id,
@@ -126,7 +123,7 @@ if (isset($data->message)) {
     }
 }
 
-file_put_contents($CFG->tempdir . '/telegram.log', print_r($data, true) . "\n\n", FILE_APPEND | LOCK_EX);
+file_put_contents($CFG->tempdir . '/telegram.log', serialize($data) . "\n\n", FILE_APPEND | LOCK_EX);
 
 http_response_code(200);
 echo "OK";
