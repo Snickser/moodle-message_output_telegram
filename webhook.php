@@ -99,7 +99,9 @@ if (isset($data->message)) {
     } else if (strpos($text, '/info') === 0 && $userid) {
         $tg->send_message($CFG->wwwroot, $userid);
     } else if (isset($data->message->successful_payment)) {
-        // Done.
+        http_response_code(200);
+        echo "OK";
+        die;
     } else if ($userid) {
         $tg->send_message('Не знаю что это такое 🤷', $userid);
     } else {
