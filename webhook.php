@@ -81,10 +81,16 @@ if (isset($data->message)) {
         $list = null;
         foreach ($courses as $course) {
             if ($course->visible) {
-                $list .= '🔸 <b>' . format_string($course->fullname, true) . '</b>' . PHP_EOL;
-                if (!empty($course->summary) && strlen($course->summary) < 1000) {
-                    $list .= '<i>    ' . format_string($course->summary, true) . '</i>' . PHP_EOL;
+                $buff = '🔸 <b>' . format_string($course->fullname, true) . '</b>' . PHP_EOL;
+                if (!empty($course->summary) && strlen($course->summary) + strlen($buff) < 4080) {
+                    $buff .= '<i>    ' . format_string($course->summary, false) . '</i>' . PHP_EOL;
                 }
+                if (strlen($list) + strlen($buff) < 4096) {
+            	    $list .= $buff;
+            	} else {
+            	    $tg->send_message($list, $userid);
+            	    $list = $buff;
+            	}
             }
         }
         $tg->send_message($list, $userid);
