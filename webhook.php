@@ -82,10 +82,10 @@ if (isset($data->message)) {
         foreach ($courses as $course) {
             if ($course->visible) {
                 $buff = '🔸 <b>' . format_string($course->fullname, true) . '</b>' . PHP_EOL;
-                if (!empty($course->summary) && strlen($course->summary) + strlen($buff) < 4080) {
+                if (!empty($course->summary) && mb_strlen($course->summary) + mb_strlen($buff) < 4080) {
                     $buff .= '<i>    ' . format_string($course->summary, false) . '</i>' . PHP_EOL;
                 }
-                if (strlen($list) + strlen($buff) < 4096) {
+                if (mb_strlen($list) + mb_strlen($buff) < 4096) {
             	    $list .= $buff;
             	} else {
             	    $tg->send_message($list, $userid);
