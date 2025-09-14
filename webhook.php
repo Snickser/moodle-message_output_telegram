@@ -76,20 +76,18 @@ if (isset($data->message)) {
            ]),
 
         ]);
-
     } else if (strpos($text, '/courses') === 0 && $userid) {
         $courses = get_courses(null, true);
         $list = null;
         foreach ($courses as $course) {
             if ($course->visible) {
                 $list .= '🔸 <b>' . format_string($course->fullname, true) . '</b>' . PHP_EOL;
-                if (!empty($course->summary) && strlen($course->summary)<1000) {
+                if (!empty($course->summary) && strlen($course->summary) < 1000) {
                     $list .= '<i>    ' . format_string($course->summary, true) . '</i>' . PHP_EOL;
                 }
             }
         }
         $tg->send_message($list, $userid);
-
     } else if (strpos($text, '/help') === 0 && $userid) {
         $tg->send_message(
             "Подсказки
@@ -98,21 +96,24 @@ if (isset($data->message)) {
 ",
             $userid
         );
-
     } else if (strpos($text, '/info') === 0 && $userid) {
         $tg->send_message($CFG->wwwroot, $userid);
-
     } else if (isset($data->message->successful_payment)) {
         // Done.
-
-    } else if($userid) {
+    } else if ($userid) {
         $tg->send_message('Не знаю что это такое 🤷', $userid);
-
     } else {
-	http_response_code(200);
-	echo "OK";
+        $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $chatid,
+            'text' => 'Вначале зарегистрируйтесь на сайте https://academy.bhaktilata.ru',
+            ]
+        );
+        http_response_code(200);
+        echo "OK";
+        die;
     }
-
 } else if (isset($data->pre_checkout_query)) {
     $chatid = clean_param($data->pre_checkout_query->from->id, PARAM_INT);
     if (isset($data->pre_checkout_query->id)) {
