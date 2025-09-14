@@ -49,6 +49,7 @@ if (isset($data->message)) {
     $chatid = clean_param($data->message->from->id, PARAM_INT);
     $userid = $tg->get_userid_by_chatid($chatid);
     if (!$userid) {
+	$tg->send_message('Вначале зарегистрируйтесь на сайте https://academy.bhaktilata.ru', $userid);
         echo "OK";
         die;
     }
@@ -112,6 +113,7 @@ if (isset($data->message)) {
     $chatid = clean_param($data->pre_checkout_query->from->id, PARAM_INT);
     $userid = $tg->get_userid_by_chatid($chatid);
     if (!$userid) {
+	$tg->send_message('Вначале зарегистрируйтесь на сайте https://academy.bhaktilata.ru', $userid);
         echo "OK";
         die;
     }
