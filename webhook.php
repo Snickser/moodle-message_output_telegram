@@ -51,19 +51,19 @@ if (isset($data->message)) {
     $text = clean_param($data->message->text, PARAM_TEXT);
     $username = clean_param($data->message->from->username, PARAM_TEXT);
 
-
 if (strpos($text, '/start') === 0) {
+
     $data = $tg->set_webhook_chatid($chatid, $text, $username);
-} else if (strpos($text, '/pay') === 0) {
-    $tg->send_message('Pay', $userid);
-    
+
+} else if (strpos($text, '/donate') === 0) {
+
     $data = $tg->send_api_command('sendInvoice', [
        "chat_id" => $chatid,
-    "title" => "YourTitle",
+    "title" => "Пожертвование",
 
-    "description" => "YourDescription",
+    "description" => "На поддержание учебной платформы",
 
-    "payload" => "YourPayload",
+    "payload" => "Donate",
 
     "provider_token" => "381764678:TEST:141557",
 
@@ -79,13 +79,33 @@ if (strpos($text, '/start') === 0) {
     ])
 
     ]);
+
+} else if (strpos($text, '/courses') === 0) {
+
+$courses = get_courses(null, true); // Возвращает массив всех курсов
+$list = null;
+foreach ($courses as $course) {
+    $list .= $course->id . ' - ' . format_string($course->fullname, true) . PHP_EOL;
+}
+
+    $tg->send_message($list, $userid);
+
 } else if (strpos($text, '/help') === 0) {
-    $tg->send_message('Help', $userid);
+
+    $tg->send_message(
+    "Подсказки
+/info - информация о платформе
+/courses - список курсов
+", $userid);
+} else if (strpos($text, '/info') === 0) {
+    $tg->send_message('инфо', $userid);
+} else if(isset($data->message->successful_payment)) {
+    // Done.
 } else {
     $tg->send_message('Не знаю что это такое', $userid);
 }
 
-
+    
 } else if(isset($data->pre_checkout_query)) {
     $chatid = clean_param($data->pre_checkout_query->from->id, PARAM_INT);
     $userid = $tg->get_userid_by_chatid($chatid);
@@ -100,7 +120,6 @@ if (isset($data->pre_checkout_query->id)) {
 }
 
 file_put_contents('/tmp/tttt', print_r($data,true) . "\n\n", FILE_APPEND | LOCK_EX);
-
 
 http_response_code(200);
 echo "OK";
