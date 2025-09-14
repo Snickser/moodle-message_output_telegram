@@ -32,7 +32,7 @@ $headers = getallheaders();
 $update = file_get_contents("php://input");
 $data = json_decode($update, false);
 
-file_put_contents('/tmp/tttt', serialize($data) . "\n\n", FILE_APPEND | LOCK_EX);
+file_put_contents($CFG->tempdir . '/telegram.log', serialize($data) . "\n\n", FILE_APPEND | LOCK_EX);
 
 $config = get_config('message_telegram');
 
@@ -87,7 +87,7 @@ if (isset($data->message)) {
         foreach ($courses as $course) {
             if ($course->visible) {
                 $list .= '🔸 <b>' . format_string($course->fullname, true) . '</b>' . PHP_EOL;
-                if (!empty($course->summary)) {
+                if (!empty($course->summary) && strlen($course->summary)<1000) {
                     $list .= '<i>    ' . format_string($course->summary, true) . '</i>' . PHP_EOL;
                 }
             }
@@ -126,7 +126,7 @@ if (isset($data->message)) {
     }
 }
 
-file_put_contents('/tmp/tttt', print_r($data, true) . "\n\n", FILE_APPEND | LOCK_EX);
+file_put_contents($CFG->tempdir . '/telegram.log', print_r($data, true) . "\n\n", FILE_APPEND | LOCK_EX);
 
 http_response_code(200);
 echo "OK";
