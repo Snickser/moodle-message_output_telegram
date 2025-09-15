@@ -84,3 +84,5 @@ $string['configtelegramwebhook'] = 'This Telegram webhook is for testing purpose
 $string['sitebotsecret'] = 'Webhook secret';
 $string['configsitebotsecret'] = 'Generated randomly and automatically if empty.';
 $string['firstregister'] = 'First, register on the site ';
+$string['sitebotpay'] = 'Payment token';
+$string['configsitebotpay'] = 'Bot payment token for accepting payments';
