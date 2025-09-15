@@ -103,7 +103,7 @@ if (isset($data->message)) {
             $userid
         );
     } else if (strpos($text, '/info') === 0 && $userid) {
-        $tg->send_message($CFG->wwwroot, $userid);
+        $tg->send_message($SITE->fullname."\n".$CFG->wwwroot, $userid);
     } else if (isset($data->message->successful_payment)) {
         http_response_code(200);
         echo "OK";
@@ -115,7 +115,7 @@ if (isset($data->message)) {
             'sendMessage',
             [
             'chat_id' => $chatid,
-            'text' => 'Вначале зарегистрируйтесь на сайте https://academy.bhaktilata.ru',
+            'text' => 'Вначале зарегистрируйтесь на сайте '.$CFG->wwwroot,
             ]
         );
         http_response_code(200);
