@@ -116,7 +116,7 @@ if (isset($data->message)) {
             $userid
         );
     } else if (strpos($text, '/info') === 0 && $userid) {
-        $tg->send_message($SITE->fullname . "\n" . $CFG->wwwroot . "\n" . $CFG->supportemail, $userid);
+        $tg->send_message(format_string($SITE->fullname) . "\n" . $CFG->wwwroot . "\n" . $CFG->supportemail, $userid);
     } else if (isset($data->message->successful_payment)) {
         http_response_code(200);
         echo "OK";
