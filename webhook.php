@@ -137,9 +137,9 @@ if (isset($data->message)) {
         http_response_code(200);
         echo "OK";
         die;
-    } else if ($userid) {
+    } else if ($text && $userid) {
         $tg->send_message(get_string('botidontknow', 'message_telegram'), $userid);
-    } else {
+    } else if($text) {
         $tg->send_api_command(
             'sendMessage',
             [
