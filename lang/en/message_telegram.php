@@ -83,3 +83,4 @@ $string['telegramwebhook'] = 'Webhook';
 $string['configtelegramwebhook'] = 'This Telegram webhook is for testing purposes, do not enable it, otherwise push button twice!';
 $string['sitebotsecret'] = 'Webhook secret';
 $string['configsitebotsecret'] = 'Generated randomly and automatically if empty.';
+$string['firstregister'] = 'First, register on the site ';

@@ -83,7 +83,7 @@ if (isset($data->message)) {
             if ($course->visible) {
                 $buff = '🔸 <b>' . format_string($course->fullname, true) . '</b>' . PHP_EOL;
                 if (!empty($course->summary) && mb_strlen($course->summary) + mb_strlen($buff) < 4080) {
-                    $buff .= '<i>    ' . format_string($course->summary, false) . '</i>' . PHP_EOL;
+                    $buff .= '<i>  ' . format_string($course->summary, false) . '</i>' . PHP_EOL;
                 }
                 if (mb_strlen($list) + mb_strlen($buff) < 4096) {
             	    $list .= $buff;
@@ -115,7 +115,7 @@ if (isset($data->message)) {
             'sendMessage',
             [
             'chat_id' => $chatid,
-            'text' => 'Вначале зарегистрируйтесь на сайте '.$CFG->wwwroot,
+            'text' => get_string('firstregister', 'message_telegram').$CFG->wwwroot,
             ]
         );
         http_response_code(200);
