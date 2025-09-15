@@ -126,15 +126,13 @@ if (isset($data->message)) {
     } else if (strpos($text, '/lang') === 0 && $userid) {
         $buttons = [];
         foreach ($langs as $langcode => $name) {
-            $buttons[] = [
+            $buttons[] = [[
                 'text' => $name,
                 'callback_data' => '/lang ' . $langcode,
-            ];
+            ]];
         }
         $keyboard = [
-        'inline_keyboard' => [
-        $buttons,
-        ],
+        'inline_keyboard' =>  $buttons,
         ];
             $params = [
             'chat_id' => $chatid,
