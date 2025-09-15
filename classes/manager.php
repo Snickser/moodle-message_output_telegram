@@ -474,6 +474,7 @@ class manager {
                     set_user_preference('message_processor_telegram_chatid', $chatid, $userid);
                     $this->set_customprofile_username($userid, $username);
                     $this->send_message(get_string('welcome', 'message_telegram'), $userid);
+                    $this->send_message('Use /help', $userid);
                     return true;
                 }
             }
