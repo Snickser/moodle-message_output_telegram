@@ -116,6 +116,28 @@ if (isset($data->message)) {
         $tg->send_message(get_string('bothelp', 'message_telegram'), $userid);
     } else if (strpos($text, '/info') === 0 && $userid) {
         $tg->send_message(format_string($SITE->fullname) . "\n" . $CFG->wwwroot . "\n" . $CFG->supportemail, $userid);
+    } else if (strpos($text, '/events') === 0 && $userid) {
+require_once($CFG->dirroot . '/calendar/lib.php');
+$calendar = \calendar_information::create(time(), 0, 0);
+$view = calendar_get_view($calendar, 'upcoming');
+$events = $view[0]->events ?? [];
+$user_events = array_filter($events, function($event) use ($userid) {
+    return isset($event->userid) && $event->userid == $userid;
+});
+$text = null;
+foreach ($events as $event) {
+    $start = date('d.m.Y H:i', $event->timestart);
+    $end = date('d.m.Y H:i', $event->timestart+$event->timeduration);
+    $duration = $event->timeduration ? '('.round($event->timeduration/60).' мин)' : '';
+    $text .= "• {$start} — {$event->name} {$duration}\nТема: {$event->description}\n";
+}
+$head = "🗓 Предстоящие события:\n";
+if($text){
+    $text = $head.$text;
+} else {
+    $text = $head.get_string('no');
+}
+        $tg->send_message($text, $userid);
     } else if (strpos($text, '/lang') === 0 && $userid) {
         $buttons = [];
         foreach ($langs as $langcode => $name) {
@@ -139,7 +161,7 @@ if (isset($data->message)) {
         die;
     } else if ($text && $userid) {
         $tg->send_message(get_string('botidontknow', 'message_telegram'), $userid);
-    } else if ($text) {
+    } else if($text) {
         $tg->send_api_command(
             'sendMessage',
             [
