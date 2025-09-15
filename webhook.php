@@ -125,7 +125,7 @@ if (isset($data->message)) {
             ]];
         }
         $keyboard = [
-        'inline_keyboard' =>  $buttons,
+        'inline_keyboard' => $buttons,
         ];
             $params = [
             'chat_id' => $chatid,
