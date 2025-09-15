@@ -45,8 +45,9 @@ $string['connectme'] = '<br><p style="color: blue;"><b>> Подключить с
 $string['connectmemenu'] = '⚠️ Подключить свой аккаунт к Telegram';
 $string['welcome'] = '✅ Ваш аккаунт успешно подключен!';
 $string['bothelp'] = 'Подсказки
-/info - информация о платформе
 /lang - переключение языка
+/info - информация о платформе
 /courses - список курсов
+/events - список предстоящих событий
 ';
 $string['botidontknow'] = 'Не знаю что это такое 🤷';
