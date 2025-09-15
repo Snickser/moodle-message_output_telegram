@@ -53,29 +53,44 @@ if (isset($data->message)) {
 
     if (strpos($text, '/start') === 0) {
         $data = $tg->set_webhook_chatid($chatid, $text, $username);
-    } else if (strpos($text, '/donate') === 0) {
+    } else if (strpos($text, '/pay') === 0 && $config->sitebotpay) {
+	if (!$cost = substr($text, 5)) {
+	    $keyboard = [
+    'inline_keyboard' => [
+        [
+            ['text' => '800', 'callback_data' => '/pay 800'],
+            ['text' => '2000', 'callback_data' => '/pay 2000'],
+            ['text' => '5000', 'callback_data' => '/pay 5000'],
+        ]
+    ]
+];
+$params = [
+    'chat_id' => $chatid,
+    'text' => 'Выберите сумму:',
+    'reply_markup' => json_encode($keyboard)
+];
+        $data = $tg->send_api_command('sendMessage', $params);
+
+	} else {
+
+        $cost = $cost * 100;
         $data = $tg->send_api_command('sendInvoice', [
-           "chat_id" => $chatid,
+        "chat_id" => $chatid,
         "title" => "Пожертвование",
-
         "description" => "На поддержание учебной платформы",
-
         "payload" => "Donate",
-
-        "provider_token" => "381764678:TEST:141557",
-
+        "provider_token" => $config->sitebotpay,
         "currency" => "RUB",
-
         "start_parameter" => "test",
-
         "prices" => json_encode([
         [
             "label"  => "К оплате",
-            "amount" => 99000,
+            "amount" => $cost,
         ],
            ]),
 
         ]);
+        }
     } else if (strpos($text, '/courses') === 0 && $userid) {
         $courses = get_courses(null, true);
         $list = null;
@@ -128,6 +143,27 @@ if (isset($data->message)) {
         $data = $tg->send_api_command('answerPreCheckoutQuery', [
            "pre_checkout_query_id" => $data->pre_checkout_query->id,
            "ok" => 'True',
+        ]);
+    }
+} else if (isset($data->callback_query->data)) {
+    $chatid = clean_param($data->callback_query->from->id, PARAM_INT);
+    if ($cost = substr($data->callback_query->data, 5)) {
+        $cost = $cost * 100;
+        $data = $tg->send_api_command('sendInvoice', [
+        "chat_id" => $chatid,
+        "title" => "Пожертвование",
+        "description" => "На поддержание учебной платформы",
+        "payload" => "Donate",
+        "provider_token" => $config->sitebotpay,
+        "currency" => "RUB",
+        "start_parameter" => "test",
+        "prices" => json_encode([
+        [
+            "label"  => "К оплате",
+            "amount" => $cost,
+        ],
+           ]),
+
         ]);
     }
 }
