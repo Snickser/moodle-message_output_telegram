@@ -49,3 +49,4 @@ $string['bothelp'] = 'Подсказки
 /lang - переключение языка
 /courses - список курсов
 ';
+$string['botidontknow'] = 'Не знаю что это такое 🤷';

@@ -91,3 +91,4 @@ $string['bothelp'] = 'Helps
 /lang - language switching
 /courses - course list
 ';
+$string['botidontknow'] = 'I dont know what this is 🤷';

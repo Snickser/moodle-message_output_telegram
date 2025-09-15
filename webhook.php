@@ -138,7 +138,7 @@ if (isset($data->message)) {
         echo "OK";
         die;
     } else if ($userid) {
-        $tg->send_message('Не знаю что это такое 🤷', $userid);
+        $tg->send_message(get_string('botidontknow', 'message_telegram'), $userid);
     } else {
         $tg->send_api_command(
             'sendMessage',
