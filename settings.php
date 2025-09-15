@@ -108,6 +108,14 @@ if ($ADMIN->fulltree) {
     ));
 
     $settings->add(new admin_setting_configtext(
+        'message_telegram/sitebotpay',
+        get_string('sitebotpay', 'message_telegram'),
+        get_string('configsitebotpay', 'message_telegram'),
+        null,
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
         'message_telegram/sitebotname',
         get_string('sitebotname', 'message_telegram'),
         get_string('configsitebotname', 'message_telegram'),
