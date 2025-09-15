@@ -42,6 +42,8 @@ if ($headers['X-Telegram-Bot-Api-Secret-Token'] != $config->sitebotsecret) {
     die;
 }
 
+$langs = get_string_manager()->get_list_of_translations();
+
 $tg = new message_telegram\manager();
 
 if (isset($data->message)) {
@@ -50,6 +52,9 @@ if (isset($data->message)) {
     $username = clean_param($data->message->from->username, PARAM_TEXT);
 
     $userid = $tg->get_userid_by_chatid($chatid);
+
+    $lang = get_user_preferences('message_processor_telegram_lang', null, $userid);
+    force_current_language($lang);
 
     if (strpos($text, '/start') === 0) {
         $data = $tg->set_webhook_chatid($chatid, $text, $username);
@@ -111,12 +116,32 @@ if (isset($data->message)) {
         $tg->send_message(
             "Подсказки
 /info - информация о платформе
+/lang - переключение языка
 /courses - список курсов
 ",
             $userid
         );
     } else if (strpos($text, '/info') === 0 && $userid) {
         $tg->send_message(format_string($SITE->fullname) . "\n" . $CFG->wwwroot . "\n" . $CFG->supportemail, $userid);
+    } else if (strpos($text, '/lang') === 0 && $userid) {
+$buttons = [];
+foreach ($langs as $langcode => $name) {
+    $buttons[] = [
+        'text' => $name,
+        'callback_data' => '/lang '.$langcode
+    ];
+}
+$keyboard = [
+    'inline_keyboard' => [
+        $buttons
+    ]
+];
+            $params = [
+            'chat_id' => $chatid,
+            'text' => 'Выберите язык ('.get_user_preferences('message_processor_telegram_lang', null, $userid).'):',
+            'reply_markup' => json_encode($keyboard),
+            ];
+            $data = $tg->send_api_command('sendMessage', $params);
     } else if (isset($data->message->successful_payment)) {
         http_response_code(200);
         echo "OK";
@@ -145,7 +170,9 @@ if (isset($data->message)) {
     }
 } else if (isset($data->callback_query->data)) {
     $chatid = clean_param($data->callback_query->from->id, PARAM_INT);
-    if ($cost = substr($data->callback_query->data, 5)) {
+    $userid = $tg->get_userid_by_chatid($chatid);
+
+    if (strpos($data->callback_query->data, '/pay') === 0 && $cost = substr($data->callback_query->data, 5)) {
         $cost = $cost * 100;
         $data = $tg->send_api_command('sendInvoice', [
         "chat_id" => $chatid,
@@ -163,7 +190,20 @@ if (isset($data->message)) {
            ]),
 
         ]);
+    } else if (strpos($data->callback_query->data, '/lang') === 0 && $lang = substr($data->callback_query->data, 6)) {
+	if ($userid) {
+    	set_user_preference('message_processor_telegram_lang', $lang, $userid);
+        $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $chatid,
+            'text' => $lang,
+            ]
+        );
+	}
     }
+
+
 }
 
 file_put_contents($CFG->tempdir . '/telegram.log', serialize($data) . "\n\n", FILE_APPEND | LOCK_EX);
