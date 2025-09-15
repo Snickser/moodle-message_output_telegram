@@ -139,7 +139,7 @@ if (isset($data->message)) {
         die;
     } else if ($text && $userid) {
         $tg->send_message(get_string('botidontknow', 'message_telegram'), $userid);
-    } else if($text) {
+    } else if ($text) {
         $tg->send_api_command(
             'sendMessage',
             [
