@@ -54,42 +54,40 @@ if (isset($data->message)) {
     if (strpos($text, '/start') === 0) {
         $data = $tg->set_webhook_chatid($chatid, $text, $username);
     } else if (strpos($text, '/pay') === 0 && $config->sitebotpay) {
-	if (!$cost = substr($text, 5)) {
-	    $keyboard = [
-    'inline_keyboard' => [
-        [
+        if (!$cost = substr($text, 5)) {
+            $keyboard = [
+            'inline_keyboard' => [
+            [
             ['text' => '800', 'callback_data' => '/pay 800'],
             ['text' => '2000', 'callback_data' => '/pay 2000'],
             ['text' => '5000', 'callback_data' => '/pay 5000'],
-        ]
-    ]
-];
-$params = [
-    'chat_id' => $chatid,
-    'text' => 'Выберите сумму:',
-    'reply_markup' => json_encode($keyboard)
-];
-        $data = $tg->send_api_command('sendMessage', $params);
-
-	} else {
-
-        $cost = $cost * 100;
-        $data = $tg->send_api_command('sendInvoice', [
-        "chat_id" => $chatid,
-        "title" => "Пожертвование",
-        "description" => "На поддержание учебной платформы",
-        "payload" => "Donate",
-        "provider_token" => $config->sitebotpay,
-        "currency" => "RUB",
-        "start_parameter" => "test",
-        "prices" => json_encode([
-        [
+            ],
+            ],
+            ];
+            $params = [
+            'chat_id' => $chatid,
+            'text' => 'Выберите сумму:',
+            'reply_markup' => json_encode($keyboard),
+            ];
+            $data = $tg->send_api_command('sendMessage', $params);
+        } else {
+            $cost = $cost * 100;
+            $data = $tg->send_api_command('sendInvoice', [
+            "chat_id" => $chatid,
+            "title" => "Пожертвование",
+            "description" => "На поддержание учебной платформы",
+            "payload" => "Donate",
+            "provider_token" => $config->sitebotpay,
+            "currency" => "RUB",
+            "start_parameter" => "test",
+            "prices" => json_encode([
+            [
             "label"  => "К оплате",
             "amount" => $cost,
-        ],
-           ]),
+            ],
+               ]),
 
-        ]);
+            ]);
         }
     } else if (strpos($text, '/courses') === 0 && $userid) {
         $courses = get_courses(null, true);
@@ -101,11 +99,11 @@ $params = [
                     $buff .= '<i>  ' . format_string($course->summary, false) . '</i>' . PHP_EOL;
                 }
                 if (mb_strlen($list) + mb_strlen($buff) < 4096) {
-            	    $list .= $buff;
-            	} else {
-            	    $tg->send_message($list, $userid);
-            	    $list = $buff;
-            	}
+                    $list .= $buff;
+                } else {
+                    $tg->send_message($list, $userid);
+                    $list = $buff;
+                }
             }
         }
         $tg->send_message($list, $userid);
@@ -118,7 +116,7 @@ $params = [
             $userid
         );
     } else if (strpos($text, '/info') === 0 && $userid) {
-        $tg->send_message($SITE->fullname."\n".$CFG->wwwroot."\n".$CFG->supportemail, $userid);
+        $tg->send_message($SITE->fullname . "\n" . $CFG->wwwroot . "\n" . $CFG->supportemail, $userid);
     } else if (isset($data->message->successful_payment)) {
         http_response_code(200);
         echo "OK";
@@ -130,7 +128,7 @@ $params = [
             'sendMessage',
             [
             'chat_id' => $chatid,
-            'text' => get_string('firstregister', 'message_telegram').$CFG->wwwroot,
+            'text' => get_string('firstregister', 'message_telegram') . $CFG->wwwroot,
             ]
         );
         http_response_code(200);
