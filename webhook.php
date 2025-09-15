@@ -25,7 +25,6 @@
 require_once(__DIR__ . '/../../../config.php'); // @codingStandardsIgnoreLine
 
 \core\session\manager::init_empty_session();
-\core\session\manager::set_user(get_admin());
 
 $headers = getallheaders();
 
@@ -52,6 +51,11 @@ if (isset($data->message)) {
     $username = clean_param($data->message->from->username, PARAM_TEXT);
 
     $userid = $tg->get_userid_by_chatid($chatid);
+
+    if($userid){
+        $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
+	\core\session\manager::set_user($user);
+    }
 
     $lang = get_user_preferences('message_processor_telegram_lang', null, $userid);
     force_current_language($lang);
@@ -116,10 +120,12 @@ if (isset($data->message)) {
         $tg->send_message(get_string('bothelp', 'message_telegram'), $userid);
     } else if (strpos($text, '/info') === 0 && $userid) {
         $tg->send_message(format_string($SITE->fullname) . "\n" . $CFG->wwwroot . "\n" . $CFG->supportemail, $userid);
+    } else if (strpos($text, '/userid') === 0 && $userid) {
+        $tg->send_message("{$user->id}", $userid);
     } else if (strpos($text, '/events') === 0 && $userid) {
         require_once($CFG->dirroot . '/calendar/lib.php');
         $calendar = \calendar_information::create(time(), 0, 0);
-        $view = calendar_get_view($calendar, 'upcoming');
+        $view = calendar_get_view($calendar, 'upcoming_mini');
         $events = $view[0]->events ?? [];
         $userevents = array_filter($events, function ($event) use ($userid) {
             return isset($event->userid) && $event->userid == $userid;
@@ -129,7 +135,7 @@ if (isset($data->message)) {
             $start = date('d.m.Y H:i', $event->timestart);
             $end = date('d.m.Y H:i', $event->timestart + $event->timeduration);
             $duration = $event->timeduration ? '(' . round($event->timeduration / 60) . ' мин)' : '';
-            $text .= "• {$start} — {$event->name} {$duration}\nТема: {$event->description}\n";
+            $text .= "• {$start} — {$event->name} {$duration}\n Тема: {$event->description}\n";
         }
         $head = "🗓 Предстоящие события:\n";
         if ($text) {

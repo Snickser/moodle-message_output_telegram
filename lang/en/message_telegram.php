@@ -87,8 +87,9 @@ $string['firstregister'] = 'First, register on the site ';
 $string['sitebotpay'] = 'Payment token';
 $string['configsitebotpay'] = 'Bot payment token for accepting payments';
 $string['bothelp'] = 'Helps
-/info - platform information
 /lang - language switching
+/info - platform information
 /courses - course list
+/events - upcoming
 ';
 $string['botidontknow'] = 'I dont know what this is 🤷';
