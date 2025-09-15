@@ -52,9 +52,9 @@ if (isset($data->message)) {
 
     $userid = $tg->get_userid_by_chatid($chatid);
 
-    if($userid){
+    if ($userid) {
         $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
-	\core\session\manager::set_user($user);
+        \core\session\manager::set_user($user);
     }
 
     $lang = get_user_preferences('message_processor_telegram_lang', null, $userid);
