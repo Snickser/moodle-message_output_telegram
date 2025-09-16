@@ -98,3 +98,4 @@ $string['bothelp'] = '👓 Helps
 $string['botidontknow'] = 'I dont know what this is 🤷';
 $string['botenrols'] = '🎓 Participation in courses:';
 $string['botlang'] = '🈯 Select language ({$a})';
+$string['botpay'] = '🏦 Select amount {$a}';

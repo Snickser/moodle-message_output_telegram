@@ -64,18 +64,20 @@ if (isset($data->message)) {
         $data = $tg->set_webhook_chatid($chatid, $text, $username);
     } else if (strpos($text, '/pay') === 0 && $config->sitebotpay) {
         if (!$cost = substr($text, 5)) {
+	    $numbers = array_map('trim', explode(',', $config->sitebotpaycosts));
+	    $buttons = array_map(function($n) {
+    return [
+        'text' => $n,
+        'callback_data' => '/pay ' . $n
+    ];
+}, $numbers);
             $keyboard = [
-            'inline_keyboard' => [
-            [
-            ['text' => '800', 'callback_data' => '/pay 800'],
-            ['text' => '1600', 'callback_data' => '/pay 1600'],
-            ['text' => '5000', 'callback_data' => '/pay 5000'],
-            ],
-            ],
+            'inline_keyboard' => [ $buttons
+            ]
             ];
             $params = [
             'chat_id' => $chatid,
-            'text' => '🏦 Выберите сумму:',
+            'text' => get_string('botpay', 'message_telegram', $config->sitebotpaycurrency),
             'reply_markup' => json_encode($keyboard),
             ];
             $data = $tg->send_api_command('sendMessage', $params);
@@ -87,7 +89,7 @@ if (isset($data->message)) {
             "description" => "На поддержание учебной платформы",
             "payload" => "Donate",
             "provider_token" => $config->sitebotpay,
-            "currency" => "RUB",
+            "currency" => $config->sitebotpaycurrency,
             "start_parameter" => "test",
             "prices" => json_encode([
             [
@@ -217,7 +219,7 @@ if (isset($data->message)) {
         "description" => "На поддержание учебной платформы",
         "payload" => "Donate",
         "provider_token" => $config->sitebotpay,
-        "currency" => "RUB",
+        "currency" => $config->sitebotpaycurrency,
         "start_parameter" => "test",
         "prices" => json_encode([
         [
