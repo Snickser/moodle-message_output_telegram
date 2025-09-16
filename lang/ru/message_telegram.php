@@ -55,3 +55,5 @@ $string['botidontknow'] = 'Не знаю что это такое 🤷🏻‍♂
 $string['botenrols'] = '🎓 Участие в курсах:';
 $string['botlang'] = '🈯 Выбрать язык ({$a})';
 $string['botpay'] = '🏦 Выберите сумму {$a}';
+$string['botpaytitle'] = 'Пожертвование';
+$string['botpaydesc'] = 'На поддержание учебной платформы';

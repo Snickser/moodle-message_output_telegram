@@ -85,8 +85,8 @@ if (isset($data->message)) {
             $cost = $cost * 100;
             $data = $tg->send_api_command('sendInvoice', [
             "chat_id" => $chatid,
-            "title" => "Пожертвование",
-            "description" => "На поддержание учебной платформы",
+            "title" => get_string('botpaytitle', 'message_telegram'),
+            "description" => get_string('botpaydesc', 'message_telegram'),
             "payload" => "Donate",
             "provider_token" => $config->sitebotpay,
             "currency" => $config->sitebotpaycurrency,
@@ -211,12 +211,17 @@ if (isset($data->message)) {
     $chatid = clean_param($data->callback_query->from->id, PARAM_INT);
     $userid = $tg->get_userid_by_chatid($chatid);
 
+    if ($userid) {
+        $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
+        \core\session\manager::set_user($user);
+    }
+
     if (strpos($data->callback_query->data, '/pay') === 0 && $cost = substr($data->callback_query->data, 5)) {
         $cost = $cost * 100;
         $data = $tg->send_api_command('sendInvoice', [
         "chat_id" => $chatid,
-        "title" => "Пожертвование",
-        "description" => "На поддержание учебной платформы",
+        "title" => get_string('botpaytitle', 'message_telegram'),
+        "description" => get_string('botpaydesc', 'message_telegram'),
         "payload" => "Donate",
         "provider_token" => $config->sitebotpay,
         "currency" => $config->sitebotpaycurrency,
