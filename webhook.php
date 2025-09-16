@@ -125,17 +125,14 @@ if (isset($data->message)) {
     } else if (strpos($text, '/events') === 0 && $userid) {
         require_once($CFG->dirroot . '/calendar/lib.php');
         $calendar = \calendar_information::create(time(), 0, 0);
-        $view = calendar_get_view($calendar, 'upcoming_mini');
+        $view = calendar_get_view($calendar, 'upcoming');
         $events = $view[0]->events ?? [];
-        $userevents = array_filter($events, function ($event) use ($userid) {
-            return isset($event->userid) && $event->userid == $userid;
-        });
         $text = null;
         foreach ($events as $event) {
             $start = date('d.m.Y H:i', $event->timestart);
             $end = date('d.m.Y H:i', $event->timestart + $event->timeduration);
             $duration = $event->timeduration ? '(' . round($event->timeduration / 60) . ' мин)' : '';
-            $text .= "• {$start} — {$event->name} {$duration}\n Тема: {$event->description}\n";
+            $text .= "• {$start} — {$event->name} {$duration}\n  Тема: {$event->description}\n";
         }
         $head = "🗓 Предстоящие события:\n";
         if ($text) {
@@ -219,6 +216,10 @@ if (isset($data->message)) {
                 'text' => $lang,
                 ]
             );
+            $user = new stdClass();
+	    $user->id = $userid;
+	    $user->lang = $lang;
+	    user_update_user($user, false, true);
         }
     }
 }
