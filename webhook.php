@@ -124,10 +124,10 @@ if (isset($data->message)) {
         }
         $tg->send_message($list, $userid);
     } else if (strpos($text, '/help') === 0 && $userid) {
-	$text = get_string('bothelp', 'message_telegram');
-	if (isset($config->sitebotpay)) {
-	    $text .= "\n/pay - ".get_string('botpaytitle', 'message_telegram');
-	}
+        $text = get_string('bothelp', 'message_telegram');
+        if (isset($config->sitebotpay)) {
+            $text .= "\n/pay - " . get_string('botpaytitle', 'message_telegram');
+        }
         $tg->send_message($text, $userid);
     } else if (strpos($text, '/info') === 0 && $userid) {
         $tg->send_message('' . format_string($SITE->fullname) . "\n🌐 " . $CFG->wwwroot .
