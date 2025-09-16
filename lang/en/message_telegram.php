@@ -90,13 +90,19 @@ $string['sitebotpaycosts'] = 'Predefined amounts';
 $string['configsitebotpaycosts'] = 'Separated by commas.';
 $string['bothelp'] = '👓 Helps
 /info - platform information
+/faq  - frequently asked questions
 /lang - language switching
 /courses - course list
 /events - upcoming
 /enrols - participation in courses';
+$string['bothelp_anonymous'] = '👓 Helps
+/info - platform information
+/faq  - frequently asked questions';
 $string['botidontknow'] = 'I dont know what this is 🤷';
 $string['botenrols'] = '🎓 Participation in courses:';
 $string['botlang'] = '🈯 Select language ({$a})';
 $string['botpay'] = '🏦 Select amount {$a}';
 $string['botpaytitle'] = 'Donation 🕉';
 $string['botpaydesc'] = 'To support the learning platform';
+$string['botfaq'] = '⁉️ Frequently Asked Questions:';
+$string['botfaqtext'] = '';

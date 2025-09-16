@@ -46,13 +46,19 @@ $string['connectmemenu'] = '⚠️ Подключить свой аккаунт 
 $string['welcome'] = '✅ Ваш аккаунт успешно подключен!';
 $string['bothelp'] = '👓 Подсказки
 /info - информация о платформе
+/faq  - часто задаваемые вопросы
 /lang - переключение языка
 /courses - список курсов
 /events - список предстоящих событий
 /enrols - участие в курсах';
+$string['bothelp_anonymous'] = '👓 Подсказки
+/info - информация о платформе
+/faq  - часто задаваемые вопросы';
 $string['botidontknow'] = 'Не знаю что это такое 🤷🏻‍♂ /help';
 $string['botenrols'] = '🎓 Участие в курсах:';
 $string['botlang'] = '🈯 Выбрать язык ({$a})';
 $string['botpay'] = '🏦 Выберите сумму {$a}';
 $string['botpaytitle'] = 'Пожертвование 🕉';
 $string['botpaydesc'] = 'На поддержание учебной платформы';
+$string['botfaq'] = '⁉️ Часто задаваемые вопросы:';
+$string['botfaqtext'] = '';
