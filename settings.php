@@ -119,7 +119,7 @@ if ($ADMIN->fulltree) {
         'message_telegram/sitebotpaycosts',
         get_string('sitebotpaycosts', 'message_telegram'),
         get_string('configsitebotpaycosts', 'message_telegram'),
-        null,
+        '800,1600,5000',
         PARAM_TEXT
     ));
 

@@ -103,12 +103,12 @@ if (isset($data->message)) {
         $list = null;
         foreach ($courses as $course) {
             if ($course->visible) {
-        	if(!$list){
-        	    $buff = '🏰 ';
-        	} else {
-            	    $buff = '🔸 ';
+                if (!$list) {
+                    $buff = '🏰 ';
+                } else {
+                    $buff = '🔸 ';
                 }
-                $buff .=  '<b>' . format_string($course->fullname, true) . '</b>' . PHP_EOL;
+                $buff .= '<b>' . format_string($course->fullname, true) . '</b>' . PHP_EOL;
                 if (!empty($course->summary) && mb_strlen($course->summary) + mb_strlen($buff) < 4080) {
                     $buff .= '<i>  ' . format_string($course->summary, false) . '</i>' . PHP_EOL;
                 }
@@ -129,20 +129,20 @@ if (isset($data->message)) {
     } else if (strpos($text, '/userid') === 0 && $userid) {
         $tg->send_message("{$user->id}", $userid);
     } else if (strpos($text, '/enrols') === 0 && $userid) {
-$courses = enrol_get_users_courses($userid);
-$keyboard = [];
-foreach ($courses as $course) {
-    $context = context_course::instance($course->id);
-    $keyboard[] = [[
-        'text' => format_string($course->fullname),
-        'url' => $CFG->wwwroot . '/course/view.php?id=' . $course->id,
-    ]];
-}
-$tg->send_api_command('sendMessage', [
-    'chat_id' => $chatid,
-    'text' => get_string('botenrols', 'message_telegram'),
-    'reply_markup' => json_encode(['inline_keyboard' => $keyboard])
-]);
+        $courses = enrol_get_users_courses($userid);
+        $keyboard = [];
+        foreach ($courses as $course) {
+            $context = context_course::instance($course->id);
+            $keyboard[] = [[
+                'text' => format_string($course->fullname),
+                'url' => $CFG->wwwroot . '/course/view.php?id=' . $course->id,
+            ]];
+        }
+        $tg->send_api_command('sendMessage', [
+        'chat_id' => $chatid,
+        'text' => get_string('botenrols', 'message_telegram'),
+        'reply_markup' => json_encode(['inline_keyboard' => $keyboard]),
+        ]);
     } else if (strpos($text, '/events') === 0 && $userid) {
         require_once($CFG->dirroot . '/calendar/lib.php');
         $calendar = \calendar_information::create(time(), 0, 0);
@@ -228,12 +228,12 @@ $tg->send_api_command('sendMessage', [
 
         ]);
     } else if (strpos($data->callback_query->data, '/lang') === 0 && $lang = substr($data->callback_query->data, 6)) {
-$languages = [
-    'ru' => ['name' => 'Русский',      'flag' => '🇷🇺'],
-    'en' => ['name' => 'English',      'flag' => '🇺🇸'],
-    'be' => ['name' => 'Беларуская',      'flag' => '🇧🇾'],
-    'uk' => ['name' => 'Українська',      'flag' => '🇺🇦'],
-];
+        $languages = [
+        'ru' => ['name' => 'Русский', 'flag' => '🇷🇺'],
+        'en' => ['name' => 'English', 'flag' => '🇺🇸'],
+        'be' => ['name' => 'Беларуская', 'flag' => '🇧🇾'],
+        'uk' => ['name' => 'Українська', 'flag' => '🇺🇦'],
+        ];
 
         if ($userid) {
             set_user_preference('message_processor_telegram_lang', $lang, $userid);
@@ -245,9 +245,9 @@ $languages = [
                 ]
             );
             $user = new stdClass();
-	    $user->id = $userid;
-	    $user->lang = $lang;
-	    user_update_user($user, false, true);
+            $user->id = $userid;
+            $user->lang = $lang;
+            user_update_user($user, false, true);
         }
     }
 }

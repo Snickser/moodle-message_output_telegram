@@ -86,7 +86,8 @@ $string['configsitebotsecret'] = 'Generated randomly and automatically if empty.
 $string['firstregister'] = 'First, register on the site ';
 $string['sitebotpay'] = 'Payment token';
 $string['configsitebotpay'] = 'Bot payment token for accepting payments';
-$string['sitebotpaycosts'] = 'Predefined summ';
+$string['sitebotpaycosts'] = 'Predefined amounts';
+$string['configsitebotpaycosts'] = 'Separated by commas';
 $string['bothelp'] = '👓 Helps
 /info - platform information
 /lang - language switching
