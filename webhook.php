@@ -154,6 +154,7 @@ if (isset($data->message)) {
     ($CFG->supportpage ? "\n$CFG->supportpage" : null) . "\n\n" .
         format_string(get_string('botfaqtext', 'message_telegram'), true),
             'parse_mode' => 'HTML',
+            'link_preview_options' => '{"is_disabled":true}',
             ];
             $data = $tg->send_api_command('sendMessage', $params);
     } else if (strpos($text, '/userid') === 0 && $userid) {
