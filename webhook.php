@@ -64,16 +64,16 @@ if (isset($data->message)) {
         $data = $tg->set_webhook_chatid($chatid, $text, $username);
     } else if (strpos($text, '/pay') === 0 && $config->sitebotpay) {
         if (!$cost = substr($text, 5)) {
-	    $numbers = array_map('trim', explode(',', $config->sitebotpaycosts));
-	    $buttons = array_map(function($n) {
-    return [
-        'text' => $n,
-        'callback_data' => '/pay ' . $n
-    ];
-}, $numbers);
+            $numbers = array_map('trim', explode(',', $config->sitebotpaycosts));
+            $buttons = array_map(function ($n) {
+                return [
+                'text' => $n,
+                'callback_data' => '/pay ' . $n,
+                ];
+            }, $numbers);
             $keyboard = [
-            'inline_keyboard' => [ $buttons
-            ]
+            'inline_keyboard' => [ $buttons,
+            ],
             ];
             $params = [
             'chat_id' => $chatid,
