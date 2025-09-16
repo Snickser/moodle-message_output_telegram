@@ -75,7 +75,7 @@ if (isset($data->message)) {
             ];
             $params = [
             'chat_id' => $chatid,
-            'text' => 'Выберите сумму:',
+            'text' => '🏦 Выберите сумму:',
             'reply_markup' => json_encode($keyboard),
             ];
             $data = $tg->send_api_command('sendMessage', $params);
@@ -103,7 +103,12 @@ if (isset($data->message)) {
         $list = null;
         foreach ($courses as $course) {
             if ($course->visible) {
-                $buff = '🔸 <b>' . format_string($course->fullname, true) . '</b>' . PHP_EOL;
+        	if(!$list){
+        	    $buff = '🏰 ';
+        	} else {
+            	    $buff = '🔸 ';
+                }
+                $buff .=  '<b>' . format_string($course->fullname, true) . '</b>' . PHP_EOL;
                 if (!empty($course->summary) && mb_strlen($course->summary) + mb_strlen($buff) < 4080) {
                     $buff .= '<i>  ' . format_string($course->summary, false) . '</i>' . PHP_EOL;
                 }
@@ -119,7 +124,8 @@ if (isset($data->message)) {
     } else if (strpos($text, '/help') === 0 && $userid) {
         $tg->send_message(get_string('bothelp', 'message_telegram'), $userid);
     } else if (strpos($text, '/info') === 0 && $userid) {
-        $tg->send_message(format_string($SITE->fullname) . "\n" . $CFG->wwwroot . "\n" . $CFG->supportemail, $userid);
+        $tg->send_message('' . format_string($SITE->fullname) . "\n🌐 " . $CFG->wwwroot .
+         "\n✉️ " . $CFG->supportemail, $userid);
     } else if (strpos($text, '/userid') === 0 && $userid) {
         $tg->send_message("{$user->id}", $userid);
     } else if (strpos($text, '/enrols') === 0 && $userid) {
