@@ -150,9 +150,10 @@ if (isset($data->message)) {
     } else if (strpos($text, '/faq') === 0) {
             $params = [
             'chat_id' => $chatid,
-            'text' => get_string('botfaq', 'message_telegram') . "\n\n" .
-             format_string(get_string('botfaqtext', 'message_telegram'), true),
-             'parse_mode' => 'HTML',
+            'text' => get_string('botfaq', 'message_telegram') .
+    ($CFG->supportpage ? "\n$CFG->supportpage" : null) . "\n\n" .
+        format_string(get_string('botfaqtext', 'message_telegram'), true),
+            'parse_mode' => 'HTML',
             ];
             $data = $tg->send_api_command('sendMessage', $params);
     } else if (strpos($text, '/userid') === 0 && $userid) {
