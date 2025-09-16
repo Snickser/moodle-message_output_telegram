@@ -181,7 +181,11 @@ if (isset($data->message)) {
         ];
             $params = [
             'chat_id' => $chatid,
-            'text' => get_string('botlang', 'message_telegram', get_user_preferences('message_processor_telegram_lang', null, $userid)),
+            'text' => get_string(
+                'botlang',
+                'message_telegram',
+                get_user_preferences('message_processor_telegram_lang', null, $userid)
+            ),
             'reply_markup' => json_encode($keyboard),
             ];
             $data = $tg->send_api_command('sendMessage', $params);
