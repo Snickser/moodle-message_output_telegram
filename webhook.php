@@ -144,6 +144,7 @@ if (isset($data->message)) {
             'chat_id' => $chatid,
             'text' => format_string($SITE->fullname) . "\n🌐 " . $CFG->wwwroot . "\n✉ ️ " . $CFG->supportemail .
             "\n🛠 " . $CFG->supportpage,
+            'link_preview_options' => '{"is_disabled":true}',
             ];
             $data = $tg->send_api_command('sendMessage', $params);
     } else if (strpos($text, '/faq') === 0) {
