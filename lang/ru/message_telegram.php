@@ -44,10 +44,13 @@ $string['connectinstructions'] = 'После того, как вы нажмёт�
 $string['connectme'] = '<br><p style="color: blue;"><b>> Подключить свой аккаунт к Telegram <</b></p>';
 $string['connectmemenu'] = '⚠️ Подключить свой аккаунт к Telegram';
 $string['welcome'] = '✅ Ваш аккаунт успешно подключен!';
-$string['bothelp'] = 'Подсказки
+$string['bothelp'] = '👓 Подсказки
 /info - информация о платформе
 /lang - переключение языка
 /courses - список курсов
 /events - список предстоящих событий
+/enrols - участие в курсах
 ';
 $string['botidontknow'] = 'Не знаю что это такое 🤷🏻‍♂ /help';
+$string['botenrols'] = '🎓 Участие в курсах:';
+$string['botlang'] = '🈯 Выбрать язык ({$a})';
