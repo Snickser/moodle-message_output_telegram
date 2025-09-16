@@ -9,10 +9,13 @@ This plugin provides Moodle messaging provider for Telegram.
 - Automatic disabling of the user's subscription when the user blocks the bot.
 - If there is an additional custom profile field "telegram_username", it will be filled in automatically.
 - Webhook mode (experimental!!)
-- BotMode functional (info, courses list).
+- BotMode functional (info, courses list, events, donate).
 
 ---
 ![изображение](https://github.com/user-attachments/assets/8d2504a5-064f-4b35-8e3a-de8bc93fc8e8)
+
+---
+<img width="915" height="447" alt="изображение" src="https://github.com/user-attachments/assets/9778b9e6-f666-44e8-9635-a256fe15bcf4" />
 
 ---
 
