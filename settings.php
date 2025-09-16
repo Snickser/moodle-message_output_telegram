@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading(
         'message_telegram_head',
-        null,
+        '',
         get_string('customfield', 'message_telegram')
     ));
 
@@ -82,6 +82,28 @@ if ($ADMIN->fulltree) {
         get_string('configsitebottoken', 'message_telegram'),
         null,
         PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/sitebotname',
+        get_string('sitebotname', 'message_telegram'),
+        get_string('configsitebotname', 'message_telegram'),
+        null,
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/sitebotusername',
+        get_string('sitebotusername', 'message_telegram'),
+        get_string('configsitebotusername', 'message_telegram'),
+        null,
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_heading(
+        'message_telegram_webhook',
+        get_string('telegramwebhook', 'message_telegram'),
+        null,
     ));
 
     $url = new moodle_url('/message/output/telegram/telegramconnect.php', ['sesskey' => sesskey(), 'action' => 'setwebhook']);
@@ -139,20 +161,10 @@ if ($ADMIN->fulltree) {
         $currencies
     ));
 
-    $settings->add(new admin_setting_configtext(
-        'message_telegram/sitebotname',
-        get_string('sitebotname', 'message_telegram'),
-        get_string('configsitebotname', 'message_telegram'),
+    $settings->add(new admin_setting_heading(
+        'message_telegram_standart',
+        get_string('configuration', 'core'),
         null,
-        PARAM_TEXT
-    ));
-
-    $settings->add(new admin_setting_configtext(
-        'message_telegram/sitebotusername',
-        get_string('sitebotusername', 'message_telegram'),
-        get_string('configsitebotusername', 'message_telegram'),
-        null,
-        PARAM_TEXT
     ));
 
     $options = ['' => get_string('parse_text', 'message_telegram'), 'HTML' => get_string('parse_html', 'message_telegram')];
@@ -200,6 +212,11 @@ if ($ADMIN->fulltree) {
         PARAM_TEXT
     ));
 
+    $settings->add(new admin_setting_heading(
+        'message_telegram_donate',
+        ' ',
+        null,
+    ));
 
     $plugininfo = \core_plugin_manager::instance()->get_plugin_info('message_telegram');
     $donate = get_string('donate', 'message_telegram', $plugininfo);
