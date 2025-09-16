@@ -50,7 +50,7 @@ if (isset($data->message)) {
     $text = clean_param($data->message->text, PARAM_TEXT);
     $username = clean_param($data->message->from->username, PARAM_TEXT);
 
-// $userid = $tg->get_userid_by_chatid($chatid);
+    $userid = $tg->get_userid_by_chatid($chatid);
 
     if ($userid) {
         $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
@@ -151,7 +151,7 @@ if (isset($data->message)) {
             $params = [
             'chat_id' => $chatid,
             'text' => get_string('botfaq', 'message_telegram') .
-    ($CFG->supportpage ? "\n$CFG->supportpage" : null) . "\n\n" .
+        ($CFG->supportpage ? "\n$CFG->supportpage" : null) . "\n\n" .
         format_string(get_string('botfaqtext', 'message_telegram'), true),
             'parse_mode' => 'HTML',
             'link_preview_options' => '{"is_disabled":true}',
