@@ -125,7 +125,7 @@ if (isset($data->message)) {
         $tg->send_message($list, $userid);
     } else if (strpos($text, '/help') === 0 && $userid) {
         $text = get_string('bothelp', 'message_telegram');
-        if (isset($config->sitebotpay)) {
+        if (!empty($config->sitebotpay)) {
             $text .= "\n/pay - " . get_string('botpaytitle', 'message_telegram');
         }
         $tg->send_message($text, $userid);
