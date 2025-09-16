@@ -68,7 +68,7 @@ if (isset($data->message)) {
             'inline_keyboard' => [
             [
             ['text' => '800', 'callback_data' => '/pay 800'],
-            ['text' => '2000', 'callback_data' => '/pay 1600'],
+            ['text' => '1600', 'callback_data' => '/pay 1600'],
             ['text' => '5000', 'callback_data' => '/pay 5000'],
             ],
             ],
@@ -122,6 +122,21 @@ if (isset($data->message)) {
         $tg->send_message(format_string($SITE->fullname) . "\n" . $CFG->wwwroot . "\n" . $CFG->supportemail, $userid);
     } else if (strpos($text, '/userid') === 0 && $userid) {
         $tg->send_message("{$user->id}", $userid);
+    } else if (strpos($text, '/enrols') === 0 && $userid) {
+$courses = enrol_get_users_courses($userid);
+$keyboard = [];
+foreach ($courses as $course) {
+    $context = context_course::instance($course->id);
+    $keyboard[] = [[
+        'text' => format_string($course->fullname),
+        'url' => $CFG->wwwroot . '/course/view.php?id=' . $course->id,
+    ]];
+}
+$tg->send_api_command('sendMessage', [
+    'chat_id' => $chatid,
+    'text' => get_string('botenrols', 'message_telegram'),
+    'reply_markup' => json_encode(['inline_keyboard' => $keyboard])
+]);
     } else if (strpos($text, '/events') === 0 && $userid) {
         require_once($CFG->dirroot . '/calendar/lib.php');
         $calendar = \calendar_information::create(time(), 0, 0);
@@ -154,7 +169,7 @@ if (isset($data->message)) {
         ];
             $params = [
             'chat_id' => $chatid,
-            'text' => 'Выберите язык (' . get_user_preferences('message_processor_telegram_lang', null, $userid) . '):',
+            'text' => get_string('botlang', 'message_telegram', get_user_preferences('message_processor_telegram_lang', null, $userid)),
             'reply_markup' => json_encode($keyboard),
             ];
             $data = $tg->send_api_command('sendMessage', $params);
@@ -207,13 +222,20 @@ if (isset($data->message)) {
 
         ]);
     } else if (strpos($data->callback_query->data, '/lang') === 0 && $lang = substr($data->callback_query->data, 6)) {
+$languages = [
+    'ru' => ['name' => 'Русский',      'flag' => '🇷🇺'],
+    'en' => ['name' => 'English',      'flag' => '🇺🇸'],
+    'be' => ['name' => 'Беларуская',      'flag' => '🇧🇾'],
+    'uk' => ['name' => 'Українська',      'flag' => '🇺🇦'],
+];
+
         if ($userid) {
             set_user_preference('message_processor_telegram_lang', $lang, $userid);
             $tg->send_api_command(
                 'sendMessage',
                 [
                 'chat_id' => $chatid,
-                'text' => $lang,
+                'text' => $languages[$lang]['flag'],
                 ]
             );
             $user = new stdClass();
