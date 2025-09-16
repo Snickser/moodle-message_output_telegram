@@ -125,8 +125,11 @@ if ($ADMIN->fulltree) {
 
     $currencies = [
     'RUB' => get_string('RUB', 'currencies'),
+    'BYR' => get_string('BYR', 'currencies'),
+    'KZT' => get_string('KZT', 'currencies'),
     'USD' => get_string('USD', 'currencies'),
     'EUR' => get_string('EUR', 'currencies'),
+    'UAH' => get_string('UAH', 'currencies'),
     ];
     $settings->add(new admin_setting_configselect(
         'message_telegram/sitebotpaycurrency',
