@@ -48,7 +48,6 @@ if ($ADMIN->fulltree) {
         $telegrammanager->update_bot_info();
     }
 
-
     $telegrammanager = new message_telegram\manager();
     if (empty($sitebottoken)) {
         $site = get_site();
