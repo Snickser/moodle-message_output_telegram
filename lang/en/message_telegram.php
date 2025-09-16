@@ -93,11 +93,10 @@ $string['bothelp'] = '👓 Helps
 /lang - language switching
 /courses - course list
 /events - upcoming
-/enrols - participation in courses
-';
+/enrols - participation in courses';
 $string['botidontknow'] = 'I dont know what this is 🤷';
 $string['botenrols'] = '🎓 Participation in courses:';
 $string['botlang'] = '🈯 Select language ({$a})';
 $string['botpay'] = '🏦 Select amount {$a}';
-$string['botpaytitle'] = 'Donation';
+$string['botpaytitle'] = 'Donation 🕉';
 $string['botpaydesc'] = 'To support the learning platform';

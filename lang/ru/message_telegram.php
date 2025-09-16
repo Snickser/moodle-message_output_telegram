@@ -49,11 +49,10 @@ $string['bothelp'] = '👓 Подсказки
 /lang - переключение языка
 /courses - список курсов
 /events - список предстоящих событий
-/enrols - участие в курсах
-';
+/enrols - участие в курсах';
 $string['botidontknow'] = 'Не знаю что это такое 🤷🏻‍♂ /help';
 $string['botenrols'] = '🎓 Участие в курсах:';
 $string['botlang'] = '🈯 Выбрать язык ({$a})';
 $string['botpay'] = '🏦 Выберите сумму {$a}';
-$string['botpaytitle'] = 'Пожертвование';
+$string['botpaytitle'] = 'Пожертвование 🕉';
 $string['botpaydesc'] = 'На поддержание учебной платформы';
