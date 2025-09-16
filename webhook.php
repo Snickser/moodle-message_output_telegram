@@ -68,7 +68,7 @@ if (isset($data->message)) {
             'inline_keyboard' => [
             [
             ['text' => '800', 'callback_data' => '/pay 800'],
-            ['text' => '2000', 'callback_data' => '/pay 2000'],
+            ['text' => '2000', 'callback_data' => '/pay 1600'],
             ['text' => '5000', 'callback_data' => '/pay 5000'],
             ],
             ],
