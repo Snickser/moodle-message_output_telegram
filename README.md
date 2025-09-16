@@ -14,6 +14,8 @@ This plugin provides Moodle messaging provider for Telegram.
 ---
 ![изображение](https://github.com/user-attachments/assets/8d2504a5-064f-4b35-8e3a-de8bc93fc8e8)
 
+<img width="915" height="447" alt="изображение" src="https://github.com/user-attachments/assets/9778b9e6-f666-44e8-9635-a256fe15bcf4" />
+
 ---
 
 If you have an earlier version than BETA 3.2.4 uninstall and delete it, and start over with 3.2.4 or higher!
