@@ -35,12 +35,19 @@ if ($ADMIN->fulltree) {
     $telegrammanager = new message_telegram\manager();
 
     $sitebottoken = $telegrammanager->config('sitebottoken');
+    $sitebotsecret = $telegrammanager->config('sitebotsecret');
     $botname = $telegrammanager->config('sitebotname');
     $botusername = $telegrammanager->config('sitebotusername');
+
+    if (empty($sitebotsecret)) {
+        $sitebotsecret = bin2hex(random_bytes(32));
+        set_config('sitebotsecret', $sitebotsecret, 'message_telegram');
+    }
 
     if (!empty($sitebottoken)) {
         $telegrammanager->update_bot_info();
     }
+
 
     $telegrammanager = new message_telegram\manager();
     if (empty($sitebottoken)) {
@@ -73,15 +80,70 @@ if ($ADMIN->fulltree) {
         'message_telegram/sitebottoken',
         get_string('sitebottoken', 'message_telegram'),
         get_string('configsitebottoken', 'message_telegram'),
-        $sitebottoken,
+        null,
         PARAM_TEXT
+    ));
+
+    $url = new moodle_url('/message/output/telegram/telegramconnect.php', ['sesskey' => sesskey(), 'action' => 'setwebhook']);
+    $link = html_writer::tag(
+        'a',
+        get_string('setwebhook', 'message_telegram'),
+        ['href' => $url, 'class' => 'btn btn-danger']
+    );
+
+    $setting = new admin_setting_configcheckbox(
+        'message_telegram/webhook',
+        get_string('telegramwebhook', 'message_telegram'),
+        $link . '<br>' . get_string('configtelegramwebhook', 'message_telegram'),
+        false
+    );
+    $settings->add($setting);
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/sitebotsecret',
+        get_string('sitebotsecret', 'message_telegram'),
+        get_string('configsitebotsecret', 'message_telegram'),
+        null,
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/sitebotpay',
+        get_string('sitebotpay', 'message_telegram'),
+        get_string('configsitebotpay', 'message_telegram'),
+        null,
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/sitebotpaycosts',
+        get_string('sitebotpaycosts', 'message_telegram'),
+        get_string('configsitebotpaycosts', 'message_telegram'),
+        '800,1600,5000',
+        PARAM_TEXT
+    ));
+
+    $currencies = [
+    'RUB' => get_string('RUB', 'currencies'),
+    'BYR' => get_string('BYR', 'currencies'),
+    'KZT' => get_string('KZT', 'currencies'),
+    'USD' => get_string('USD', 'currencies'),
+    'EUR' => get_string('EUR', 'currencies'),
+    'UAH' => get_string('UAH', 'currencies'),
+    ];
+    $settings->add(new admin_setting_configselect(
+        'message_telegram/sitebotpaycurrency',
+        get_string('currency'),
+        null,
+        'RUB',
+        $currencies
     ));
 
     $settings->add(new admin_setting_configtext(
         'message_telegram/sitebotname',
         get_string('sitebotname', 'message_telegram'),
         get_string('configsitebotname', 'message_telegram'),
-        $botname,
+        null,
         PARAM_TEXT
     ));
 
@@ -89,7 +151,7 @@ if ($ADMIN->fulltree) {
         'message_telegram/sitebotusername',
         get_string('sitebotusername', 'message_telegram'),
         get_string('configsitebotusername', 'message_telegram'),
-        $botusername,
+        null,
         PARAM_TEXT
     ));
 
@@ -137,6 +199,7 @@ if ($ADMIN->fulltree) {
         '',
         PARAM_TEXT
     ));
+
 
     $plugininfo = \core_plugin_manager::instance()->get_plugin_info('message_telegram');
     $donate = get_string('donate', 'message_telegram', $plugininfo);

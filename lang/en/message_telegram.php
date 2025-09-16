@@ -79,3 +79,30 @@ TRX TRGMc3b63Lus6ehLasbbHxsb2rHky5LbPe<br>
 <iframe src="https://yoomoney.ru/quickpay/fundraise/button?billNumber=143H2JO3LLE.240720"
 width="330" height="50" frameborder="0" allowtransparency="true" scrolling="no"></iframe>';
 $string['welcome'] = '✅ Your account has been successfully linked!';
+$string['telegramwebhook'] = 'Webhook';
+$string['configtelegramwebhook'] = 'This Telegram webhook is for testing purposes, do not enable it, otherwise push button twice!';
+$string['sitebotsecret'] = 'Webhook secret';
+$string['configsitebotsecret'] = 'Generated randomly and automatically if empty.';
+$string['firstregister'] = 'First, register on the site ';
+$string['sitebotpay'] = 'Payment token';
+$string['configsitebotpay'] = 'Bot payment token for accepting payments.';
+$string['sitebotpaycosts'] = 'Predefined amounts';
+$string['configsitebotpaycosts'] = 'Separated by commas.';
+$string['bothelp'] = '👓 Helps
+/info - platform information
+/faq  - frequently asked questions
+/lang - language switching
+/courses - course list
+/events - upcoming
+/enrols - participation in courses';
+$string['bothelp_anonymous'] = '👓 Helps
+/info - platform information
+/faq  - frequently asked questions';
+$string['botidontknow'] = 'I dont know what this is 🤷';
+$string['botenrols'] = '🎓 Participation in courses:';
+$string['botlang'] = '🈯 Select language ({$a})';
+$string['botpay'] = '🏦 Select amount {$a}';
+$string['botpaytitle'] = 'Donation 🕉';
+$string['botpaydesc'] = 'To support the learning platform';
+$string['botfaq'] = '⁉️ Frequently Asked Questions:';
+$string['botfaqtext'] = '';

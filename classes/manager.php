@@ -165,8 +165,9 @@ class manager {
         // If the chatid is not set, display the link to do this.
         if (!$this->is_chatid_set($userid, $preferences)) {
             // Temporarily set the user's chatid to the sesskey value for security.
-            $this->set_usersecret($userid);
-            $url = 'https://t.me/' . $this->config('sitebotusername') . '?start=' . $this->usersecret();
+            $key = $this->set_usersecret($userid);
+            $url = 'https://t.me/' . $this->config('sitebotusername') . '?start=' . $key;
+
             $configbutton = get_string('connectinstructions', 'message_telegram', $this->config('sitebotname'));
             $configbutton .= '<div align="center"><a href="' . $url . '" target="_blank">' .
                 get_string('connectme', 'message_telegram') . '</a></div>';
@@ -186,7 +187,11 @@ class manager {
      * @return string A constructed variable for this user (Moodle's sesskey).
      */
     public function usersecret() {
-        return sesskey();
+        if ($this->config('webhook')) {
+            return bin2hex(random_bytes(8));
+        } else {
+            return sesskey();
+        }
     }
 
     /**
@@ -205,7 +210,11 @@ class manager {
             require_capability('moodle/site:config', \context_system::instance());
         }
 
-        return set_user_preference('message_processor_telegram_chatid', $this->secretprefix . $this->usersecret(), $userid);
+        $secret = $this->usersecret();
+        if (set_user_preference('message_processor_telegram_chatid', $this->secretprefix . $secret, $userid)) {
+            return $secret;
+        }
+        return false;
     }
 
     /**
@@ -331,14 +340,16 @@ class manager {
      * @return string Empty if successful, otherwise the error message.
      */
     public function set_webhook() {
-        return 'This feature is still under development... Stand by.';
         if (empty($this->config('sitebottoken'))) {
             $message = get_string('sitebottokennotsetup', 'message_telegram');
         } else {
-            $response = $this->send_api_command('setWebhook', ['url' => $this->redirect_uri(), 'allowed_updates' => 'message']);
+            $url = new \moodle_url('/message/output/telegram/webhook.php');
+            $response = $this->send_api_command('setWebhook', ['url' => $url, 'allowed_updates' => 'message',
+            'secret_token' => $this->config('sitebotsecret'),
+            ]);
             if (!empty($response) && isset($response->ok) && ($response->ok == true)) {
                 $this->set_config('webhook', '1');
-                $message = '';
+                $message = 'Webhook is set successfully';
             } else if (!empty($response) && isset($response->error_code) && isset($response->description)) {
                 $message = $response->description;
             }
@@ -365,7 +376,7 @@ class manager {
      * @param array $params The parameters to send to the API command. Can be ommited.
      * @return object The JSON decoded return object.
      */
-    private function send_api_command($command, $params = null) {
+    public function send_api_command($command, $params = null) {
         if (empty($this->config('sitebottoken'))) {
             return false;
         }
@@ -418,5 +429,79 @@ class manager {
             }
         }
         return true;
+    }
+
+    /**
+     * Remove the webhook for this site into the Telegram Bot.
+     * @return string Empty if successful, otherwise the error message.
+     */
+    public function remove_webhook() {
+        $response = $this->send_api_command('deleteWebhook');
+        if (!empty($response) && isset($response->ok) && ($response->ok == true)) {
+            $this->set_config('webhook', '0');
+            $message = 'Webhook removed';
+        } else if (!empty($response) && isset($response->error_code) && isset($response->description)) {
+            $message = $response->description;
+        }
+
+        return $message;
+    }
+
+    /**
+     * Only if webHook has been created.
+     * @param  string $chatid
+     * @param  string $text
+     * @param  string $username
+     * @return boolean|string Success.
+     */
+    public function set_webhook_chatid($chatid = null, $text = null, $username = null) {
+        global $DB;
+
+        if (empty($this->config('sitebottoken')) || empty($chatid) || empty($text)) {
+            return false;
+        } else {
+            $key = substr($text, 7);
+
+            $sql = "name = :name AND " . $DB->sql_compare_text('value') . " = :secret";
+            $params = [
+            'name'   => 'message_processor_telegram_chatid',
+            'secret' => $this->secretprefix . $key,
+            ];
+
+            if ($record = $DB->get_record_select('user_preferences', $sql, $params, 'id, userid')) {
+                $userid = $record->userid;
+                if ($this->usersecret_match($key, $userid)) {
+                    set_user_preference('message_processor_telegram_chatid', $chatid, $userid);
+                    $this->set_customprofile_username($userid, $username);
+                    $this->send_message(get_string('welcome', 'message_telegram'), $userid);
+                    $this->send_message('Use /help', $userid);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get userid by chatid.
+     * @param  string $chatid
+     * @return boolean|int $userid
+     */
+    public function get_userid_by_chatid($chatid) {
+        global $DB;
+
+        $userid = null;
+
+        $sql = "name = :name AND " . $DB->sql_compare_text('value') . " = :secret";
+        $params = [
+            'name'   => 'message_processor_telegram_chatid',
+            'secret' => $chatid,
+            ];
+
+        if ($record = $DB->get_record_select('user_preferences', $sql, $params, 'id, userid')) {
+            $userid = $record->userid;
+        }
+        return $userid;
     }
 }
