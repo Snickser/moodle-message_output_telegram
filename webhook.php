@@ -50,7 +50,7 @@ if (isset($data->message)) {
     $text = clean_param($data->message->text, PARAM_TEXT);
     $username = clean_param($data->message->from->username, PARAM_TEXT);
 
-//    $userid = $tg->get_userid_by_chatid($chatid);
+// $userid = $tg->get_userid_by_chatid($chatid);
 
     if ($userid) {
         $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
@@ -61,7 +61,7 @@ if (isset($data->message)) {
     force_current_language($lang);
 
     if (strpos($text, '/start') === 0) {
-	\core\session\manager::set_user(get_admin());
+        \core\session\manager::set_user(get_admin());
         $data = $tg->set_webhook_chatid($chatid, $text, $username);
     } else if (strpos($text, '/pay') === 0 && $config->sitebotpay) {
         if (!$cost = substr($text, 5)) {
@@ -125,12 +125,12 @@ if (isset($data->message)) {
         }
         $tg->send_message($list, $userid);
     } else if (strpos($text, '/help') === 0) {
-	$text = null;
-	if ($userid) {
-    	    $text = get_string('bothelp', 'message_telegram');
-    	} else {
-    	    $text = get_string('bothelp_anonymous', 'message_telegram');
-    	}
+        $text = null;
+        if ($userid) {
+            $text = get_string('bothelp', 'message_telegram');
+        } else {
+            $text = get_string('bothelp_anonymous', 'message_telegram');
+        }
         if (!empty($config->sitebotpay)) {
             $text .= "\n/pay - " . get_string('botpaytitle', 'message_telegram');
         }
@@ -143,7 +143,7 @@ if (isset($data->message)) {
             $params = [
             'chat_id' => $chatid,
             'text' => format_string($SITE->fullname) . "\n🌐 " . $CFG->wwwroot . "\n✉ ️ " . $CFG->supportemail .
-            "\n🛠 ".$CFG->supportpage,
+            "\n🛠 " . $CFG->supportpage,
             ];
             $data = $tg->send_api_command('sendMessage', $params);
     } else if (strpos($text, '/faq') === 0) {
