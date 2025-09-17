@@ -46,7 +46,7 @@ $langs = get_string_manager()->get_list_of_translations();
 $tg = new message_telegram\manager();
 
 if (isset($data->message)) {
-    $chatid = clean_param($data->message->from->id, PARAM_INT);
+    $chatid = clean_param($data->message->chat->id, PARAM_INT);
     $text = clean_param($data->message->text, PARAM_TEXT);
     $username = clean_param($data->message->from->username, PARAM_TEXT);
 
@@ -64,7 +64,7 @@ if (isset($data->message)) {
         \core\session\manager::set_user(get_admin());
         $data = $tg->set_webhook_chatid($chatid, $text, $username);
     } else if (strpos($text, '/pay') === 0 && $config->sitebotpay) {
-        if (!$cost = substr($text, 5)) {
+        if (!$cost = (int)substr($text, 5)) {
             $numbers = array_map('trim', explode(',', $config->sitebotpaycosts));
             $buttons = array_map(function ($n) {
                 return [
@@ -83,7 +83,8 @@ if (isset($data->message)) {
             ];
             $data = $tg->send_api_command('sendMessage', $params);
         } else {
-            $cost = $cost * 100;
+    	    $chatid = clean_param($data->message->from->id, PARAM_INT);
+	    $cost = $cost * 100;
             $data = $tg->send_api_command('sendInvoice', [
             "chat_id" => $chatid,
             "title" => get_string('botpaytitle', 'message_telegram'),
@@ -94,7 +95,7 @@ if (isset($data->message)) {
             "start_parameter" => "test",
             "prices" => json_encode([
             [
-            "label"  => "К оплате",
+            "label"  => get_string('botpaydesc', 'message_telegram'),
             "amount" => $cost,
             ],
                ]),
@@ -235,7 +236,6 @@ if (isset($data->message)) {
         die;
     }
 } else if (isset($data->pre_checkout_query)) {
-    $chatid = clean_param($data->pre_checkout_query->from->id, PARAM_INT);
     if (isset($data->pre_checkout_query->id)) {
         $data = $tg->send_api_command('answerPreCheckoutQuery', [
            "pre_checkout_query_id" => $data->pre_checkout_query->id,
@@ -243,7 +243,7 @@ if (isset($data->message)) {
         ]);
     }
 } else if (isset($data->callback_query->data)) {
-    $chatid = clean_param($data->callback_query->from->id, PARAM_INT);
+    $chatid = clean_param($data->callback_query->message->chat->id, PARAM_INT);
     $userid = $tg->get_userid_by_chatid($chatid);
 
     if ($userid) {
@@ -252,6 +252,7 @@ if (isset($data->message)) {
     }
 
     if (strpos($data->callback_query->data, '/pay') === 0 && $cost = substr($data->callback_query->data, 5)) {
+	$chatid = clean_param($data->callback_query->from->id, PARAM_INT);
         $cost = $cost * 100;
         $data = $tg->send_api_command('sendInvoice', [
         "chat_id" => $chatid,
@@ -263,7 +264,7 @@ if (isset($data->message)) {
         "start_parameter" => "test",
         "prices" => json_encode([
         [
-            "label"  => "К оплате",
+            "label"  => get_string('botpaydesc', 'message_telegram'),
             "amount" => $cost,
         ],
            ]),
