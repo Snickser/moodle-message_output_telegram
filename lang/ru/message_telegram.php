@@ -54,7 +54,7 @@ $string['bothelp'] = '👓 Подсказки
 $string['bothelp_anonymous'] = '👓 Подсказки
 /info - информация о платформе
 /faq  - часто задаваемые вопросы';
-$string['botidontknow'] = 'Не знаю что это такое 🤷🏻‍♂ /help';
+$string['botidontknow'] = 'Не знаю что это такое 🤷🏻 /help';
 $string['botenrols'] = '🎓 Участие в курсах:';
 $string['botlang'] = '🈯 Выбрать язык ({$a})';
 $string['botpay'] = '🏦 Выберите сумму {$a}';
