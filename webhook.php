@@ -142,7 +142,7 @@ if (isset($data->message)) {
     } else if (strpos($text, '/info') === 0) {
             $params = [
             'chat_id' => $chatid,
-            'text' => '<b>'.format_string($SITE->fullname).'</b>' . "\n⭐️ " . $CFG->wwwroot . "\n✉ ️ " . $CFG->supportemail .
+            'text' => '<b>' . format_string($SITE->fullname) . '</b>' . "\n⭐️ " . $CFG->wwwroot . "\n✉ ️ " . $CFG->supportemail .
             ($CFG->supportpage ? "\n🛠 " . $CFG->supportpage : '') .
             ($CFG->servicespage ? "\n🌐 " . $CFG->servicespage : ''),
             'parse_mode' => 'HTML',
@@ -153,8 +153,8 @@ if (isset($data->message)) {
             $params = [
             'chat_id' => $chatid,
             'text' => get_string('botfaq', 'message_telegram') .
-    	    ($CFG->supportpage ? "\n$CFG->supportpage" : null) . "\n\n" .
-    	    format_string(get_string('botfaqtext', 'message_telegram'), true),
+            ($CFG->supportpage ? "\n$CFG->supportpage" : null) . "\n\n" .
+            format_string(get_string('botfaqtext', 'message_telegram'), true),
             'parse_mode' => 'HTML',
             'link_preview_options' => '{"is_disabled":true}',
             ];
