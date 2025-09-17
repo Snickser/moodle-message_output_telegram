@@ -83,8 +83,8 @@ if (isset($data->message)) {
             ];
             $data = $tg->send_api_command('sendMessage', $params);
         } else {
-    	    $chatid = clean_param($data->message->from->id, PARAM_INT);
-	    $cost = $cost * 100;
+            $chatid = clean_param($data->message->from->id, PARAM_INT);
+            $cost = $cost * 100;
             $data = $tg->send_api_command('sendInvoice', [
             "chat_id" => $chatid,
             "title" => get_string('botpaytitle', 'message_telegram'),
@@ -252,7 +252,7 @@ if (isset($data->message)) {
     }
 
     if (strpos($data->callback_query->data, '/pay') === 0 && $cost = substr($data->callback_query->data, 5)) {
-	$chatid = clean_param($data->callback_query->from->id, PARAM_INT);
+        $chatid = clean_param($data->callback_query->from->id, PARAM_INT);
         $cost = $cost * 100;
         $data = $tg->send_api_command('sendInvoice', [
         "chat_id" => $chatid,
