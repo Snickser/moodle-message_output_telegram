@@ -142,8 +142,10 @@ if (isset($data->message)) {
     } else if (strpos($text, '/info') === 0) {
             $params = [
             'chat_id' => $chatid,
-            'text' => format_string($SITE->fullname) . "\n🌐 " . $CFG->wwwroot . "\n✉ ️ " . $CFG->supportemail .
-            "\n🛠 " . $CFG->supportpage,
+            'text' => '<b>'.format_string($SITE->fullname).'</b>' . "\n⭐️ " . $CFG->wwwroot . "\n✉ ️ " . $CFG->supportemail .
+            ($CFG->supportpage ? "\n🛠 " . $CFG->supportpage : '') .
+            ($CFG->servicespage ? "\n🌐 " . $CFG->servicespage : ''),
+            'parse_mode' => 'HTML',
             'link_preview_options' => '{"is_disabled":true}',
             ];
             $data = $tg->send_api_command('sendMessage', $params);
