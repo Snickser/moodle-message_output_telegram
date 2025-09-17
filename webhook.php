@@ -211,7 +211,7 @@ if (isset($data->message)) {
             'text' => get_string(
                 'botlang',
                 'message_telegram',
-                get_user_preferences('message_processor_telegram_lang', null, $userid)
+                get_user_preferences('message_processor_telegram_lang', get_string('no'), $userid),
             ),
             'reply_markup' => json_encode($keyboard),
             ];
