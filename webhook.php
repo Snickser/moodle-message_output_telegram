@@ -33,7 +33,7 @@ $data = json_decode($update, false);
 
 $config = get_config('message_telegram');
 
-if ($config->telegramlog) {
+if ($config->telegramlogdump) {
     file_put_contents($CFG->tempdir . '/telegram.log', serialize($data) . "\n\n", FILE_APPEND | LOCK_EX);
 }
 
@@ -307,7 +307,7 @@ if (isset($data->message)) {
     }
 }
 
-if ($config->telegramlog) {
+if ($config->telegramlogdump) {
     file_put_contents($CFG->tempdir . '/telegram.log', ($return ? serialize($return) : serialize($data)) .
     "\n\n", FILE_APPEND | LOCK_EX);
 }
