@@ -305,13 +305,16 @@ if (isset($data->message)) {
     }
 }
 
-file_put_contents($CFG->tempdir . '/telegram.log', ($return ? serialize($return) : serialize($data)) . "\n\n", FILE_APPEND | LOCK_EX);
+file_put_contents($CFG->tempdir . '/telegram.log', ($return ? serialize($return) : serialize($data)) .
+"\n\n", FILE_APPEND | LOCK_EX);
 
 http_response_code(200);
 echo "OK";
 die;
 
 /**
+ * Отправляет ответ в приватный чат пользователю или уведомление в группе.
+ *
  * @param object $tg        Экземпляр клиента Telegram API с методом send_api_command.
  * @param string $botname   Имя бота в Telegram (без @).
  * @param int    $chatid    Идентификатор чата, куда отправляется сообщение.
@@ -326,7 +329,7 @@ function private_answer($tg, $botname, $chatid, $messageid, $start = null) {
     } else {
         $text = "👍 Ответил в приват.";
     }
-            $reply_markup = [
+            $replymarkup = [
                 'inline_keyboard' => [
                     [
                         [
@@ -341,7 +344,7 @@ function private_answer($tg, $botname, $chatid, $messageid, $start = null) {
                 'chat_id' => $chatid,
                 'text' => $text,
                 'reply_to_message_id' => $messageid,
-                'reply_markup' => json_encode($reply_markup),
+                'reply_markup' => json_encode($replymarkup),
             ];
             return $tg->send_api_command(
                 'sendMessage',
