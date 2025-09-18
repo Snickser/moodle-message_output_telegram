@@ -31,9 +31,11 @@ $headers = getallheaders();
 $update = file_get_contents("php://input");
 $data = json_decode($update, false);
 
-file_put_contents($CFG->tempdir . '/telegram.log', serialize($data) . "\n\n", FILE_APPEND | LOCK_EX);
-
 $config = get_config('message_telegram');
+
+if ($config->telegramlog) {
+    file_put_contents($CFG->tempdir . '/telegram.log', serialize($data) . "\n\n", FILE_APPEND | LOCK_EX);
+}
 
 if ($headers['X-Telegram-Bot-Api-Secret-Token'] != $config->sitebotsecret) {
     http_response_code(200);
@@ -305,8 +307,10 @@ if (isset($data->message)) {
     }
 }
 
-file_put_contents($CFG->tempdir . '/telegram.log', ($return ? serialize($return) : serialize($data)) .
-"\n\n", FILE_APPEND | LOCK_EX);
+if ($config->telegramlog) {
+    file_put_contents($CFG->tempdir . '/telegram.log', ($return ? serialize($return) : serialize($data)) .
+    "\n\n", FILE_APPEND | LOCK_EX);
+}
 
 http_response_code(200);
 echo "OK";
