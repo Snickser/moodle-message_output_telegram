@@ -46,11 +46,12 @@ $langs = get_string_manager()->get_list_of_translations();
 $tg = new message_telegram\manager();
 
 if (isset($data->message)) {
+    $fromid = clean_param($data->message->from->id, PARAM_INT);
     $chatid = clean_param($data->message->chat->id, PARAM_INT);
     $text = clean_param($data->message->text, PARAM_TEXT);
     $username = clean_param($data->message->from->username, PARAM_TEXT);
 
-    $userid = $tg->get_userid_by_chatid($chatid);
+    $userid = $tg->get_userid_by_chatid($fromid);
 
     if ($userid) {
         $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
@@ -60,9 +61,17 @@ if (isset($data->message)) {
     $lang = get_user_preferences('message_processor_telegram_lang', null, $userid);
     force_current_language($lang);
 
+    if ($chatid < 0) {
+        if ($user) {
+            private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id);
+        } else {
+            private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id, "?start");
+        }
+    }
+
     if (strpos($text, '/start') === 0) {
         \core\session\manager::set_user(get_admin());
-        $data = $tg->set_webhook_chatid($chatid, $text, $username);
+        $return = $tg->set_webhook_chatid($fromid, $text, $username);
     } else if (strpos($text, '/pay') === 0 && $config->sitebotpay) {
         if (!$cost = (int)substr($text, 5)) {
             $numbers = array_map('trim', explode(',', $config->sitebotpaycosts));
@@ -77,16 +86,16 @@ if (isset($data->message)) {
             ],
             ];
             $params = [
-            'chat_id' => $chatid,
+            'chat_id' => $fromid,
             'text' => get_string('botpay', 'message_telegram', $config->sitebotpaycurrency),
             'reply_markup' => json_encode($keyboard),
             ];
-            $data = $tg->send_api_command('sendMessage', $params);
+            $return = $tg->send_api_command('sendMessage', $params);
         } else {
-            $chatid = clean_param($data->message->from->id, PARAM_INT);
+            $fromid = clean_param($data->message->from->id, PARAM_INT);
             $cost = $cost * 100;
-            $data = $tg->send_api_command('sendInvoice', [
-            "chat_id" => $chatid,
+            $return = $tg->send_api_command('sendInvoice', [
+            "chat_id" => $fromid,
             "title" => get_string('botpaytitle', 'message_telegram'),
             "description" => get_string('botpaydesc', 'message_telegram'),
             "payload" => "Donate",
@@ -135,31 +144,31 @@ if (isset($data->message)) {
         if (!empty($config->sitebotpay)) {
             $text .= "\n/pay - " . get_string('botpaytitle', 'message_telegram');
         }
-            $params = [
-            'chat_id' => $chatid,
+        $params = [
+            'chat_id' => $fromid,
             'text' => $text,
             ];
-            $data = $tg->send_api_command('sendMessage', $params);
+        $return = $tg->send_api_command('sendMessage', $params);
     } else if (strpos($text, '/info') === 0) {
             $params = [
-            'chat_id' => $chatid,
-            'text' => '<b>' . format_string($SITE->fullname) . '</b>' . "\n⭐️ " . $CFG->wwwroot . "\n✉ ️ " . $CFG->supportemail .
+            'chat_id' => $fromid,
+            'text' => '<b>' . format_string($SITE->fullname) . '</b>' . "\n🌐 " . $CFG->wwwroot . "\n✉ ️ " . $CFG->supportemail .
             ($CFG->supportpage ? "\n🛠 " . $CFG->supportpage : '') .
-            ($CFG->servicespage ? "\n🌐 " . $CFG->servicespage : ''),
+            ($CFG->servicespage ? "\n⭐ " . $CFG->servicespage : ''),
             'parse_mode' => 'HTML',
             'link_preview_options' => '{"is_disabled":true}',
             ];
-            $data = $tg->send_api_command('sendMessage', $params);
+            $return = $tg->send_api_command('sendMessage', $params);
     } else if (strpos($text, '/faq') === 0) {
             $params = [
-            'chat_id' => $chatid,
+            'chat_id' => $fromid,
             'text' => get_string('botfaq', 'message_telegram') .
             ($CFG->supportpage ? "\n$CFG->supportpage" : null) . "\n\n" .
             format_string(get_string('botfaqtext', 'message_telegram'), true),
             'parse_mode' => 'HTML',
             'link_preview_options' => '{"is_disabled":true}',
             ];
-            $data = $tg->send_api_command('sendMessage', $params);
+            $return = $tg->send_api_command('sendMessage', $params);
     } else if (strpos($text, '/userid') === 0 && $userid) {
         $tg->send_message("{$user->id}", $userid);
     } else if (strpos($text, '/enrols') === 0 && $userid) {
@@ -173,7 +182,7 @@ if (isset($data->message)) {
             ]];
         }
         $tg->send_api_command('sendMessage', [
-        'chat_id' => $chatid,
+        'chat_id' => $fromid,
         'text' => get_string('botenrols', 'message_telegram'),
         'reply_markup' => json_encode(['inline_keyboard' => $keyboard]),
         ]);
@@ -208,7 +217,7 @@ if (isset($data->message)) {
         'inline_keyboard' => $buttons,
         ];
             $params = [
-            'chat_id' => $chatid,
+            'chat_id' => $fromid,
             'text' => get_string(
                 'botlang',
                 'message_telegram',
@@ -216,7 +225,7 @@ if (isset($data->message)) {
             ),
             'reply_markup' => json_encode($keyboard),
             ];
-            $data = $tg->send_api_command('sendMessage', $params);
+            $return = $tg->send_api_command('sendMessage', $params);
     } else if (isset($data->message->successful_payment)) {
         http_response_code(200);
         echo "OK";
@@ -227,8 +236,8 @@ if (isset($data->message)) {
         $tg->send_api_command(
             'sendMessage',
             [
-            'chat_id' => $chatid,
-            'text' => get_string('firstregister', 'message_telegram') . $CFG->wwwroot,
+            'chat_id' => $fromid,
+            'text' => get_string('firstregister', 'message_telegram', $CFG->wwwroot),
             ]
         );
         http_response_code(200);
@@ -237,14 +246,15 @@ if (isset($data->message)) {
     }
 } else if (isset($data->pre_checkout_query)) {
     if (isset($data->pre_checkout_query->id)) {
-        $data = $tg->send_api_command('answerPreCheckoutQuery', [
+        $return = $tg->send_api_command('answerPreCheckoutQuery', [
            "pre_checkout_query_id" => $data->pre_checkout_query->id,
            "ok" => 'True',
         ]);
     }
 } else if (isset($data->callback_query->data)) {
+    $fromid = clean_param($data->callback_query->from->id, PARAM_INT);
     $chatid = clean_param($data->callback_query->message->chat->id, PARAM_INT);
-    $userid = $tg->get_userid_by_chatid($chatid);
+    $userid = $tg->get_userid_by_chatid($fromid);
 
     if ($userid) {
         $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
@@ -252,10 +262,10 @@ if (isset($data->message)) {
     }
 
     if (strpos($data->callback_query->data, '/pay') === 0 && $cost = substr($data->callback_query->data, 5)) {
-        $chatid = clean_param($data->callback_query->from->id, PARAM_INT);
+        $fromid = clean_param($data->callback_query->from->id, PARAM_INT);
         $cost = $cost * 100;
-        $data = $tg->send_api_command('sendInvoice', [
-        "chat_id" => $chatid,
+        $return = $tg->send_api_command('sendInvoice', [
+        "chat_id" => $fromid,
         "title" => get_string('botpaytitle', 'message_telegram'),
         "description" => get_string('botpaydesc', 'message_telegram'),
         "payload" => "Donate",
@@ -283,7 +293,7 @@ if (isset($data->message)) {
             $tg->send_api_command(
                 'sendMessage',
                 [
-                'chat_id' => $chatid,
+                'chat_id' => $fromid,
                 'text' => $languages[$lang]['flag'],
                 ]
             );
@@ -295,7 +305,37 @@ if (isset($data->message)) {
     }
 }
 
-file_put_contents($CFG->tempdir . '/telegram.log', serialize($data) . "\n\n", FILE_APPEND | LOCK_EX);
+file_put_contents($CFG->tempdir . '/telegram.log', ($return ? serialize($return) : serialize($data)) . "\n\n", FILE_APPEND | LOCK_EX);
 
 http_response_code(200);
 echo "OK";
+die;
+
+function private_answer($tg, $botname, $chatid, $message_id, $start = null) {
+    if ($start) {
+        $text = "🤔 Ответил бы в привате, но мы пока не знакомы ☺️";
+    } else {
+        $text = "👍 Ответил в приват.";
+    }
+            $reply_markup = [
+                'inline_keyboard' => [
+                    [
+                        [
+                            'text' => 'Перейти',
+                            'url' => "https://t.me/$botname$start",
+                        ],
+                    ],
+                ],
+            ];
+
+            $options = [
+                'chat_id' => $chatid,
+                'text' => $text,
+                'reply_to_message_id' => $message_id,
+                'reply_markup' => json_encode($reply_markup),
+            ];
+            return $tg->send_api_command(
+                'sendMessage',
+                $options
+            );
+}
