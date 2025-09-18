@@ -53,7 +53,7 @@ $string['configsitebotsecret'] = 'Generated randomly and automatically if empty.
 $string['configsitebottoken'] = 'Enter the site bot token from Botfather here.';
 $string['configsitebotusername'] = 'This will be filled in automatically when you save the bot token.';
 $string['configstriptags'] = 'Strip all html tags from "Text" formatted message (in "HTML" mode unresolved tags are always removed).';
-$string['configtelegramlog'] = 'Write debug info into ' . $CFG->tempdir . '/telegram.log file.';
+$string['configtelegramlog'] = 'Write debug info into {$a}/telegram.log file.';
 $string['configtelegramlogdump'] = 'For debugging purposes, write the message to a log file.';
 $string['configtelegramwebhook'] = 'This Telegram webhook is for testing purposes, do not enable it, otherwise push button twice!';
 $string['configtgext'] = 'You may need to use an external messaging service, such as bypass ratelimit, or ensure that messages are delivered.';
@@ -102,7 +102,7 @@ $string['telegramchatid'] = 'Telegram chat id';
 $string['telegramlog'] = 'Enable logging';
 $string['telegramlogdump'] = 'Dump message to log';
 $string['telegramwebhook'] = 'Webhook';
+$string['telegramwebhookdump'] = 'Dump webhook data to log';
 $string['tgext'] = 'Path to external sender';
-
 
 $string['welcome'] = '✅ Your account has been successfully linked!';

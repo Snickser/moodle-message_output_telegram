@@ -192,13 +192,20 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox(
         'message_telegram/telegramlog',
         get_string('telegramlog', 'message_telegram'),
-        get_string('configtelegramlog', 'message_telegram'),
+        get_string('configtelegramlog', 'message_telegram', $CFG->tempdir),
         false
     ));
 
     $settings->add(new admin_setting_configcheckbox(
         'message_telegram/telegramlogdump',
         get_string('telegramlogdump', 'message_telegram'),
+        get_string('configtelegramlogdump', 'message_telegram'),
+        false
+    ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'message_telegram/telegramwebhookdump',
+        get_string('telegramwebhookdump', 'message_telegram'),
         get_string('configtelegramlogdump', 'message_telegram'),
         false
     ));
