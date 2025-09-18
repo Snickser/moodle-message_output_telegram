@@ -311,7 +311,16 @@ http_response_code(200);
 echo "OK";
 die;
 
-function private_answer($tg, $botname, $chatid, $message_id, $start = null) {
+/**
+ * @param object $tg        Экземпляр клиента Telegram API с методом send_api_command.
+ * @param string $botname   Имя бота в Telegram (без @).
+ * @param int    $chatid    Идентификатор чата, куда отправляется сообщение.
+ * @param int    $messageid ID сообщения, на которое будет дан reply.
+ * @param string|null $start Дополнительный параметр (обычно payload для deep link).
+ *
+ * @return mixed Результат выполнения метода send_api_command (ответ Telegram API).
+ */
+function private_answer($tg, $botname, $chatid, $messageid, $start = null) {
     if ($start) {
         $text = "🤔 Ответил бы в привате, но мы пока не знакомы ☺️";
     } else {
@@ -331,7 +340,7 @@ function private_answer($tg, $botname, $chatid, $message_id, $start = null) {
             $options = [
                 'chat_id' => $chatid,
                 'text' => $text,
-                'reply_to_message_id' => $message_id,
+                'reply_to_message_id' => $messageid,
                 'reply_markup' => json_encode($reply_markup),
             ];
             return $tg->send_api_command(
