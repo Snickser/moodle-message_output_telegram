@@ -199,7 +199,7 @@ class manager {
      * @param int $userid The id of the user to set this for.
      * @return boolean Success or failure.
      */
-    private function set_usersecret($userid = null) {
+    public function set_usersecret($userid = null) {
         global $USER;
 
         if ($userid === null) {

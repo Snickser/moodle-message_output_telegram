@@ -56,6 +56,11 @@ function message_telegram_extend_navigation_user_settings($navigation, $user, $c
             return;
         }
 
+        if ($manager->config('webhook')) {
+            $key = $manager->set_usersecret($USER->id);
+            $url = 'https://t.me/' . $manager->config('sitebotusername') . '?start=' . $key;
+        }
+
         $navigation->add(
             get_string('connectmemenu', 'message_telegram'),
             $url,
