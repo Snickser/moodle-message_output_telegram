@@ -78,7 +78,6 @@ if (isset($data->message)) {
     }
 
     if (strpos($text, '/start') === 0) {
-        \core\session\manager::set_user(get_admin());
         $response = $tg->set_webhook_chatid($fromid, $text, $username);
     } else if (strpos($text, '/pay') === 0 && $config->sitebotpay) {
         if (!$cost = (int)substr($text, 5)) {

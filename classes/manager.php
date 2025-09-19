@@ -230,7 +230,7 @@ class manager {
             $userid = $USER->id;
         }
 
-        if ($userid != $USER->id) {
+        if ($userid != $USER->id && !$this->config('webhook')) {
             require_capability('moodle/site:config', \context_system::instance());
         }
 
