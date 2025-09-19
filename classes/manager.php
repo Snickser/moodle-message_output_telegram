@@ -486,12 +486,12 @@ class manager {
     /**
      * Get userid by chatid.
      * @param  string $chatid
-     * @return boolean|int $userid
+     * @return boolean|int $userids
      */
-    public function get_userid_by_chatid($chatid) {
+    public function get_userids_by_chatid($chatid) {
         global $DB;
 
-        $userid = null;
+        $userids = [];
 
         $sql = "name = :name AND " . $DB->sql_compare_text('value') . " = :secret";
         $params = [
@@ -499,9 +499,12 @@ class manager {
             'secret' => $chatid,
             ];
 
-        if ($record = $DB->get_record_select('user_preferences', $sql, $params, 'id, userid')) {
-            $userid = $record->userid;
+        if ($records = $DB->get_records_select('user_preferences', $sql, $params, 'id, userid')) {
+            foreach ($records as $record) {
+                    $userids[] = $record->userid;
+            }
         }
-        return $userid;
+
+        return $userids;
     }
 }

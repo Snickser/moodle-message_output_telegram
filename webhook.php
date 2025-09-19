@@ -23,6 +23,7 @@
  */
 
 require_once(__DIR__ . '/../../../config.php'); // @codingStandardsIgnoreLine
+require_once($CFG->dirroot . '/calendar/lib.php');
 
 \core\session\manager::init_empty_session();
 
@@ -37,7 +38,7 @@ if ($config->telegramwebhookdump) {
     file_put_contents($CFG->tempdir . '/telegram.log', serialize($data) . "\n\n", FILE_APPEND | LOCK_EX);
 }
 
-if ($headers['X-Telegram-Bot-Api-Secret-Token'] != $config->sitebotsecret) {
+if (!isset($headers['X-Telegram-Bot-Api-Secret-Token']) || $headers['X-Telegram-Bot-Api-Secret-Token'] != $config->sitebotsecret) {
     http_response_code(200);
     echo "OK";
     die;
@@ -53,11 +54,16 @@ if (isset($data->message)) {
     $text = clean_param($data->message->text, PARAM_TEXT);
     $username = clean_param($data->message->from->username, PARAM_TEXT);
 
-    $userid = $tg->get_userid_by_chatid($fromid);
-
-    if ($userid) {
-        $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
-        \core\session\manager::set_user($user);
+    $userids = $tg->get_userids_by_chatid($fromid);
+    if ($userids) {
+        if (count($userids) > 1) {
+            $userid = get_user_preferences('message_processor_telegram_prefid', null, $userids[0]);
+        } else {
+            $userid = $userids[0];
+        }
+        if ($user = $DB->get_record('user', ['id' => $userid])) {
+            \core\session\manager::set_user($user);
+        }
     }
 
     $lang = get_user_preferences('message_processor_telegram_lang', null, $userid);
@@ -143,6 +149,9 @@ if (isset($data->message)) {
         } else {
             $text = get_string('bothelp_anonymous', 'message_telegram');
         }
+        if (count($userids) > 1) {
+            $text .= PHP_EOL . get_string('botuserid', 'message_telegram');
+        }
         if (!empty($config->sitebotpay)) {
             $text .= "\n/pay - " . get_string('botpaytitle', 'message_telegram');
         }
@@ -152,7 +161,7 @@ if (isset($data->message)) {
             ];
         $return = $tg->send_api_command('sendMessage', $params);
     } else if (strpos($text, '/info') === 0) {
-            $params = [
+        $params = [
             'chat_id' => $fromid,
             'text' => '<b>' . format_string($SITE->fullname) . '</b>' . "\n🌐 " . $CFG->wwwroot . "\n✉ ️ " . $CFG->supportemail .
             ($CFG->supportpage ? "\n🛠 " . $CFG->supportpage : '') .
@@ -162,7 +171,7 @@ if (isset($data->message)) {
             ];
             $return = $tg->send_api_command('sendMessage', $params);
     } else if (strpos($text, '/faq') === 0) {
-            $params = [
+        $params = [
             'chat_id' => $fromid,
             'text' => get_string('botfaq', 'message_telegram') .
             ($CFG->supportpage ? "\n$CFG->supportpage" : null) . "\n\n" .
@@ -172,7 +181,23 @@ if (isset($data->message)) {
             ];
             $return = $tg->send_api_command('sendMessage', $params);
     } else if (strpos($text, '/userid') === 0 && $userid) {
-        $tg->send_message("{$user->id}", $userid);
+        $buttons = [];
+        foreach ($userids as $id) {
+            $user = $DB->get_record('user', ['id' => $id]);
+            $buttons[] = [[
+                'text' => fullname($user),
+                'callback_data' => '/userid ' . $id,
+            ]];
+        }
+        $keyboard = [
+        'inline_keyboard' => $buttons,
+        ];
+        $params = [
+        'chat_id' => $fromid,
+        'text' => "👑 Пользователь ID: {$userid}",
+        'reply_markup' => json_encode($keyboard),
+        ];
+        $return = $tg->send_api_command('sendMessage', $params);
     } else if (strpos($text, '/enrols') === 0 && $userid) {
         $courses = enrol_get_users_courses($userid);
         $keyboard = [];
@@ -189,7 +214,6 @@ if (isset($data->message)) {
         'reply_markup' => json_encode(['inline_keyboard' => $keyboard]),
         ]);
     } else if (strpos($text, '/events') === 0 && $userid) {
-        require_once($CFG->dirroot . '/calendar/lib.php');
         $calendar = \calendar_information::create(time(), 0, 0);
         $view = calendar_get_view($calendar, 'upcoming');
         $events = $view[0]->events ?? [];
@@ -256,11 +280,13 @@ if (isset($data->message)) {
 } else if (isset($data->callback_query->data)) {
     $fromid = clean_param($data->callback_query->from->id, PARAM_INT);
     $chatid = clean_param($data->callback_query->message->chat->id, PARAM_INT);
-    $userid = $tg->get_userid_by_chatid($fromid);
 
-    if ($userid) {
-        $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
-        \core\session\manager::set_user($user);
+    $userids = $tg->get_userids_by_chatid($fromid);
+    if ($userids) {
+        $userid = $userids[0];
+        if ($user = $DB->get_record('user', ['id' => $userid])) {
+            \core\session\manager::set_user($user);
+        }
     }
 
     if (strpos($data->callback_query->data, '/pay') === 0 && $cost = substr($data->callback_query->data, 5)) {
@@ -290,6 +316,9 @@ if (isset($data->message)) {
         'uk' => ['name' => 'Українська', 'flag' => '🇺🇦'],
         ];
 
+        if (count($userids) > 1) {
+            $userid = get_user_preferences('message_processor_telegram_prefid', null, $userids[0]);
+        }
         if ($userid) {
             set_user_preference('message_processor_telegram_lang', $lang, $userid);
             $tg->send_api_command(
@@ -303,6 +332,18 @@ if (isset($data->message)) {
             $user->id = $userid;
             $user->lang = $lang;
             user_update_user($user, false, true);
+        }
+    } else if (strpos($data->callback_query->data, '/userid') === 0 && $id = substr($data->callback_query->data, 8)) {
+        $uid = clean_param($id, PARAM_INT);
+        if ($userid && $uid) {
+            set_user_preference('message_processor_telegram_prefid', $uid, $userid);
+            $tg->send_api_command(
+                'sendMessage',
+                [
+                'chat_id' => $fromid,
+                'text' => $uid,
+                ]
+            );
         }
     }
 }
@@ -333,25 +374,26 @@ function private_answer($tg, $botname, $chatid, $messageid, $start = null) {
     } else {
         $text = "👍 Ответил в приват.";
     }
-            $replymarkup = [
-                'inline_keyboard' => [
-                    [
-                        [
-                            'text' => 'Перейти',
-                            'url' => "https://t.me/$botname$start",
-                        ],
-                    ],
-                ],
-            ];
 
-            $options = [
-                'chat_id' => $chatid,
-                'text' => $text,
-                'reply_to_message_id' => $messageid,
-                'reply_markup' => json_encode($replymarkup),
-            ];
-            return $tg->send_api_command(
-                'sendMessage',
-                $options
-            );
+    $replymarkup = [
+        'inline_keyboard' => [
+            [
+                [
+                    'text' => 'Перейти',
+                    'url' => "https://t.me/$botname$start",
+                ],
+            ],
+        ],
+    ];
+
+    $options = [
+        'chat_id' => $chatid,
+        'text' => $text,
+        'reply_to_message_id' => $messageid,
+        'reply_markup' => json_encode($replymarkup),
+    ];
+    return $tg->send_api_command(
+        'sendMessage',
+        $options
+    );
 }

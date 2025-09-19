@@ -44,6 +44,7 @@ $string['botlang'] = '🈯 Select language ({$a})';
 $string['botpay'] = '🏦 Select amount {$a}';
 $string['botpaydesc'] = 'To support the learning platform';
 $string['botpaytitle'] = 'Donation 🕉';
+$string['botuserid'] = '/userid - select user';
 $string['configfullmessagehtml'] = 'Get message from "$eventdata->fullmessagehtml" (if available), or from "fullmessage" if not set.';
 $string['configparsemode'] = 'Formatting options: Text or HTML.';
 $string['configsitebotname'] = 'This will be filled in automatically when you save the bot token.';

@@ -44,6 +44,7 @@ $string['botlang'] = '🈯 Выбрать язык ({$a})';
 $string['botpay'] = '🏦 Выберите сумму {$a}';
 $string['botpaydesc'] = 'На поддержание учебной платформы';
 $string['botpaytitle'] = '🕉 Пожертвование 🕉';
+$string['botuserid'] = '/userid - сменить пользователя';
 $string['configsitebotname'] = 'Будет заполнено автоматически, когда Вы сохраните токен бота.';
 $string['configsitebottoken'] = 'Введите сюда токен бота сайта, полученный от Botfather.';
 $string['configsitebotusername'] = 'Будет заполнено автоматически, когда Вы сохраните токен бота.';
