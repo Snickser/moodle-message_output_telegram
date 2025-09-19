@@ -222,8 +222,8 @@ if (isset($data->message)) {
             $start = date('d.m.Y H:i', $event->timestart);
             $end = date('d.m.Y H:i', $event->timestart + $event->timeduration);
             $duration = $event->timeduration ? '(' . round($event->timeduration / 60) . ' мин)' : '';
-            $text .= "• {$start} — {$event->name} {$duration}\n" .
-            ($event->description ? "Тема: {$event->description}\n" : null);
+            $text .= "• {$start} — <a href='{$event->viewurl}'>{$event->name}</a> {$duration}\n" .
+            ($event->description ? " Тема: {$event->description}\n" : null);
         }
         $head = "🗓 Предстоящие события:\n";
         if ($text) {
