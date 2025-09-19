@@ -57,7 +57,7 @@ if (isset($data->message)) {
     $userids = $tg->get_userids_by_chatid($fromid);
     if ($userids) {
         if (count($userids) > 1) {
-            $userid = get_user_preferences('message_processor_telegram_prefid', null, $userids[0]);
+            $userid = get_user_preferences('message_processor_telegram_prefid', $userids[0], $userids[0]);
         } else {
             $userid = $userids[0];
         }
@@ -317,7 +317,7 @@ if (isset($data->message)) {
         ];
 
         if (count($userids) > 1) {
-            $userid = get_user_preferences('message_processor_telegram_prefid', null, $userids[0]);
+            $userid = get_user_preferences('message_processor_telegram_prefid', $userids[0], $userids[0]);
         }
         if ($userid) {
             set_user_preference('message_processor_telegram_lang', $lang, $userid);
