@@ -19,7 +19,7 @@
  *
  * @package     message_telegram
  * @category    string
- * @copyright   2024 Alex Orlov <snickser@gmail.com>
+ * @copyright   2025 Alex Orlov <snickser@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,13 +29,14 @@ $string['alreadyconnected'] = '✅ Ваш Telegram аккаунт подключ
 $string['botenrols'] = '🎓 Участие в курсах:';
 $string['botfaq'] = '⁉️ Часто задаваемые вопросы:';
 $string['botfaqtext'] = '';
+$string['botcertificates'] = '/certificates - выданные сертификаты';
 $string['bothelp'] = '👓 Подсказки
 /info - информация о платформе
-/faq  - часто задаваемые вопросы
 /lang - переключение языка
+/faq - часто задаваемые вопросы
 /courses - список курсов
-/events - список предстоящих событий
-/enrols - участие в курсах';
+/enrols - участие в курсах
+/events - предстоящие события';
 $string['bothelp_anonymous'] = '👓 Подсказки
 /info - информация о платформе
 /faq  - часто задаваемые вопросы';

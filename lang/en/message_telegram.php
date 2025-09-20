@@ -29,6 +29,7 @@ $string['alreadyconnected'] = '✅ Your Telegram account is linked';
 $string['botenrols'] = '🎓 Participation in courses:';
 $string['botfaq'] = '⁉️ Frequently Asked Questions:';
 $string['botfaqtext'] = '';
+$string['botcertificates'] = '/certificates - issued certificates';
 $string['bothelp'] = '👓 Helps
 /info - platform information
 /faq  - frequently asked questions

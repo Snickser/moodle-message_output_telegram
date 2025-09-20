@@ -122,7 +122,7 @@ if (isset($data->message)) {
         }
     } else if (strpos($text, '/courses') === 0 && $userid) {
         $courses = get_courses(null, true);
-        $list = null;
+        $list = '';
         foreach ($courses as $course) {
             if ($course->visible) {
                 if (!$list) {
@@ -133,6 +133,9 @@ if (isset($data->message)) {
                 $buff .= '<b>' . format_string($course->fullname, true) . '</b>' . PHP_EOL;
                 if (!empty($course->summary) && mb_strlen($course->summary) + mb_strlen($buff) < 4080) {
                     $buff .= '<i>  ' . format_string($course->summary, false) . '</i>' . PHP_EOL;
+                }
+                if (!$list) {
+                    $buff .= PHP_EOL;
                 }
                 if (mb_strlen($list) + mb_strlen($buff) < 4096) {
                     $list .= $buff;
@@ -152,6 +155,9 @@ if (isset($data->message)) {
         }
         if (count($userids) > 1) {
             $text .= PHP_EOL . get_string('botuserid', 'message_telegram');
+        }
+        if (file_exists($CFG->dirroot . '/admin/tool/certificate/lib.php')) {
+            $text .= PHP_EOL . get_string('botcertificates', 'message_telegram');
         }
         if (!empty($config->sitebotpay)) {
             $text .= "\n/pay - " . get_string('botpaytitle', 'message_telegram');
@@ -206,7 +212,7 @@ if (isset($data->message)) {
             $context = context_course::instance($course->id);
             $completion = new completion_info($course);
             if ($completion->is_enabled()) {
-                $progress = \core_completion\progress::get_course_progress_percentage($course, $userid);
+                $progress = \core_completion\progress::get_course_progress_percentage($course, $userid) ?? 0;
             }
 
             $keyboard[] = [[
@@ -232,7 +238,7 @@ if (isset($data->message)) {
             $text .= "• {$start} — <a href='{$event->viewurl}'>{$event->name}</a> {$duration}\n" .
             ($event->description ? " Тема: {$event->description}\n" : null);
         }
-        $head = "🗓 Предстоящие события:\n";
+        $head = "🗓 Предстоящие события:\n\n";
         if ($text) {
             $text = $head . $text;
         } else {
@@ -260,6 +266,13 @@ if (isset($data->message)) {
             'reply_markup' => json_encode($keyboard),
             ];
             $response = $tg->send_api_command('sendMessage', $params);
+    } else if (strpos($text, '/certificates') === 0 && $userid) {
+        $certs = get_user_certificates($userid);
+        $text = "📜 Ваши сертификаты:\n\n";
+        foreach ($certs as $cert) {
+            $text .= '• ' . "<a href='{$cert['url']}'>{$cert['name']}</a>" . ' — ' . $cert['date'] . PHP_EOL;
+        }
+        $tg->send_message($text, $userid);
     } else if (isset($data->message->successful_payment)) {
         http_response_code(200);
         echo "OK";
@@ -413,4 +426,27 @@ function private_answer($tg, $botname, $chatid, $messageid, $start = null) {
         'sendMessage',
         $options
     );
+}
+
+function get_user_certificates(int $userid) {
+    global $DB, $CFG;
+
+    $sql = "SELECT ci.id, ci.timecreated, ci.code, t.name
+              FROM {tool_certificate_issues} ci
+              JOIN {tool_certificate_templates} t ON t.id = ci.templateid
+             WHERE ci.userid = :userid
+          ORDER BY ci.timecreated DESC";
+    $records = $DB->get_records_sql($sql, ['userid' => $userid]);
+
+    $certs = [];
+    foreach ($records as $rec) {
+        $date = date('d.m.Y', $rec->timecreated);
+        $url = $CFG->wwwroot . '/admin/tool/certificate/view.php?code=' . $rec->code;
+        $certs[] = [
+            'name' => $rec->name,
+            'date' => $date,
+            'url'  => $url,
+        ];
+    }
+    return $certs;
 }
