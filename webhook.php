@@ -400,7 +400,7 @@ if (isset($data->message)) {
             $response = $tg->send_api_command('editMessageText', [
             'chat_id' => $chatid,
             'message_id' => $data->callback_query->message->message_id,
-            'text' => '📥 Выберите сертификат:',
+            'text' => '📥 Выберите сертификат',
             'reply_markup' => json_encode($keyboard),
             ]);
         }
