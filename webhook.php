@@ -24,6 +24,8 @@
 
 require_once(__DIR__ . '/../../../config.php'); // @codingStandardsIgnoreLine
 require_once($CFG->dirroot . '/calendar/lib.php');
+require_once($CFG->libdir . '/completionlib.php');
+use core_completion\progress;
 
 \core\session\manager::init_empty_session();
 
@@ -202,12 +204,18 @@ if (isset($data->message)) {
         $keyboard = [];
         foreach ($courses as $course) {
             $context = context_course::instance($course->id);
+            $completion = new completion_info($course);
+            if ($completion->is_enabled()) {
+                $progress = \core_completion\progress::get_course_progress_percentage($course, $userid);
+            }
+
             $keyboard[] = [[
-                'text' => format_string($course->fullname),
+            'text' => format_string($course->fullname) .
+            (floor($progress) ? ' (' . floor($progress) . '%)' : null),
                 'url' => $CFG->wwwroot . '/course/view.php?id=' . $course->id,
             ]];
         }
-        $tg->send_api_command('sendMessage', [
+        $response = $tg->send_api_command('sendMessage', [
         'chat_id' => $fromid,
         'text' => get_string('botenrols', 'message_telegram'),
         'reply_markup' => json_encode(['inline_keyboard' => $keyboard]),
@@ -351,6 +359,15 @@ if (isset($data->message)) {
 if ($config->telegramwebhookdump) {
     file_put_contents($CFG->tempdir . '/telegram.log', (!empty($response) ? serialize($response) : serialize($data)) .
     "\n\n", FILE_APPEND | LOCK_EX);
+}
+if ($fromid && isset($response->error_code)) {
+     $tg->send_api_command(
+         'sendMessage',
+         [
+                'chat_id' => $fromid,
+                'text' => serialize($response->description),
+                ]
+     );
 }
 
 http_response_code(200);
