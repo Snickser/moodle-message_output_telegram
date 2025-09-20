@@ -154,7 +154,7 @@ if (isset($data->message)) {
             $text = get_string('bothelp_anonymous', 'message_telegram');
         }
         if (count($userids) > 1) {
-            $text .= PHP_EOL . get_string('botuserid', 'message_telegram');
+            $text .= PHP_EOL . get_string('botuseridhelp', 'message_telegram');
         }
         if (file_exists($CFG->dirroot . '/admin/tool/certificate/lib.php')) {
             $text .= PHP_EOL . get_string('botcertificates', 'message_telegram');
@@ -201,7 +201,7 @@ if (isset($data->message)) {
         ];
         $params = [
         'chat_id' => $fromid,
-        'text' => "👑 Пользователь ID: {$userid}",
+        'text' => get_string('botuserid', 'message_telegram', $userid),
         'reply_markup' => json_encode($keyboard),
         ];
         $response = $tg->send_api_command('sendMessage', $params);
@@ -229,9 +229,9 @@ if (isset($data->message)) {
             $end = date('d.m.Y H:i', $event->timestart + $event->timeduration);
             $duration = $event->timeduration ? '(' . round($event->timeduration / 60) . ' мин)' : '';
             $text .= "• {$start} — <a href='{$event->viewurl}'>{$event->name}</a> {$duration}\n" .
-            ($event->description ? " Тема: {$event->description}\n" : null);
+            ($event->description ? ' ' . get_string('subject') . "{$event->description}\n" : null);
         }
-        $head = "🗓 Предстоящие события:\n\n";
+        $head = get_string('botevents', 'message_telegram');
         if ($text) {
             $text = $head . $text;
         } else {
@@ -261,8 +261,8 @@ if (isset($data->message)) {
             $response = $tg->send_api_command('sendMessage', $params);
     } else if (strpos($text, '/certificates') === 0 && $userid) {
         $certs = get_user_certificates($userid);
-        $text = "📜 Ваши сертификаты:\n\n";
-        $buff = null;
+        $text = get_string('botcerts', 'message_telegram');
+        $buff = '';
         foreach ($certs as $cert) {
             $buff .= '• ' . "<a href='{$cert['url']}'>{$cert['name']}</a>" . ' — ' . $cert['date'] . PHP_EOL;
         }
@@ -273,20 +273,20 @@ if (isset($data->message)) {
         }
         $keyboard = [
             'inline_keyboard' => [[[
-            'text' => '📥 Скачать',
+            'text' => get_string('botcertdownload', 'message_telegram'),
             'callback_data' => '/getcert',
             ]]],
-        ];
-        $response = $tg->send_api_command(
-            'sendMessage',
-            [
+            ];
+        $params = [
             'chat_id' => $fromid,
             'text' => $text,
-            'reply_markup' => json_encode($keyboard),
             'parse_mode' => 'HTML',
             'link_preview_options' => '{"is_disabled":true}',
-            ]
-        );
+            ];
+        if ($buff) {
+            $params['reply_markup'] = json_encode($keyboard);
+        }
+        $response = $tg->send_api_command('sendMessage', $params);
     } else if (isset($data->message->successful_payment)) {
         http_response_code(200);
         echo "OK";
@@ -364,7 +364,7 @@ if (isset($data->message)) {
                 'sendMessage',
                 [
                 'chat_id' => $fromid,
-                'text' => $languages[$lang]['flag'],
+                'text' => ($languages[$lang]['flag'] ?? 'Ⓜ️'),
                 ]
             );
             $user = new stdClass();
@@ -386,7 +386,7 @@ if (isset($data->message)) {
                     $response = $tg->send_api_command('sendDocument', [
                     'chat_id' => $chatid,
                     'document' => $certurl,
-                    'caption' => '💾 Ваш сертификат',
+                    'caption' => get_string('botcertyour', 'message_telegram'),
                     ]);
             }
         } else {
@@ -400,15 +400,16 @@ if (isset($data->message)) {
             $response = $tg->send_api_command('editMessageText', [
             'chat_id' => $chatid,
             'message_id' => $data->callback_query->message->message_id,
-            'text' => '📥 Выберите сертификат',
+            'text' => get_string('botcertselect', 'message_telegram'),
             'reply_markup' => json_encode($keyboard),
             ]);
         }
     } else if (strpos($data->callback_query->data, '/userid') === 0 && $id = substr($data->callback_query->data, 8)) {
+        $userid = $userids[0];
         $uid = clean_param($id, PARAM_INT);
         if ($userid && $uid) {
             set_user_preference('message_processor_telegram_prefid', $uid, $userid);
-            $tg->send_api_command(
+            $response = $tg->send_api_command(
                 'sendMessage',
                 [
                 'chat_id' => $fromid,
@@ -450,16 +451,16 @@ die;
  */
 function private_answer($tg, $botname, $chatid, $messageid, $start = null) {
     if ($start) {
-        $text = "🤔 Ответил бы в привате, но мы пока не знакомы ☺️";
+        $text = get_string('botanswer1', 'message_telegram');
     } else {
-        $text = "👍 Ответил в приват.";
+        $text = get_string('botabswer2', 'message_telegram');
     }
 
     $replymarkup = [
         'inline_keyboard' => [
             [
                 [
-                    'text' => 'Перейти',
+                    'text' => get_string('proceed'),
                     'url' => "https://t.me/$botname$start",
                 ],
             ],
