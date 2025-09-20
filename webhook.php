@@ -386,22 +386,21 @@ if (isset($data->message)) {
                     $response = $tg->send_api_command('sendDocument', [
                     'chat_id' => $chatid,
                     'document' => $certurl,
-                    'caption' => '📄 Ваш сертификат',
+                    'caption' => '📜 Ваш сертификат',
                     ]);
-                    $response->description .= $certurl;
             }
         } else {
             $keyboard = ['inline_keyboard' => []];
             foreach ($certs as $cert) {
                 $keyboard['inline_keyboard'][] = [
-                ['text' => $cert['name'] . ' ' . $cert['date'], 'callback_data' => '/getcert ' . $cert['code']],
+                ['text' => $cert['name'] . ' - ' . $cert['date'], 'callback_data' => '/getcert ' . $cert['code']],
                 ];
             }
 
             $response = $tg->send_api_command('editMessageText', [
             'chat_id' => $chatid,
             'message_id' => $data->callback_query->message->message_id,
-            'text' => 'Выберите сертификат:',
+            'text' => '📥 Выберите сертификат:',
             'reply_markup' => json_encode($keyboard),
             ]);
         }
