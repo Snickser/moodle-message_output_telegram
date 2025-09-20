@@ -273,10 +273,10 @@ if (isset($data->message)) {
         foreach ($certs as $cert) {
             $buff .= '• ' . "<a href='{$cert['url']}'>{$cert['name']}</a>" . ' — ' . $cert['date'] . PHP_EOL;
         }
-        if(!$buff){
-    	    $text .= get_string('none');
+        if (!$buff) {
+            $text .= get_string('none');
         } else {
-    	    $text .= $buff;
+            $text .= $buff;
         }
         $tg->send_message($text, $userid);
     } else if (isset($data->message->successful_payment)) {
@@ -434,6 +434,12 @@ function private_answer($tg, $botname, $chatid, $messageid, $start = null) {
     );
 }
 
+/**
+ * Отправляет ответ в приватный чат пользователю или уведомление в группе.
+ *
+ * @param int    $userid    Идентификатор пользователя.
+ * @param array|null список
+ */
 function get_user_certificates(int $userid) {
     global $DB, $CFG;
 
