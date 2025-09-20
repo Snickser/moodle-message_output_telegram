@@ -26,18 +26,21 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['alreadyconnected'] = '✅ Ваш Telegram аккаунт подключен';
-$string['botenrols'] = '🎓 Участие в курсах:';
-$string['botfaq'] = '⁉️ Часто задаваемые вопросы:';
-$string['botfaqtext'] = '';
-$string['botcertificates'] = '/certificates - выданные сертификаты';
 $string['botanswer1'] = '🤔 Ответил бы в привате, но мы пока не знакомы ☺ ️';
 $string['botanswer2'] = '👍 Ответил в приват';
+$string['botcertdownload'] = '📥 Скачать';
+$string['botcertificates'] = '/certificates - выданные сертификаты';
 $string['botcerts'] = '📜 Ваши сертификаты:
 
 ';
-$string['botcertyour'] = '💾 Ваш сертификат';
 $string['botcertselect'] = '📥 Выберите сертификат';
-$string['botcertdownload'] = '📥 Скачать';
+$string['botcertyour'] = '💾 Ваш сертификат';
+$string['botenrols'] = '🎓 Участие в курсах:';
+$string['botevents'] = '🗓 Предстоящие события:
+
+';
+$string['botfaq'] = '⁉️ Часто задаваемые вопросы:';
+$string['botfaqtext'] = '';
 $string['bothelp'] = '👓 Подсказки
 /info - информация о платформе
 /lang - переключение языка
@@ -53,9 +56,6 @@ $string['botlang'] = '🈯 Выбрать язык ({$a})';
 $string['botpay'] = '🏦 Выберите сумму {$a}';
 $string['botpaydesc'] = 'На поддержание учебной платформы';
 $string['botpaytitle'] = '🕉 Пожертвование 🕉';
-$string['botevents'] = '🗓 Предстоящие события:
-
-';
 $string['botuserid'] = '👑 Пользователь ID: {$a}';
 $string['botuseridhelp'] = '/userid - сменить пользователя';
 $string['configsitebotname'] = 'Будет заполнено автоматически, когда Вы сохраните токен бота.';

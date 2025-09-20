@@ -26,18 +26,21 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['alreadyconnected'] = '✅ Your Telegram account is linked';
-$string['botenrols'] = '🎓 Participation in courses:';
-$string['botfaq'] = '⁉️ Frequently Asked Questions:';
-$string['botfaqtext'] = '';
 $string['botanswer1'] = '🤔 Ответил бы в привате, но мы пока не знакомы ☺ ️';
 $string['botanswer2'] = '👍 Ответил в приват';
+$string['botcertdownload'] = '📥 Download';
 $string['botcertificates'] = '/certificates - issued certificates';
 $string['botcerts'] = '📜 Your certificates:
 
 ';
-$string['botcertyour'] = '💾 Your certificate';
 $string['botcertselect'] = '📥 Select a certificate';
-$string['botcertdownload'] = '📥 Download';
+$string['botcertyour'] = '💾 Your certificate';
+$string['botenrols'] = '🎓 Participation in courses:';
+$string['botevents'] = '🗓 Upcoming Events:
+
+';
+$string['botfaq'] = '⁉️ Frequently Asked Questions:';
+$string['botfaqtext'] = '';
 $string['bothelp'] = '👓 Helps
 /info - platform information
 /faq  - frequently asked questions
@@ -53,9 +56,6 @@ $string['botlang'] = '🈯 Select language ({$a})';
 $string['botpay'] = '🏦 Select amount {$a}';
 $string['botpaydesc'] = 'To support the learning platform';
 $string['botpaytitle'] = 'Donation 🕉';
-$string['botevents'] = '🗓 Upcoming Events:
-
-';
 $string['botuserid'] = '👑 User ID: {$a}';
 $string['botuseridhelp'] = '/userid - select user';
 $string['configfullmessagehtml'] = 'Get message from "$eventdata->fullmessagehtml" (if available), or from "fullmessage" if not set.';
