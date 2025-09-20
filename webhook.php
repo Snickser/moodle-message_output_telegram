@@ -261,7 +261,7 @@ if (isset($data->message)) {
             'text' => get_string(
                 'botlang',
                 'message_telegram',
-                get_user_preferences('message_processor_telegram_lang', get_string('no'), $userid),
+                get_user_preferences('message_processor_telegram_lang', get_string('none'), $userid),
             ),
             'reply_markup' => json_encode($keyboard),
             ];
@@ -269,8 +269,14 @@ if (isset($data->message)) {
     } else if (strpos($text, '/certificates') === 0 && $userid) {
         $certs = get_user_certificates($userid);
         $text = "📜 Ваши сертификаты:\n\n";
+        $buff = null;
         foreach ($certs as $cert) {
-            $text .= '• ' . "<a href='{$cert['url']}'>{$cert['name']}</a>" . ' — ' . $cert['date'] . PHP_EOL;
+            $buff .= '• ' . "<a href='{$cert['url']}'>{$cert['name']}</a>" . ' — ' . $cert['date'] . PHP_EOL;
+        }
+        if(!$buff){
+    	    $text .= get_string('none');
+        } else {
+    	    $text .= $buff;
         }
         $tg->send_message($text, $userid);
     } else if (isset($data->message->successful_payment)) {
