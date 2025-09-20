@@ -271,7 +271,22 @@ if (isset($data->message)) {
         } else {
             $text .= $buff;
         }
-        $tg->send_message($text, $userid);
+        $keyboard = [
+            'inline_keyboard' => [[[
+            'text' => '📥 Скачать',
+            'callback_data' => '/getcert',
+            ]]],
+        ];
+        $response = $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $fromid,
+            'text' => $text,
+            'reply_markup' => json_encode($keyboard),
+            'parse_mode' => 'HTML',
+            'link_preview_options' => '{"is_disabled":true}',
+            ]
+        );
     } else if (isset($data->message->successful_payment)) {
         http_response_code(200);
         echo "OK";
@@ -352,6 +367,39 @@ if (isset($data->message)) {
             $user->id = $userid;
             $user->lang = $lang;
             user_update_user($user, false, true);
+        }
+    } else if (strpos($data->callback_query->data, '/getcert') === 0 && $userid) {
+        $certs = get_user_certificates($userid);
+        if ($id = substr($data->callback_query->data, 9)) {
+            $issue = \tool_certificate\template::get_issue_from_code($id);
+            $context = \context_course::instance($issue->courseid, IGNORE_MISSING) ?: null;
+            $template = $issue ? \tool_certificate\template::instance($issue->templateid) : null;
+            if (
+                $template && (\tool_certificate\permission::can_verify() ||
+                \tool_certificate\permission::can_view_issue($template, $issue, $context))
+            ) {
+                $certurl = $template->get_issue_file_url($issue);
+                    $response = $tg->send_api_command('sendDocument', [
+                    'chat_id' => $chatid,
+                    'document' => $certurl,
+                    'caption' => '📄 Ваш сертификат',
+                    ]);
+                    $response->description .= $certurl;
+            }
+        } else {
+            $keyboard = ['inline_keyboard' => []];
+            foreach ($certs as $cert) {
+                $keyboard['inline_keyboard'][] = [
+                ['text' => $cert['name'] . ' ' . $cert['date'], 'callback_data' => '/getcert ' . $cert['code']],
+                ];
+            }
+
+            $response = $tg->send_api_command('editMessageText', [
+            'chat_id' => $chatid,
+            'message_id' => $data->callback_query->message->message_id,
+            'text' => 'Выберите сертификат:',
+            'reply_markup' => json_encode($keyboard),
+            ]);
         }
     } else if (strpos($data->callback_query->data, '/userid') === 0 && $id = substr($data->callback_query->data, 8)) {
         $uid = clean_param($id, PARAM_INT);
@@ -450,6 +498,7 @@ function get_user_certificates(int $userid) {
         $certs[] = [
             'name' => $rec->name,
             'date' => $date,
+            'code' => $rec->code,
             'url'  => $url,
         ];
     }
