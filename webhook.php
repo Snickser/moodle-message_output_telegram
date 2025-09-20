@@ -386,7 +386,7 @@ if (isset($data->message)) {
                     $response = $tg->send_api_command('sendDocument', [
                     'chat_id' => $chatid,
                     'document' => $certurl,
-                    'caption' => '📜 Ваш сертификат',
+                    'caption' => '💾 Ваш сертификат',
                     ]);
             }
         } else {
