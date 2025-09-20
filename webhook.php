@@ -207,25 +207,18 @@ if (isset($data->message)) {
         $response = $tg->send_api_command('sendMessage', $params);
     } else if (strpos($text, '/enrols') === 0 && $userid) {
         $courses = enrol_get_users_courses($userid);
-        $keyboard = [];
+        $text = '';
         foreach ($courses as $course) {
             $context = context_course::instance($course->id);
             $completion = new completion_info($course);
             if ($completion->is_enabled()) {
                 $progress = \core_completion\progress::get_course_progress_percentage($course, $userid) ?? 0;
             }
-
-            $keyboard[] = [[
-            'text' => format_string($course->fullname) .
-            (floor($progress) ? ' (' . floor($progress) . '%)' : null),
-                'url' => $CFG->wwwroot . '/course/view.php?id=' . $course->id,
-            ]];
+            $url = $CFG->wwwroot . '/course/view.php?id=' . $course->id;
+            $text .= PHP_EOL . '• ' . "<a href='{$url}'>" . format_string($course->fullname) . '</a>' .
+            (floor($progress) ? ' (' . floor($progress) . '%)' : null);
         }
-        $response = $tg->send_api_command('sendMessage', [
-        'chat_id' => $fromid,
-        'text' => get_string('botenrols', 'message_telegram'),
-        'reply_markup' => json_encode(['inline_keyboard' => $keyboard]),
-        ]);
+        $tg->send_message(get_string('botenrols', 'message_telegram') . PHP_EOL . $text, $userid);
     } else if (strpos($text, '/events') === 0 && $userid) {
         $calendar = \calendar_information::create(time(), 0, 0);
         $view = calendar_get_view($calendar, 'upcoming');
