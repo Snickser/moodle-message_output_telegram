@@ -428,10 +428,10 @@ function private_answer($tg, $botname, $chatid, $messageid, $start = null) {
 }
 
 /**
- * Отправляет ответ в приватный чат пользователю или уведомление в группе.
+ * Получает список сертификатов пользователя.
  *
- * @param int    $userid    Идентификатор пользователя.
- * @param array|null список
+ * @param int $userid Идентификатор пользователя в Moodle
+ * @return array Массив сертификатов пользователя
  */
 function get_user_certificates(int $userid) {
     global $DB, $CFG;
