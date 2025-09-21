@@ -304,7 +304,7 @@ if (isset($data->message)) {
             'sendMessage',
             [
             'chat_id' => $fromid,
-            'text' => '📚 ' . get_string('selectacourse'), // print_r($courses,true),
+            'text' => '📚 ' . get_string('selectacourse'),
             'reply_markup' => json_encode($keyboard),
             ]
         );
@@ -710,7 +710,7 @@ function notify_users($courseid, $groupid, $userid, $text) {
         }
         $eventdata = new \core\message\message();
         $eventdata->component         = 'moodle';
-        $eventdata->name              = 'instantmessage';   // ← тип сообщения
+        $eventdata->name              = 'instantmessage';
         $eventdata->userfrom          = $from;
         $eventdata->userto            = $to;
         $eventdata->fullmessage       = $text;
