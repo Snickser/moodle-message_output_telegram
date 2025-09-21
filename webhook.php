@@ -165,7 +165,7 @@ if (isset($data->message)) {
             $text .= PHP_EOL . get_string('botcertificates', 'message_telegram');
         }
 
-        $courses = enrol_get_all_users_courses($userid, false, '*');
+        $courses = enrol_get_all_users_courses($userid, true, '*');
         $roleids = array_map('intval', explode(',', $config->sitebotmsgroles));
         foreach ($courses as $course) {
             $context = context_course::instance($course->id);
