@@ -56,6 +56,11 @@ if (isset($data->message)) {
     $text = clean_param($data->message->text, PARAM_TEXT);
     $username = clean_param($data->message->from->username, PARAM_TEXT);
 
+    $record = $DB->get_record('message_telegram', ['chatid' => $chatid]);
+    $lastmsgid = clean_param($data->message->message_id, PARAM_TEXT);
+    $lastdata = clean_param($data->message->text, PARAM_TEXT);
+    $step = 'command';
+
     $userids = $tg->get_userids_by_chatid($fromid);
     if ($userids) {
         if (count($userids) > 1) {
@@ -159,6 +164,30 @@ if (isset($data->message)) {
         if (file_exists($CFG->dirroot . '/admin/tool/certificate/lib.php')) {
             $text .= PHP_EOL . get_string('botcertificates', 'message_telegram');
         }
+
+        $courses = enrol_get_all_users_courses($userid, false, '*');
+        $roleids = array_map('intval', explode(',', $config->sitebotmsgroles));
+        foreach ($courses as $course) {
+            $context = context_course::instance($course->id);
+            $hasrole = false;
+            foreach ($roleids as $roleid) {
+                if (user_has_role_assignment($userid, $roleid, $context->id)) {
+                    $hasrole = true;
+                    break;
+                }
+            }
+            if (!$hasrole) {
+                continue;
+            }
+            $groups = groups_get_all_groups($course->id);
+            foreach ($groups as $group) {
+                $members = groups_get_members($group->id, 'u.id');
+                if (isset($members[$userid])) {
+                    $text .= PHP_EOL . get_string('botmessagehelp', 'message_telegram');
+                }
+            }
+        }
+
         if (!empty($config->sitebotpay)) {
             $text .= "\n/pay - " . get_string('botpaytitle', 'message_telegram');
         }
@@ -249,7 +278,7 @@ if (isset($data->message)) {
         $keyboard = [
         'inline_keyboard' => $buttons,
         ];
-            $params = [
+        $params = [
             'chat_id' => $fromid,
             'text' => get_string(
                 'botlang',
@@ -257,8 +286,28 @@ if (isset($data->message)) {
                 get_user_preferences('message_processor_telegram_lang', get_string('none'), $userid),
             ),
             'reply_markup' => json_encode($keyboard),
-            ];
-            $response = $tg->send_api_command('sendMessage', $params);
+        ];
+        $response = $tg->send_api_command('sendMessage', $params);
+    } else if (strpos($text, '/message') === 0 && $userid) {
+        $courses = enrol_get_all_users_courses($userid, false, '*');
+        $buttons = [];
+        foreach ($courses as $course) {
+            $buttons[] = [[
+                'text' => format_string($course->fullname),
+                'callback_data' => '/message ' . $course->id,
+            ]];
+        }
+        $keyboard = [
+        'inline_keyboard' => $buttons,
+        ];
+        $response = $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $fromid,
+            'text' => '📚 ' . get_string('selectacourse'), // print_r($courses,true),
+            'reply_markup' => json_encode($keyboard),
+            ]
+        );
     } else if (strpos($text, '/certificates') === 0 && $userid) {
         $certs = get_user_certificates($userid);
         $text = get_string('botcerts', 'message_telegram');
@@ -291,6 +340,42 @@ if (isset($data->message)) {
         http_response_code(200);
         echo "OK";
         die;
+    } else if ($text && $userid && $record->laststep == 'get_text') {
+        if ($record->lastmsgid) {
+            $tg->send_api_command(
+                'deleteMessage',
+                [
+                'chat_id' => $fromid,
+                'message_id' => $record->lastmsgid,
+                ]
+            );
+        }
+
+        $keyboard = [
+        'inline_keyboard' => [[
+        [
+            'text' => '✉️ ' . get_string('submit'),
+            'callback_data' => $record->lastdata . ' 1',
+        ],
+        [
+            'text' => '❌ ' . get_string('cancel'),
+            'callback_data' => $record->lastdata . ' 0',
+        ],
+        ]],
+        ];
+        $response = $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $fromid,
+            'text' => $text,
+            'parse_mode' => 'HTML',
+            'link_preview_options' => '{"is_disabled":true}',
+            'reply_markup' => json_encode($keyboard),
+            ]
+        );
+        $step = 'get_text';
+        $lastmsgid = $response->result->message_id;
+        $lastdata = $record->lastdata;
     } else if ($text && $userid) {
         $tg->send_message(get_string('botidontknow', 'message_telegram'), $userid);
     } else if ($text) {
@@ -305,6 +390,22 @@ if (isset($data->message)) {
         echo "OK";
         die;
     }
+
+    if ($record) {
+        $record->lastmsgid    = $lastmsgid;
+        $record->lastdata     = $lastdata;
+        $record->laststep     = $step;
+        $record->timemodified = time();
+        $DB->update_record('message_telegram', $record);
+    } else {
+        $record = new stdClass();
+        $record->chatid       = $chatid;
+        $record->lastmsgid    = $lastmsgid;
+        $record->lastdata     = $lastdata;
+        $record->laststep     = $step;
+        $record->timemodified = time();
+        $DB->insert_record('message_telegram', $record);
+    }
 } else if (isset($data->pre_checkout_query)) {
     if (isset($data->pre_checkout_query->id)) {
         $response = $tg->send_api_command('answerPreCheckoutQuery', [
@@ -315,6 +416,11 @@ if (isset($data->message)) {
 } else if (isset($data->callback_query->data)) {
     $fromid = clean_param($data->callback_query->from->id, PARAM_INT);
     $chatid = clean_param($data->callback_query->message->chat->id, PARAM_INT);
+
+    $record = $DB->get_record('message_telegram', ['chatid' => $chatid]);
+    $lastmsgid = clean_param($data->callback_query->message->message_id, PARAM_TEXT);
+    $lastdata = clean_param($data->callback_query->data, PARAM_TEXT);
+    $step = 'callback';
 
     $userids = $tg->get_userids_by_chatid($fromid);
     if ($userids) {
@@ -372,6 +478,56 @@ if (isset($data->message)) {
             $user->lang = $lang;
             user_update_user($user, false, true);
         }
+    } else if (strpos($data->callback_query->data, '/message') === 0 && $userid) {
+        preg_match('/^\/message(?: (\d+))?(?: (\d+))?(?: (\d+))?/', $data->callback_query->data, $matches);
+        $courseid = isset($matches[1]) ? (int)$matches[1] : null;
+        $groupid  = isset($matches[2]) ? (int)$matches[2] : null;
+        $submit   = isset($matches[3]) ? (int)$matches[3] : null;
+
+        $keyboard = ['inline_keyboard' => []];
+
+        $params = [
+            'chat_id' => $chatid,
+        ];
+
+        if ($submit === 0) {
+            $step = 'cancel';
+            $params['text'] = '❎ ' . get_string('cancel');
+        } else if ($submit === 1) {
+            $step = 'done';
+            $params['text'] = '✅ ' . get_string('ok');
+            notify_users($courseid, $groupid, $userid, $data->callback_query->message->text);
+        } else if ($groupid) {
+            $params['text'] = get_string('botentertext', 'message_telegram');
+            $lastmsgid = null;
+            $step = 'get_text';
+        } else if ($courseid) {
+            $groups = groups_get_all_groups($courseid);
+            $context = context_course::instance($courseid);
+            foreach ($groups as $group) {
+                $members = groups_get_members($group->id, 'u.id');
+                if (!isset($members[$userid])) {
+                    continue;
+                }
+                $hasrole = false;
+                foreach (explode(',', $config->sitebotmsgroles) as $roleid) {
+                    if (user_has_role_assignment($userid, $roleid, $context->id)) {
+                        $hasrole = true;
+                        break;
+                    }
+                }
+                if ($hasrole) {
+                    $keyboard['inline_keyboard'][] = [[
+                    'text' => $group->name,
+                    'callback_data' => "/message {$courseid} {$group->id}",
+                    ]];
+                }
+            }
+            $params['text'] = '📖 ' . get_string('selectagroup');
+            $params['reply_markup'] = json_encode($keyboard);
+        }
+        $params['message_id'] = $data->callback_query->message->message_id;
+        $response = $tg->send_api_command('editMessageText', $params);
     } else if (strpos($data->callback_query->data, '/getcert') === 0 && $userid) {
         $certs = get_user_certificates($userid);
         if ($id = substr($data->callback_query->data, 9)) {
@@ -418,6 +574,21 @@ if (isset($data->message)) {
             );
         }
     }
+    if ($record) {
+        $record->lastmsgid    = $lastmsgid;
+        $record->lastdata     = $lastdata;
+        $record->laststep     = $step;
+        $record->timemodified = time();
+        $DB->update_record('message_telegram', $record);
+    } else {
+        $record = new stdClass();
+        $record->chatid       = $chatid;
+        $record->lastmsgid    = $lastmsgid;
+        $record->lastdata     = $lastdata;
+        $record->laststep     = $step;
+        $record->timemodified = time();
+        $DB->insert_record('message_telegram', $record);
+    }
 }
 
 if ($config->telegramwebhookdump) {
@@ -428,9 +599,9 @@ if ($fromid && isset($response->error_code)) {
      $tg->send_api_command(
          'sendMessage',
          [
-                'chat_id' => $fromid,
-                'text' => serialize($response->description),
-                ]
+            'chat_id' => $fromid,
+            'text' => serialize($response->description),
+         ]
      );
 }
 
@@ -507,4 +678,46 @@ function get_user_certificates(int $userid) {
         ];
     }
     return $certs;
+}
+
+/**
+ * Рассылает сообщение всем студентам указанной группы курса через систему сообщений Moodle.
+ *
+ * @param int    $courseid ID курса, к которому относится группа.
+ * @param int    $groupid  ID группы внутри курса.
+ * @param int    $userid   ID пользователя, от имени которого отправляется сообщение.
+ * @param string $text     Текст сообщения.
+ *
+ * @return bool Возвращает true после успешного добавления сообщений в очередь.
+ */
+function notify_users($courseid, $groupid, $userid, $text) {
+    global $DB, $CFG;
+
+    $from = $DB->get_record('user', ['id' => $userid], '*');
+
+    require_once($CFG->dirroot . '/group/lib.php');
+    require_once($CFG->dirroot . '/course/lib.php');
+
+    $users = groups_get_members($groupid, 'u.*');
+    $studentrole = $DB->get_record('role', ['shortname' => 'student'], '*');
+
+    foreach ($users as $to) {
+        if (!user_has_role_assignment($to->id, $studentrole->id, context_course::instance($courseid)->id)) {
+            continue;
+        }
+        if ($to->id == $from->id) {
+            continue;
+        }
+        $eventdata = new \core\message\message();
+        $eventdata->component         = 'moodle';
+        $eventdata->name              = 'instantmessage';   // ← тип сообщения
+        $eventdata->userfrom          = $from;
+        $eventdata->userto            = $to;
+        $eventdata->fullmessage       = $text;
+        $eventdata->fullmessageformat = FORMAT_PLAIN;
+        $eventdata->notification      = 0;
+        $eventdata->courseid          = $courseid ?? 0;
+        message_send($eventdata);
+    }
+    return true;
 }

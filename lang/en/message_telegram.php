@@ -26,8 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['alreadyconnected'] = '✅ Your Telegram account is linked';
-$string['botanswer1'] = '🤔 Ответил бы в привате, но мы пока не знакомы ☺ ️';
-$string['botanswer2'] = '👍 Ответил в приват';
+$string['botanswer1'] = '🤔 I would reply privately, but we havent met yet ☺️';
+$string['botanswer2'] = '👍 I replied privately';
 $string['botcertdownload'] = '📥 Download';
 $string['botcertificates'] = '/certificates - issued certificates';
 $string['botcerts'] = '📜 Your certificates:
@@ -35,6 +35,7 @@ $string['botcerts'] = '📜 Your certificates:
 ';
 $string['botcertselect'] = '📥 Select a certificate';
 $string['botcertyour'] = '💾 Your certificate';
+$string['botentertext'] = '✏ ️ Enter your message text';
 $string['botenrols'] = '🎓 Participation in courses:';
 $string['botevents'] = '🗓 Upcoming Events:
 
@@ -58,11 +59,13 @@ $string['botpaydesc'] = 'To support the learning platform';
 $string['botpaytitle'] = 'Donation 🕉';
 $string['botuserid'] = '👑 User ID: {$a}';
 $string['botuseridhelp'] = '/userid - select user';
+$string['botmessagehelp'] = '/message - send group message';
 $string['configfullmessagehtml'] = 'Get message from "$eventdata->fullmessagehtml" (if available), or from "fullmessage" if not set.';
 $string['configparsemode'] = 'Formatting options: Text or HTML.';
 $string['configsitebotname'] = 'This will be filled in automatically when you save the bot token.';
 $string['configsitebotpay'] = 'Bot payment token for accepting payments.';
 $string['configsitebotpaycosts'] = 'Separated by commas.';
+$string['configsitebotmsgroles'] = 'Who are allowed to make mass messages to course groups.';
 $string['configsitebotsecret'] = 'Generated randomly and automatically if empty.';
 $string['configsitebottoken'] = 'Enter the site bot token from Botfather here.';
 $string['configsitebotusername'] = 'This will be filled in automatically when you save the bot token.';

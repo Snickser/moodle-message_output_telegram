@@ -160,6 +160,16 @@ if ($ADMIN->fulltree) {
         $currencies
     ));
 
+    $context = context_user::instance($USER->id);
+    $roles = get_default_enrol_roles($context);
+    $settings->add(new admin_setting_configmultiselect(
+        'message_telegram/sitebotmsgroles',
+        get_string('roles'),
+        get_string('configsitebotmsgroles', 'message_telegram'),
+        [1, 3, 4],
+        $roles
+    ));
+
     $settings->add(new admin_setting_heading(
         'message_telegram_standart',
         get_string('configuration', 'core'),
