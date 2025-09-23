@@ -35,8 +35,8 @@ $string['botcerts'] = '📜 Your certificates:
 ';
 $string['botcertselect'] = '📥 Select a certificate';
 $string['botcertyour'] = '💾 Your certificate';
-$string['botenrols'] = '🎓 Participation in courses:';
 $string['botentertext'] = '✏ ️ Enter your message text';
+$string['botenrols'] = '🎓 Participation in courses:';
 $string['botevents'] = '🗓 Upcoming Events:
 
 ';
@@ -54,18 +54,18 @@ $string['bothelp_anonymous'] = '👓 Helps
 /faq  - frequently asked questions';
 $string['botidontknow'] = 'I dont know what this is 🤷🏻 /help';
 $string['botlang'] = '🈯 Select language ({$a})';
-$string['botmessagehelp'] = '/message - send group message';
 $string['botpay'] = '🏦 Select amount {$a}';
 $string['botpaydesc'] = 'To support the learning platform';
 $string['botpaytitle'] = 'Donation 🕉';
 $string['botuserid'] = '👑 User ID: {$a}';
 $string['botuseridhelp'] = '/userid - select user';
+$string['botmessagehelp'] = '/message - send group message';
 $string['configfullmessagehtml'] = 'Get message from "$eventdata->fullmessagehtml" (if available), or from "fullmessage" if not set.';
 $string['configparsemode'] = 'Formatting options: Text or HTML.';
-$string['configsitebotmsgroles'] = 'Who are allowed to make mass messages to course groups.';
 $string['configsitebotname'] = 'This will be filled in automatically when you save the bot token.';
 $string['configsitebotpay'] = 'Bot payment token for accepting payments.';
 $string['configsitebotpaycosts'] = 'Separated by commas.';
+$string['configsitebotmsgroles'] = 'Who are allowed to make mass messages to course groups.';
 $string['configsitebotsecret'] = 'Generated randomly and automatically if empty.';
 $string['configsitebottoken'] = 'Enter the site bot token from Botfather here.';
 $string['configsitebotusername'] = 'This will be filled in automatically when you save the bot token.';

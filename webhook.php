@@ -23,6 +23,9 @@
  */
 
 require_once(__DIR__ . '/../../../config.php'); // @codingStandardsIgnoreLine
+
+require_once(__DIR__ . '/lib.php');
+
 require_once($CFG->dirroot . '/calendar/lib.php');
 require_once($CFG->libdir . '/completionlib.php');
 use core_completion\progress;
@@ -455,10 +458,10 @@ if (isset($data->message)) {
         ]);
     } else if (strpos($data->callback_query->data, '/lang') === 0 && $lang = substr($data->callback_query->data, 6)) {
         $languages = [
-        'ru' => ['name' => 'Русский', 'flag' => '🇷🇺'],
-        'en' => ['name' => 'English', 'flag' => '🇺🇸'],
-        'be' => ['name' => 'Беларуская', 'flag' => '🇧🇾'],
-        'uk' => ['name' => 'Українська', 'flag' => '🇺🇦'],
+        'ru' => ['flag' => '🇷🇺'],
+        'en' => ['flag' => '🇺🇸'],
+        'be' => ['flag' => '🇧🇾'],
+        'uk' => ['flag' => '🇺🇦'],
         ];
 
         if (count($userids) > 1) {
@@ -492,12 +495,12 @@ if (isset($data->message)) {
 
         if ($submit === 0) {
             $step = 'cancel';
-            $params['text'] = '❎ ' . get_string('cancel');
+            $params['text'] = '❎ ' . get_string('cancelled');
         } else if ($submit === 1) {
             $step = 'done';
-            $params['text'] = '✅ ' . get_string('ok');
+            $params['text'] = '✅ ' . get_string('sent');
             notify_users($courseid, $groupid, $userid, $data->callback_query->message->text);
-        } else if ($groupid) {
+        } else if (!empty($groupid)) {
             $params['text'] = get_string('botentertext', 'message_telegram');
             $lastmsgid = null;
             $step = 'get_text';
@@ -609,115 +612,3 @@ http_response_code(200);
 echo "OK";
 die;
 
-/**
- * Отправляет ответ в приватный чат пользователю или уведомление в группе.
- *
- * @param object $tg        Экземпляр клиента Telegram API с методом send_api_command.
- * @param string $botname   Имя бота в Telegram (без @).
- * @param int    $chatid    Идентификатор чата, куда отправляется сообщение.
- * @param int    $messageid ID сообщения, на которое будет дан reply.
- * @param string|null $start Дополнительный параметр (обычно payload для deep link).
- *
- * @return mixed Результат выполнения метода send_api_command (ответ Telegram API).
- */
-function private_answer($tg, $botname, $chatid, $messageid, $start = null) {
-    if ($start) {
-        $text = get_string('botanswer1', 'message_telegram');
-    } else {
-        $text = get_string('botabswer2', 'message_telegram');
-    }
-
-    $replymarkup = [
-        'inline_keyboard' => [
-            [
-                [
-                    'text' => get_string('proceed'),
-                    'url' => "https://t.me/$botname$start",
-                ],
-            ],
-        ],
-    ];
-
-    $options = [
-        'chat_id' => $chatid,
-        'text' => $text,
-        'reply_to_message_id' => $messageid,
-        'reply_markup' => json_encode($replymarkup),
-    ];
-    return $tg->send_api_command(
-        'sendMessage',
-        $options
-    );
-}
-
-/**
- * Получает список сертификатов пользователя.
- *
- * @param int $userid Идентификатор пользователя в Moodle
- * @return array Массив сертификатов пользователя
- */
-function get_user_certificates(int $userid) {
-    global $DB, $CFG;
-
-    $sql = "SELECT ci.id, ci.timecreated, ci.code, t.name
-              FROM {tool_certificate_issues} ci
-              JOIN {tool_certificate_templates} t ON t.id = ci.templateid
-             WHERE ci.userid = :userid
-          ORDER BY ci.timecreated DESC";
-    $records = $DB->get_records_sql($sql, ['userid' => $userid]);
-
-    $certs = [];
-    foreach ($records as $rec) {
-        $date = date('d.m.Y', $rec->timecreated);
-        $url = $CFG->wwwroot . '/admin/tool/certificate/view.php?code=' . $rec->code;
-        $certs[] = [
-            'name' => $rec->name,
-            'date' => $date,
-            'code' => $rec->code,
-            'url'  => $url,
-        ];
-    }
-    return $certs;
-}
-
-/**
- * Рассылает сообщение всем студентам указанной группы курса через систему сообщений Moodle.
- *
- * @param int    $courseid ID курса, к которому относится группа.
- * @param int    $groupid  ID группы внутри курса.
- * @param int    $userid   ID пользователя, от имени которого отправляется сообщение.
- * @param string $text     Текст сообщения.
- *
- * @return bool Возвращает true после успешного добавления сообщений в очередь.
- */
-function notify_users($courseid, $groupid, $userid, $text) {
-    global $DB, $CFG;
-
-    $from = $DB->get_record('user', ['id' => $userid], '*');
-
-    require_once($CFG->dirroot . '/group/lib.php');
-    require_once($CFG->dirroot . '/course/lib.php');
-
-    $users = groups_get_members($groupid, 'u.*');
-    $studentrole = $DB->get_record('role', ['shortname' => 'student'], '*');
-
-    foreach ($users as $to) {
-        if (!user_has_role_assignment($to->id, $studentrole->id, context_course::instance($courseid)->id)) {
-            continue;
-        }
-        if ($to->id == $from->id) {
-            continue;
-        }
-        $eventdata = new \core\message\message();
-        $eventdata->component         = 'moodle';
-        $eventdata->name              = 'instantmessage';
-        $eventdata->userfrom          = $from;
-        $eventdata->userto            = $to;
-        $eventdata->fullmessage       = $text;
-        $eventdata->fullmessageformat = FORMAT_PLAIN;
-        $eventdata->notification      = 0;
-        $eventdata->courseid          = $courseid ?? 0;
-        message_send($eventdata);
-    }
-    return true;
-}
