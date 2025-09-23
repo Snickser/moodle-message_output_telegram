@@ -527,9 +527,11 @@ if (isset($data->message)) {
                     'callback_data' => "/message {$courseid} 0",
                     ]];
                 }
+                $params['text'] = '📖 ' . get_string('selectagroup');
+                $params['reply_markup'] = json_encode($keyboard);
+            } else {
+                $params['text'] = '🙅 ' . get_string('none');
             }
-            $params['text'] = '📖 ' . get_string('selectagroup');
-            $params['reply_markup'] = json_encode($keyboard);
         }
 
         $params['message_id'] = $data->callback_query->message->message_id;
