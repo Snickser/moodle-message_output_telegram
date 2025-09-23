@@ -30,13 +30,13 @@ $string['botanswer1'] = '🤔 Ответил бы в привате, но мы �
 $string['botanswer2'] = '👍 Ответил в приват';
 $string['botcertdownload'] = '📥 Скачать';
 $string['botcertificates'] = '/certificates - выданные сертификаты';
-$string['botentertext'] = '✏  ️ Введите текст сообщения';
 $string['botcerts'] = '📜 Ваши сертификаты:
 
 ';
 $string['botcertselect'] = '📥 Выберите сертификат';
 $string['botcertyour'] = '💾 Ваш сертификат';
 $string['botenrols'] = '🎓 Участие в курсах:';
+$string['botentertext'] = '✏  ️ Введите текст сообщения';
 $string['botevents'] = '🗓 Предстоящие события:
 
 ';
@@ -53,8 +53,8 @@ $string['bothelp_anonymous'] = '👓 Подсказки
 /info - информация о платформе
 /faq  - часто задаваемые вопросы';
 $string['botidontknow'] = 'Не знаю что это такое 🤷🏻 /help';
-$string['botmessagehelp'] = '/message - отправить групповое сообщение';
 $string['botlang'] = '🈯 Выбрать язык ({$a})';
+$string['botmessagehelp'] = '/message - отправить групповое сообщение';
 $string['botpay'] = '🏦 Выберите сумму {$a}';
 $string['botpaydesc'] = 'На поддержание учебной платформы';
 $string['botpaytitle'] = '🕉 Пожертвование 🕉';
