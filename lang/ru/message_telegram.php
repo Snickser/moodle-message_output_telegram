@@ -30,6 +30,7 @@ $string['botanswer1'] = '🤔 Ответил бы в привате, но мы �
 $string['botanswer2'] = '👍 Ответил в приват';
 $string['botcertdownload'] = '📥 Скачать';
 $string['botcertificates'] = '/certificates - выданные сертификаты';
+$string['botmsgall'] = '🔺 Всем студентам курса';
 $string['botcerts'] = '📜 Ваши сертификаты:
 
 ';

@@ -54,6 +54,7 @@ $string['bothelp_anonymous'] = '👓 Helps
 /faq  - frequently asked questions';
 $string['botidontknow'] = 'I dont know what this is 🤷🏻 /help';
 $string['botlang'] = '🈯 Select language ({$a})';
+$string['botmsgall'] = 'Тo all students';
 $string['botmessagehelp'] = '/message - send group message';
 $string['botpay'] = '🏦 Select amount {$a}';
 $string['botpaydesc'] = 'To support the learning platform';
@@ -62,7 +63,7 @@ $string['botuserid'] = '👑 User ID: {$a}';
 $string['botuseridhelp'] = '/userid - select user';
 $string['configfullmessagehtml'] = 'Get message from "$eventdata->fullmessagehtml" (if available), or from "fullmessage" if not set.';
 $string['configparsemode'] = 'Formatting options: Text or HTML.';
-$string['configsitebotmsgroles'] = 'Who are allowed to make mass messages to course groups.';
+$string['configsitebotmsgroles'] = 'Who is allowed to send mass messages to course groups.';
 $string['configsitebotname'] = 'This will be filled in automatically when you save the bot token.';
 $string['configsitebotpay'] = 'Bot payment token for accepting payments.';
 $string['configsitebotpaycosts'] = 'Separated by commas.';

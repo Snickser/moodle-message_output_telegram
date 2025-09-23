@@ -505,30 +505,33 @@ if (isset($data->message)) {
             $lastmsgid = null;
             $step = 'get_text';
         } else if ($courseid) {
-            $groups = groups_get_all_groups($courseid);
             $context = context_course::instance($courseid);
-            foreach ($groups as $group) {
-                $members = groups_get_members($group->id, 'u.id');
-                if (!isset($members[$userid])) {
-                    continue;
+            $groups = groups_get_all_groups($courseid, $userid);
+            $hasrole = false;
+            foreach (explode(',', $config->sitebotmsgroles) as $roleid) {
+                if (user_has_role_assignment($userid, $roleid, $context->id)) {
+                    $hasrole = true;
+                    break;
                 }
-                $hasrole = false;
-                foreach (explode(',', $config->sitebotmsgroles) as $roleid) {
-                    if (user_has_role_assignment($userid, $roleid, $context->id)) {
-                        $hasrole = true;
-                        break;
-                    }
-                }
-                if ($hasrole) {
+            }
+            if ($hasrole) {
+                foreach ($groups as $group) {
                     $keyboard['inline_keyboard'][] = [[
                     'text' => $group->name,
                     'callback_data' => "/message {$courseid} {$group->id}",
+                    ]];
+                }
+                if (!$groups) {
+                    $keyboard['inline_keyboard'][] = [[
+                    'text' => get_string('botmsgall', 'message_telegram'),
+                    'callback_data' => "/message {$courseid} 0",
                     ]];
                 }
             }
             $params['text'] = '📖 ' . get_string('selectagroup');
             $params['reply_markup'] = json_encode($keyboard);
         }
+
         $params['message_id'] = $data->callback_query->message->message_id;
         $response = $tg->send_api_command('editMessageText', $params);
     } else if (strpos($data->callback_query->data, '/getcert') === 0 && $userid) {
