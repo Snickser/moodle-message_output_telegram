@@ -237,6 +237,26 @@ if (isset($data->message)) {
         'reply_markup' => json_encode($keyboard),
         ];
         $response = $tg->send_api_command('sendMessage', $params);
+    } else if (strpos($text, '/progress') === 0 && $userid) {
+        $courses = enrol_get_users_courses($userid);
+        $buttons = [];
+        foreach ($courses as $course) {
+            $buttons[] = [[
+                'text' => format_string($course->fullname),
+                'callback_data' => '/progress ' . $course->id,
+            ]];
+        }
+        $keyboard = [
+        'inline_keyboard' => $buttons,
+        ];
+        $response = $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $fromid,
+            'text' => '📊 ' . get_string('selectacourse'),
+            'reply_markup' => json_encode($keyboard),
+            ]
+        );
     } else if (strpos($text, '/enrols') === 0 && $userid) {
         $courses = enrol_get_users_courses($userid);
         $text = '';
@@ -482,6 +502,36 @@ if (isset($data->message)) {
             $user->lang = $lang;
             user_update_user($user, false, true);
         }
+    } else if (strpos($data->callback_query->data, '/progress') === 0 && $userid) {
+        $progress = [
+        '⬜️',
+        '🟩',
+        '🟥',
+        '🟥',
+        ];
+
+        $courseid = (int)substr($data->callback_query->data, 10);
+        require_once($CFG->libdir . '/completionlib.php');
+
+        $course = get_course($courseid);
+        $info   = new completion_info($course);
+        $modinfo = get_fast_modinfo($course, $userid);
+
+        $text = '🎓 ' . format_string($course->fullname) . "\n\n";
+
+        foreach ($modinfo->get_cms() as $cm) {
+            if (!$cm->uservisible) {
+                continue;
+            }
+            if (!$info->is_enabled($cm)) {
+                continue;
+            }
+            $data = $info->get_data($cm, false, $userid);
+            $state = (int)$data->completionstate;
+
+            $text .= "{$progress[$state]} {$cm->name}\n";
+        }
+        $tg->send_message($text, $userid);
     } else if (strpos($data->callback_query->data, '/message') === 0 && $userid) {
         preg_match('/^\/message(?: (\d+))?(?: (\d+))?(?: (\d+))?/', $data->callback_query->data, $matches);
         $courseid = isset($matches[1]) ? (int)$matches[1] : null;
