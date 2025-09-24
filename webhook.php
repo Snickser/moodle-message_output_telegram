@@ -529,7 +529,7 @@ if (isset($data->message)) {
             $data = $info->get_data($cm, false, $userid);
             $state = (int)$data->completionstate;
 
-            $text .= "{$progress[$state]} {$cm->name}\n";
+            $text .= $progress[$state] . ' ' . format_string($cm->name) . PHP_EOL;
         }
         $tg->send_message($text, $userid);
     } else if (strpos($data->callback_query->data, '/message') === 0 && $userid) {
