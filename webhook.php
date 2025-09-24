@@ -344,16 +344,6 @@ if (isset($data->message)) {
         echo "OK";
         die;
     } else if ($text && $userid && $record->laststep == 'get_text') {
-        if ($record->lastmsgid) {
-            $tg->send_api_command(
-                'deleteMessage',
-                [
-                'chat_id' => $fromid,
-                'message_id' => $record->lastmsgid,
-                ]
-            );
-        }
-
         $keyboard = [
         'inline_keyboard' => [[
         [
@@ -376,6 +366,17 @@ if (isset($data->message)) {
             'reply_markup' => json_encode($keyboard),
             ]
         );
+
+        if ($record->lastmsgid) {
+            $tg->send_api_command(
+                'deleteMessage',
+                [
+                'chat_id' => $fromid,
+                'message_id' => $record->lastmsgid,
+                ]
+            );
+        }
+
         $step = 'get_text';
         $lastmsgid = $response->result->message_id;
         $lastdata = $record->lastdata;
