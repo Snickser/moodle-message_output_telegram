@@ -270,8 +270,8 @@ if (isset($data->message)) {
             $text .= PHP_EOL . '• ' . "<a href='{$url}'>" . format_string($course->fullname) . '</a>' .
             (floor($progress) ? ' (' . floor($progress) . '%)' : null);
         }
-        if(!$courses){
-    	    $text = PHP_EOL.get_string('no').PHP_EOL;
+        if (!$courses) {
+            $text = PHP_EOL . get_string('no') . PHP_EOL;
         }
         $tg->send_message(get_string('botenrols', 'message_telegram') . PHP_EOL . $text, $userid);
     } else if (strpos($text, '/events') === 0 && $userid) {
