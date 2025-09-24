@@ -261,7 +261,7 @@ if (isset($data->message)) {
             $end = date('d.m.Y H:i', $event->timestart + $event->timeduration);
             $duration = $event->timeduration ? '(' . round($event->timeduration / 60) . ' мин)' : '';
             $text .= "• {$start} — <a href='{$event->viewurl}'>{$event->name}</a> {$duration}\n" .
-            ($event->description ? ' ' . get_string('subject') . "{$event->description}\n" : null);
+            ($event->description ? ' ' . get_string('subject') . ": {$event->description}\n" : null);
         }
         $head = get_string('botevents', 'message_telegram');
         if ($text) {
