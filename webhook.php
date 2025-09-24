@@ -270,6 +270,9 @@ if (isset($data->message)) {
             $text .= PHP_EOL . '• ' . "<a href='{$url}'>" . format_string($course->fullname) . '</a>' .
             (floor($progress) ? ' (' . floor($progress) . '%)' : null);
         }
+        if(!$courses){
+    	    $text = PHP_EOL.get_string('no').PHP_EOL;
+        }
         $tg->send_message(get_string('botenrols', 'message_telegram') . PHP_EOL . $text, $userid);
     } else if (strpos($text, '/events') === 0 && $userid) {
         $calendar = \calendar_information::create(time(), 0, 0);
@@ -339,7 +342,7 @@ if (isset($data->message)) {
             $buff .= '• ' . "<a href='{$cert['url']}'>{$cert['name']}</a>" . ' — ' . $cert['date'] . PHP_EOL;
         }
         if (!$buff) {
-            $text .= get_string('none');
+            $text .= get_string('no');
         } else {
             $text .= $buff;
         }
