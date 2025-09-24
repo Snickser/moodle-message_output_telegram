@@ -161,11 +161,11 @@ if (isset($data->message)) {
         } else {
             $text = get_string('bothelp_anonymous', 'message_telegram');
         }
-        if (count($userids) > 1) {
-            $text .= PHP_EOL . get_string('botuseridhelp', 'message_telegram');
-        }
         if (file_exists($CFG->dirroot . '/admin/tool/certificate/lib.php')) {
             $text .= PHP_EOL . get_string('botcertificates', 'message_telegram');
+        }
+        if (count($userids) > 1) {
+            $text .= PHP_EOL . get_string('botuseridhelp', 'message_telegram');
         }
 
         $courses = enrol_get_all_users_courses($userid, true, '*');
