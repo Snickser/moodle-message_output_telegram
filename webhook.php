@@ -517,7 +517,7 @@ if (isset($data->message)) {
         $info   = new completion_info($course);
         $modinfo = get_fast_modinfo($course, $userid);
 
-        $text = '🎓 ' . format_string($course->fullname) . "\n\n";
+        $text = '🎓 <b>' . format_string($course->fullname) . "</b>\n\n";
 
         foreach ($modinfo->get_cms() as $cm) {
             if (!$cm->uservisible) {
