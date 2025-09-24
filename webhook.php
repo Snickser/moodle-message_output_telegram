@@ -489,6 +489,8 @@ if (isset($data->message)) {
 
         $keyboard = ['inline_keyboard' => []];
 
+        $notify = false;
+
         $params = [
             'chat_id' => $chatid,
         ];
@@ -499,8 +501,8 @@ if (isset($data->message)) {
         } else if ($submit === 1) {
             $step = 'done';
             $params['text'] = '✅ ' . get_string('sent');
-            notify_users($courseid, $groupid, $userid, $data->callback_query->message->text);
-        } else if (!empty($groupid)) {
+            $notify = true;
+        } else if ($groupid === 0 || !empty($groupid)) {
             $params['text'] = get_string('botentertext', 'message_telegram');
             $lastmsgid = null;
             $step = 'get_text';
@@ -530,12 +532,15 @@ if (isset($data->message)) {
                 $params['text'] = '📖 ' . get_string('selectagroup');
                 $params['reply_markup'] = json_encode($keyboard);
             } else {
-                $params['text'] = '🙅 ' . get_string('none');
+                $params['text'] = '🙅 ' . get_string('no');
             }
         }
 
         $params['message_id'] = $data->callback_query->message->message_id;
         $response = $tg->send_api_command('editMessageText', $params);
+        if ($notify) {
+            notify_users($courseid, $groupid, $userid, $data->callback_query->message->text);
+        }
     } else if (strpos($data->callback_query->data, '/getcert') === 0 && $userid) {
         $certs = get_user_certificates($userid);
         if ($id = substr($data->callback_query->data, 9)) {
@@ -577,7 +582,7 @@ if (isset($data->message)) {
                 'sendMessage',
                 [
                 'chat_id' => $fromid,
-                'text' => $uid,
+                'text' => '✅ ' . get_string('bulkselection', 'core', '🆔 ' . $uid),
                 ]
             );
         }

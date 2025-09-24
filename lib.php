@@ -152,17 +152,22 @@ function get_user_certificates(int $userid) {
  *
  * @return bool Возвращает true после успешного добавления сообщений в очередь.
  */
-function notify_users($courseid, $groupid, $userid, $text) {
+function notify_users(int $courseid, int $groupid, int $userid, $text) {
     global $DB, $CFG;
 
     $from = $DB->get_record('user', ['id' => $userid], '*');
 
     require_once($CFG->dirroot . '/group/lib.php');
     require_once($CFG->dirroot . '/course/lib.php');
-
-    $users = groups_get_members($groupid, 'u.*');
+    if ($groupid > 0) {
+        $users = groups_get_members($groupid, 'u.*');
+    } else if ($groupid == 0) {
+        $context = context_course::instance($courseid);
+        $users = get_enrolled_users($context);
+    } else {
+        return false;
+    }
     $studentrole = $DB->get_record('role', ['shortname' => 'student'], '*');
-
     foreach ($users as $to) {
         if (!user_has_role_assignment($to->id, $studentrole->id, context_course::instance($courseid)->id)) {
             continue;
