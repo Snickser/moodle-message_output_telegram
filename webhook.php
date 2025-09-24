@@ -287,7 +287,7 @@ if (isset($data->message)) {
         if ($text) {
             $text = $head . $text;
         } else {
-            $text = $head . get_string('no');
+            $text = $head . get_string('none');
         }
         $tg->send_message($text, $userid);
     } else if (strpos($text, '/lang') === 0 && $userid) {
