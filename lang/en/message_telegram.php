@@ -48,7 +48,8 @@ $string['bothelp'] = '👓 Helps
 /lang - language switching
 /courses - course list
 /events - upcoming
-/enrols - participation in courses';
+/enrols - participation in courses
+/progress - status of course elements';
 $string['bothelp_anonymous'] = '👓 Helps
 /info - platform information
 /faq  - frequently asked questions';

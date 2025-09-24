@@ -15,7 +15,8 @@ This plugin provides Moodle messaging provider for Telegram.
 ![изображение](https://github.com/user-attachments/assets/8d2504a5-064f-4b35-8e3a-de8bc93fc8e8)
 
 ---
-<img width="915" height="447" alt="изображение" src="https://github.com/user-attachments/assets/9778b9e6-f666-44e8-9635-a256fe15bcf4" />
+<img width="1130" height="813" alt="изображение" src="https://github.com/user-attachments/assets/b9bed7e8-e688-40bf-aed6-2d9fc875d147" />
+
 
 ---
 
