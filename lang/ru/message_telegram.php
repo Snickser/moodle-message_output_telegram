@@ -19,16 +19,55 @@
  *
  * @package     message_telegram
  * @category    string
- * @copyright   2024 Alex Orlov <snickser@gmail.com>
+ * @copyright   2025 Alex Orlov <snickser@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $string['alreadyconnected'] = '✅ Ваш Telegram аккаунт подключен';
+$string['botanswer1'] = '🤔 Ответил бы в привате, но мы пока не знакомы ☺ ️';
+$string['botanswer2'] = '👍 Ответил в приват';
+$string['botcertdownload'] = '📥 Скачать';
+$string['botcertificates'] = '/certificates - выданные сертификаты';
+$string['botmsgall'] = '🔺 Всем студентам курса';
+$string['botcerts'] = '📜 Ваши сертификаты:
+
+';
+$string['botcertselect'] = '📥 Выберите сертификат';
+$string['botcertyour'] = '💾 Ваш сертификат';
+$string['botenrols'] = '🎓 Участие в курсах:';
+$string['botentertext'] = '✏  Введите текст сообщения';
+$string['botevents'] = '🗓 Предстоящие события:
+
+';
+$string['botfaq'] = '⁉️ Часто задаваемые вопросы:';
+$string['botfaqtext'] = '';
+$string['bothelp'] = '👓 Подсказки
+/info - информация о платформе
+/lang - переключение языка
+/faq - часто задаваемые вопросы
+/courses - список всех курсов
+/enrols - участие в курсах
+/events - предстоящие события';
+$string['bothelp_anonymous'] = '👓 Подсказки
+/info - информация о платформе
+/faq  - часто задаваемые вопросы';
+$string['botidontknow'] = 'Не знаю что это такое 🤷🏻 /help';
+$string['botlang'] = '🈯 Выбрать язык ({$a})';
+$string['botmessagehelp'] = '/message - отправить групповое сообщение';
+$string['botpay'] = '🏦 Выберите сумму {$a}';
+$string['botpaydesc'] = 'На поддержание учебной платформы';
+$string['botpaytitle'] = '🕉 Пожертвование 🕉';
+$string['botuserid'] = '👑 Пользователь 🆔 {$a}';
+$string['botuseridhelp'] = '/userid - сменить пользователя';
 $string['configsitebotname'] = 'Будет заполнено автоматически, когда Вы сохраните токен бота.';
 $string['configsitebottoken'] = 'Введите сюда токен бота сайта, полученный от Botfather.';
 $string['configsitebotusername'] = 'Будет заполнено автоматически, когда Вы сохраните токен бота.';
+$string['connectinstructions'] = 'После того, как вы нажмёте ссылку ниже, вам нужно будет разрешить открытие ссылки в Telegram с вашей учётной записью Telegram. В Telegram нажмите кнопку «Start» в открывшемся чате «{$a}», чтобы подключить свою учётную запись.<br>После завершения вернитесь на эту страницу и нажмите «Save changes (Сохранить изменения)». Полную инструкцию <a href="https://docs.moodle.org/33/en/Telegram_message_processor#Configuring_user_preferences" target="_blank">читаем здесь</a>.';
+$string['connectme'] = '<br><p style="color: blue;"><b>> Подключить свой аккаунт к Telegram <</b></p>';
+$string['connectmemenu'] = '⚠️ Подключить свой аккаунт к Telegram';
+$string['firstregister'] = 'Сначала зарегистрируйтесь на сайте, и подключите уведомления через Телеграм. {$a}';
 $string['notconfigured'] = 'Сервер Telegram не настроен, поэтому сообщения Telegram не могут быть отправлены';
 $string['pluginname'] = 'Telegram';
 $string['removetelegram'] = 'Отключиться от Telegram';
@@ -40,25 +79,4 @@ $string['sitebottokennotsetup'] = 'Токен бота для сайта дол�
 $string['sitebotusername'] = 'Ник бота для сайта';
 $string['telegrambottoken'] = 'Токен бота Telegram';
 $string['telegramchatid'] = 'ID чата Telegram';
-$string['connectinstructions'] = 'После того, как вы нажмёте ссылку ниже, вам нужно будет разрешить открытие ссылки в Telegram с вашей учётной записью Telegram. В Telegram нажмите кнопку «Start» в открывшемся чате «{$a}», чтобы подключить свою учётную запись.<br>После завершения вернитесь на эту страницу и нажмите «Save changes (Сохранить изменения)». Полную инструкцию <a href="https://docs.moodle.org/33/en/Telegram_message_processor#Configuring_user_preferences" target="_blank">читаем здесь</a>.';
-$string['connectme'] = '<br><p style="color: blue;"><b>> Подключить свой аккаунт к Telegram <</b></p>';
-$string['connectmemenu'] = '⚠️ Подключить свой аккаунт к Telegram';
 $string['welcome'] = '✅ Ваш аккаунт успешно подключен!';
-$string['bothelp'] = '👓 Подсказки
-/info - информация о платформе
-/faq  - часто задаваемые вопросы
-/lang - переключение языка
-/courses - список курсов
-/events - список предстоящих событий
-/enrols - участие в курсах';
-$string['bothelp_anonymous'] = '👓 Подсказки
-/info - информация о платформе
-/faq  - часто задаваемые вопросы';
-$string['botidontknow'] = 'Не знаю что это такое 🤷🏻‍♂ /help';
-$string['botenrols'] = '🎓 Участие в курсах:';
-$string['botlang'] = '🈯 Выбрать язык ({$a})';
-$string['botpay'] = '🏦 Выберите сумму {$a}';
-$string['botpaytitle'] = 'Пожертвование 🕉';
-$string['botpaydesc'] = 'На поддержание учебной платформы';
-$string['botfaq'] = '⁉️ Часто задаваемые вопросы:';
-$string['botfaqtext'] = '';

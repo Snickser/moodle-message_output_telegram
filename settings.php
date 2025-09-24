@@ -160,6 +160,16 @@ if ($ADMIN->fulltree) {
         $currencies
     ));
 
+    $context = context_user::instance($USER->id);
+    $roles = get_default_enrol_roles($context);
+    $settings->add(new admin_setting_configmultiselect(
+        'message_telegram/sitebotmsgroles',
+        get_string('roles'),
+        get_string('configsitebotmsgroles', 'message_telegram'),
+        [1, 3, 4],
+        $roles
+    ));
+
     $settings->add(new admin_setting_heading(
         'message_telegram_standart',
         get_string('configuration', 'core'),
@@ -192,13 +202,20 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox(
         'message_telegram/telegramlog',
         get_string('telegramlog', 'message_telegram'),
-        get_string('configtelegramlog', 'message_telegram'),
+        get_string('configtelegramlog', 'message_telegram', $CFG->tempdir),
         false
     ));
 
     $settings->add(new admin_setting_configcheckbox(
         'message_telegram/telegramlogdump',
         get_string('telegramlogdump', 'message_telegram'),
+        get_string('configtelegramlogdump', 'message_telegram'),
+        false
+    ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'message_telegram/telegramwebhookdump',
+        get_string('telegramwebhookdump', 'message_telegram'),
         get_string('configtelegramlogdump', 'message_telegram'),
         false
     ));
