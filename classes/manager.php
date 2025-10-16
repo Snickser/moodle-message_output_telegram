@@ -483,7 +483,7 @@ class manager {
                         ['/info', '/lang'],
                         ['/help'],
                         ],
-                        'resize_keyboard' => true,
+                        'resize_keyboard' => false,
                         'one_time_keyboard' => true,
                         ]),
                         ]
