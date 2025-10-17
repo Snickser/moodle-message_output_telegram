@@ -194,11 +194,8 @@ if (isset($data->message)) {
         if (!empty($config->sitebotpay)) {
             $text .= "\n/pay - " . get_string('botpaytitle', 'message_telegram');
         }
-        $params = [
-            'chat_id' => $fromid,
-            'text' => $text,
-            ];
-        $response = $tg->send_api_command('sendMessage', $params);
+
+        $tg->send_message($text, $userid);
     } else if (strpos($text, '/info') === 0) {
         $params = [
             'chat_id' => $fromid,
@@ -404,7 +401,22 @@ if (isset($data->message)) {
         $lastmsgid = $response->result->message_id;
         $lastdata = $record->lastdata;
     } else if ($text && $userid) {
-        $tg->send_message(get_string('botidontknow', 'message_telegram'), $userid);
+        $response = $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $fromid,
+            'text' => get_string('botidontknow', 'message_telegram'),
+            'reply_markup' => json_encode([
+            'keyboard' => [
+            ['/info', '/lang'],
+            ['/help'],
+            ],
+            'resize_keyboard' => true,
+            'one_time_keyboard' => false,
+            'input_field_placeholder' => get_string('placeholdertypeorselect'),
+            ]),
+            ]
+        );
     } else if ($text) {
         $tg->send_api_command(
             'sendMessage',
