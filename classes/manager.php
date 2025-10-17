@@ -473,7 +473,21 @@ class manager {
                 if ($this->usersecret_match($key, $userid)) {
                     set_user_preference('message_processor_telegram_chatid', $chatid, $userid);
                     $this->set_customprofile_username($userid, $username);
-                    $this->send_message(get_string('welcome', 'message_telegram'), $userid);
+                    $this->send_api_command(
+                        'sendMessage',
+                        [
+                        'chat_id' => $chatid,
+                        'text' => get_string('welcome', 'message_telegram'),
+                        'reply_markup' => json_encode([
+                        'keyboard' => [
+                        ['/info', '/lang'],
+                        ['/help'],
+                        ],
+                        'resize_keyboard' => true,
+                        'one_time_keyboard' => false,
+                        ]),
+                        ]
+                    );
                     $this->send_message('Use /help', $userid);
                     return true;
                 }

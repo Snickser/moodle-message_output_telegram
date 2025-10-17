@@ -31,14 +31,14 @@ $string['botanswer2'] = '👍 Ответил в приват';
 $string['botcertdownload'] = '📥 Скачать';
 $string['botcertificates'] = '/certificates - выданные сертификаты';
 $string['botmsgall'] = '🔺 Всем студентам курса';
-$string['botcerts'] = '📜 Ваши сертификаты:
+$string['botcerts'] = '📜 <b>Ваши сертификаты</b>
 
 ';
 $string['botcertselect'] = '📥 Выберите сертификат';
 $string['botcertyour'] = '💾 Ваш сертификат';
-$string['botenrols'] = '🎓 Участие в курсах:';
+$string['botenrols'] = '🎓 <b>Участие в курсах</b>';
 $string['botentertext'] = '✏  Введите текст сообщения';
-$string['botevents'] = '🗓 Предстоящие события:
+$string['botevents'] = '🗓 <b>Предстоящие события</b>
 
 ';
 $string['botfaq'] = '⁉️ Часто задаваемые вопросы:';
