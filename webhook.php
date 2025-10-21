@@ -534,6 +534,8 @@ if (isset($data->message)) {
 
         $text = '🎓 <b>' . format_string($course->fullname) . "</b>\n\n";
 
+        $completed = 0;
+        $total = 0;
         foreach ($modinfo->get_cms() as $cm) {
             if (!$cm->uservisible) {
                 continue;
@@ -541,11 +543,19 @@ if (isset($data->message)) {
             if (!$info->is_enabled($cm)) {
                 continue;
             }
+            $total++;
             $data = $info->get_data($cm, false, $userid);
             $state = (int)$data->completionstate;
+            if ($state > 0) {
+                $completed++;
+            }
 
-            $text .= $progress[$state] . ' ' . format_string($cm->name) . PHP_EOL;
+            $text .= $progress[$state] . ' • ' . format_string($cm->name) . PHP_EOL;
         }
+
+        $percentage = $total ? round(($completed / $total) * 100, 1) : 0;
+        $text .= "\n📈 " . get_string('progress') . ': ' . round($percentage, 1) . "%";
+
         $tg->send_message($text, $userid);
     } else if (strpos($data->callback_query->data, '/message') === 0 && $userid) {
         preg_match('/^\/message(?: (\d+))?(?: (\d+))?(?: (\d+))?/', $data->callback_query->data, $matches);
