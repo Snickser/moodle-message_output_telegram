@@ -627,12 +627,12 @@ if (isset($data->message)) {
                 $template && (\tool_certificate\permission::can_verify() ||
                 \tool_certificate\permission::can_view_issue($template, $issue, $context))
             ) {
-                $certurl = $template->get_issue_file_url($issue);
-                    $response = $tg->send_api_command('sendDocument', [
+                $certurl = $template->get_issue_file($issue);
+                $response = $tg->send_api_command('sendDocument', [
                     'chat_id' => $chatid,
                     'document' => $certurl,
                     'caption' => get_string('botcertyour', 'message_telegram'),
-                    ]);
+                ]);
             }
         } else {
             $keyboard = ['inline_keyboard' => []];
