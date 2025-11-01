@@ -187,6 +187,7 @@ if (isset($data->message)) {
                 $members = groups_get_members($group->id, 'u.id');
                 if (isset($members[$userid])) {
                     $text .= PHP_EOL . get_string('botmessagehelp', 'message_telegram');
+		    break;
                 }
             }
         }
@@ -595,7 +596,7 @@ if (isset($data->message)) {
             if ($hasrole) {
                 foreach ($groups as $group) {
                     $keyboard['inline_keyboard'][] = [[
-                    'text' => $group->name,
+                    'text' => format_string("$group->name $group->description"),
                     'callback_data' => "/message {$courseid} {$group->id}",
                     ]];
                 }
@@ -608,7 +609,7 @@ if (isset($data->message)) {
                 $params['text'] = '📖 ' . get_string('selectagroup');
                 $params['reply_markup'] = json_encode($keyboard);
             } else {
-                $params['text'] = '🙅 ' . get_string('no');
+                $params['text'] = '💁🏻 ' . get_string('none');
             }
         }
 
