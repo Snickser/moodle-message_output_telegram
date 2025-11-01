@@ -187,7 +187,7 @@ if (isset($data->message)) {
                 $members = groups_get_members($group->id, 'u.id');
                 if (isset($members[$userid])) {
                     $text .= PHP_EOL . get_string('botmessagehelp', 'message_telegram');
-		    break;
+                    break;
                 }
             }
         }
