@@ -596,7 +596,7 @@ if (isset($data->message)) {
             if ($hasrole) {
                 foreach ($groups as $group) {
                     $keyboard['inline_keyboard'][] = [[
-                    'text' => format_string("$group->name $group->description"),
+                    'text' => format_string($group->name . ($group->description ? " - {$group->description}" : null)),
                     'callback_data' => "/message {$courseid} {$group->id}",
                     ]];
                 }
