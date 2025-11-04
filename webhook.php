@@ -283,8 +283,9 @@ if (isset($data->message)) {
             $end = date('d.m.Y H:i', $event->timestart + $event->timeduration);
             $duration = $event->timeduration ? '(' . round($event->timeduration / 60) . ' мин)' : '';
             $text .= $eventtype[$event->eventtype] .
-            " {$start} — <a href='{$event->viewurl}'>{$event->name}</a> {$duration}\n" .
-            ($event->description ? ' ' . get_string('subject') . ": {$event->description}\n" : null);
+            " {$start} — <a href='{$event->viewurl}'>" . format_string($event->name) . "</a> {$duration}\n" .
+            ($event->description ? ' ' . get_string('subject') . ': ' .
+            mb_substr(trim(format_string($event->description)), 0, 100, 'UTF-8') . PHP_EOL : null);
         }
         $head = get_string('botevents', 'message_telegram');
         if ($text) {
