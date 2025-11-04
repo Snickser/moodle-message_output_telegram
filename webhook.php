@@ -273,7 +273,7 @@ if (isset($data->message)) {
         }
         $tg->send_message(get_string('botenrols', 'message_telegram') . PHP_EOL . $text, $userid);
     } else if (strpos($text, '/events') === 0 && $userid) {
-        $eventtype = ['user' => '🙂', 'group' => '👥', 'course' => '🎓'];
+        $eventtype = ['user' => '📌', 'group' => '🔔', 'course' => '🎓'];
         $calendar = \calendar_information::create(time(), 0, 0);
         $view = calendar_get_view($calendar, 'upcoming');
         $events = $view[0]->events ?? [];
@@ -283,7 +283,7 @@ if (isset($data->message)) {
             $end = date('d.m.Y H:i', $event->timestart + $event->timeduration);
             $duration = $event->timeduration ? '(' . round($event->timeduration / 60) . ' мин)' : '';
             $text .= $eventtype[$event->eventtype] .
-            " • {$start} — <a href='{$event->viewurl}'>{$event->name}</a> {$duration}\n" .
+            " {$start} — <a href='{$event->viewurl}'>{$event->name}</a> {$duration}\n" .
             ($event->description ? ' ' . get_string('subject') . ": {$event->description}\n" : null);
         }
         $head = get_string('botevents', 'message_telegram');
