@@ -295,7 +295,7 @@ if (isset($data->message)) {
 
         $keyboard = [
             'inline_keyboard' => [[
-            ['text' => '➕ ' . get_string('newevent', 'calendar'), 'callback_data' => '/newevent'],
+            ['text' => '+ ' . get_string('newevent', 'calendar'), 'callback_data' => '/newevent'],
             ]],
         ];
         $response = $tg->send_api_command(
@@ -751,7 +751,7 @@ if (isset($data->message)) {
             $params['text'] = '✏️ ' . get_string('enter', 'message_telegram') . ' ' . get_string('eventname', 'calendar');
         } else {
             if ($courseid) {
-                    $context = context_course::instance($courseid);
+                $context = context_course::instance($courseid);
                 if (!has_capability('moodle/calendar:manageentries', $context, $userid)) {
                     $courseid = false;
                     $groupid = false;
