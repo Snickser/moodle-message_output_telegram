@@ -68,6 +68,8 @@ $string['configsitebotusername'] = 'Будет заполнено автомат
 $string['connectinstructions'] = 'После того, как вы нажмёте ссылку ниже, вам нужно будет разрешить открытие ссылки в Telegram с вашей учётной записью Telegram. В Telegram нажмите кнопку «Start» в открывшемся чате «{$a}», чтобы подключить свою учётную запись.<br>После завершения вернитесь на эту страницу и нажмите «Save changes (Сохранить изменения)». Полную инструкцию <a href="https://docs.moodle.org/33/en/Telegram_message_processor#Configuring_user_preferences" target="_blank">читаем здесь</a>.';
 $string['connectme'] = '<br><p style="color: blue;"><b>> Подключить свой аккаунт к Telegram <</b></p>';
 $string['connectmemenu'] = '⚠️ Подключить свой аккаунт к Telegram';
+$string['enter'] = 'Введите';
+$string['enter_time'] = 'Дата и время указываются в мнемоническом или стандартном формате, например: YY-MM-DD HH:MM';
 $string['firstregister'] = 'Сначала зарегистрируйтесь на сайте, и подключите уведомления через Телеграм. {$a}';
 $string['notconfigured'] = 'Сервер Telegram не настроен, поэтому сообщения Telegram не могут быть отправлены';
 $string['pluginname'] = 'Telegram';
