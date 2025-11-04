@@ -691,36 +691,68 @@ if (isset($data->message)) {
         $keyboard = ['inline_keyboard' => []];
         $params = ['chat_id' => $chatid];
 
+        $hascourse = false;
+        $hasgroup = false;
+
         if ($type === null) {
             $step = 'type';
             $params['text'] = '💁🏻 ' . get_string('select') . ' ' . get_string('eventtype', 'calendar');
             $courses = enrol_get_users_courses($userid);
             if ($courses) {
-                $keyboard['inline_keyboard'][] = [[
-                'text' => get_string('personal'),
-                'callback_data' => "/newevent 0 0 0",
-                ], [
-                'text' => get_string('course'),
-                'callback_data' => "/newevent 1",
-                ], [
+                foreach ($courses as $course) {
+                    $context = context_course::instance($course->id);
+                    if (has_capability('moodle/calendar:manageentries', $context, $userid)) {
+                        $hascourse = true;
+                    }
+                    if (has_capability('moodle/calendar:managegroupentries', $context, $userid)) {
+                        $hasgroup = true;
+                    }
+                }
+            }
+
+            $buttons = [
+            [
+            'text' => get_string('personal'),
+            'callback_data' => '/newevent 0 0 0',
+            ],
+            [
+            'text' => get_string('course'),
+            'callback_data' => '/newevent 1',
+            ],
+            ];
+
+            if ($hasgroup) {
+                $buttons[] = [
                 'text' => get_string('group'),
-                'callback_data' => "/newevent 2",
-                ]];
+                'callback_data' => '/newevent 2',
+                ];
+                $keyboard['inline_keyboard'][] = $buttons;
+            } else if ($hascourse) {
+                $keyboard['inline_keyboard'][] = $buttons;
             } else {
-                $keyboard['inline_keyboard'][] = [[
-                'text' => get_string('personal'),
-                'callback_data' => "/newevent 0 0 0",
-                ]];
+                $step = 'get_time';
+                $params['text'] = '⏰ ' . get_string('enter', 'message_telegram') . ' ' .
+                get_string(
+                    'and',
+                    'moodle',
+                    ['one' => get_string('eventdate', 'calendar'), 'two' => get_string('eventstarttime', 'calendar')]
+                ) .
+                PHP_EOL . get_string('enter_time', 'message_telegram');
+                $lastdata = '/newevent 0 0 0';
+                $lastmsgid = 0;
             }
         } else if ($courseid === null && $type) {
             $step = 'course';
             $params['text'] = '📚 ' . get_string('selectacourse');
             $courses = enrol_get_users_courses($userid);
             foreach ($courses as $course) {
-                $keyboard['inline_keyboard'][] = [[
-                'text' => format_string($course->fullname),
-                'callback_data' => "/newevent {$type} " . $course->id,
-                ]];
+                $context = context_course::instance($course->id);
+                if (has_capability('moodle/calendar:manageentries', $context, $userid)) {
+                    $keyboard['inline_keyboard'][] = [[
+                    'text' => format_string($course->fullname),
+                    'callback_data' => "/newevent {$type} " . $course->id,
+                    ]];
+                }
             }
         } else if ($groupid === null && $type == 2 && $courseid) {
             $step = 'group';
