@@ -775,6 +775,9 @@ if (isset($data->message)) {
             ) .
             PHP_EOL . get_string('enter_time', 'message_telegram');
             $lastmsgid = 0;
+            if ($groupid === null) {
+                $lastdata = "/newevent {$type} {$courseid} 0";
+            }
         } else if ($duration === null) {
             $step = 'get_duration';
             $params['text'] = '⏱️ ' . get_string('enter', 'message_telegram') . ' ' . get_string('durationminutes', 'calendar');
