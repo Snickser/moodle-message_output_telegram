@@ -69,7 +69,7 @@ $string['connectinstructions'] = 'После того, как вы нажмёт�
 $string['connectme'] = '<br><p style="color: blue;"><b>> Подключить свой аккаунт к Telegram <</b></p>';
 $string['connectmemenu'] = '⚠️ Подключить свой аккаунт к Telegram';
 $string['enter'] = 'Введите';
-$string['enter_time'] = 'Дата и время указывается в мнемоническом или форматированном стандарте, например YY-MM-DD HH:MM';
+$string['enter_time'] = 'Дата и время указываются в мнемоническом или стандартном формате, например: YY-MM-DD HH:MM';
 $string['firstregister'] = 'Сначала зарегистрируйтесь на сайте, и подключите уведомления через Телеграм. {$a}';
 $string['notconfigured'] = 'Сервер Telegram не настроен, поэтому сообщения Telegram не могут быть отправлены';
 $string['pluginname'] = 'Telegram';
