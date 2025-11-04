@@ -273,6 +273,7 @@ if (isset($data->message)) {
         }
         $tg->send_message(get_string('botenrols', 'message_telegram') . PHP_EOL . $text, $userid);
     } else if (strpos($text, '/events') === 0 && $userid) {
+        $eventtype = ['user' => '🙂', 'group' => '👥', 'course' => '🎓'];
         $calendar = \calendar_information::create(time(), 0, 0);
         $view = calendar_get_view($calendar, 'upcoming');
         $events = $view[0]->events ?? [];
@@ -281,7 +282,8 @@ if (isset($data->message)) {
             $start = date('d.m.Y H:i', $event->timestart);
             $end = date('d.m.Y H:i', $event->timestart + $event->timeduration);
             $duration = $event->timeduration ? '(' . round($event->timeduration / 60) . ' мин)' : '';
-            $text .= "• {$start} — <a href='{$event->viewurl}'>{$event->name}</a> {$duration}\n" .
+            $text .= $eventtype[$event->eventtype] .
+            " • {$start} — <a href='{$event->viewurl}'>{$event->name}</a> {$duration}\n" .
             ($event->description ? ' ' . get_string('subject') . ": {$event->description}\n" : null);
         }
         $head = get_string('botevents', 'message_telegram');
@@ -290,7 +292,21 @@ if (isset($data->message)) {
         } else {
             $text = $head . get_string('none');
         }
-        $tg->send_message($text, $userid);
+
+        $keyboard = [
+            'inline_keyboard' => [[
+            ['text' => '➕ ' . get_string('newevent', 'calendar'), 'callback_data' => '/newevent'],
+            ]],
+        ];
+        $response = $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $fromid,
+            'text' => $text,
+            'parse_mode' => 'HTML',
+            'reply_markup' => json_encode($keyboard),
+            ]
+        );
     } else if (strpos($text, '/lang') === 0 && $userid) {
         $buttons = [];
         foreach ($langs as $langcode => $name) {
@@ -364,6 +380,104 @@ if (isset($data->message)) {
         http_response_code(200);
         echo "OK";
         die;
+    } else if ($text && $userid && $record->laststep == 'get_name') {
+        $keyboard = [
+        'inline_keyboard' => [[
+        [
+            'text' => '✅  ' . get_string('apply'),
+            'callback_data' => $record->lastdata . " {$text}",
+        ],
+        ]],
+        ];
+        $response = $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $fromid,
+            'text' => '🏷 ' . get_string('eventname', 'calendar') . ':' . PHP_EOL . $text,
+            'reply_markup' => json_encode($keyboard),
+            ]
+        );
+        if ($record->lastmsgid) {
+            $tg->send_api_command(
+                'deleteMessage',
+                [
+                'chat_id' => $fromid,
+                'message_id' => $record->lastmsgid,
+                ]
+            );
+        }
+
+        $step = 'get_name';
+        $lastmsgid = $response->result->message_id;
+        $lastdata = $record->lastdata;
+    } else if (isset($text) && $userid && $record->laststep == 'get_duration') {
+        $timestamp = (int)$text;
+
+        $keyboard = [
+        'inline_keyboard' => [[
+        [
+            'text' => '✅  ' . get_string('apply'),
+            'callback_data' => $record->lastdata . " {$timestamp}",
+        ],
+        ]],
+        ];
+        $response = $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $fromid,
+            'text' => '⏱️ ' . get_string('eventduration', 'calendar') . ' ' . $timestamp . ' ' . get_string("minutes"),
+            'reply_markup' => json_encode($keyboard),
+            ]
+        );
+        if ($record->lastmsgid) {
+            $tg->send_api_command(
+                'deleteMessage',
+                [
+                'chat_id' => $fromid,
+                'message_id' => $record->lastmsgid,
+                ]
+            );
+        }
+
+        $step = 'get_duration';
+        $lastmsgid = $response->result->message_id;
+        $lastdata = $record->lastdata;
+    } else if (isset($text) && $userid && $record->laststep == 'get_time') {
+        $timestamp = strtotime($text);
+        if ($timestamp < time()) {
+            $timestamp = time() + 86400;
+        }
+
+        $keyboard = [
+        'inline_keyboard' => [[
+        [
+            'text' => '✅ ' . get_string('apply'),
+            'callback_data' => $record->lastdata . " {$timestamp}",
+        ],
+        ]],
+        ];
+        $response = $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $fromid,
+            'text' => '⏰ ' . userdate($timestamp),
+            'reply_markup' => json_encode($keyboard),
+            ]
+        );
+
+        if ($record->lastmsgid) {
+            $tg->send_api_command(
+                'deleteMessage',
+                [
+                'chat_id' => $fromid,
+                'message_id' => $record->lastmsgid,
+                ]
+            );
+        }
+
+        $step = 'get_time';
+        $lastmsgid = $response->result->message_id;
+        $lastdata = $record->lastdata;
     } else if ($text && $userid && $record->laststep == 'get_text') {
         $keyboard = [
         'inline_keyboard' => [[
@@ -558,6 +672,120 @@ if (isset($data->message)) {
         $text .= "\n📈 " . get_string('progress') . ': ' . round($percentage, 1) . "%";
 
         $tg->send_message($text, $userid);
+    } else if (strpos($data->callback_query->data, '/newevent') === 0 && $userid) {
+        preg_match(
+            '/^\/newevent(?:\s+(\d+))?(?:\s+(\d+))?(?:\s+(\d+))?(?:\s+(\d+))?(?:\s+(\d+))?(?:\s+(.+))?$/u',
+            $data->callback_query->data,
+            $matches
+        );
+
+        $types = [0 => 'user', 1 => 'course', 2 => 'group'];
+
+        $type     = isset($matches[1]) ? (int)$matches[1] : null;
+        $courseid = isset($matches[2]) ? (int)$matches[2] : null;
+        $groupid  = isset($matches[3]) ? (int)$matches[3] : null;
+        $time     = isset($matches[4]) ? (int)$matches[4] : null;
+        $duration = isset($matches[5]) ? (int)$matches[5] : null;
+        $name     = isset($matches[6]) ? trim($matches[6]) : null;
+
+        $keyboard = ['inline_keyboard' => []];
+        $params = ['chat_id' => $chatid];
+
+        if ($type === null) {
+            $step = 'type';
+            $params['text'] = '💁🏻 ' . get_string('select') . ' ' . get_string('eventtype', 'calendar');
+            $courses = enrol_get_users_courses($userid);
+            if ($courses) {
+                $keyboard['inline_keyboard'][] = [[
+                'text' => get_string('personal'),
+                'callback_data' => "/newevent 0 0 0",
+                ], [
+                'text' => get_string('course'),
+                'callback_data' => "/newevent 1",
+                ], [
+                'text' => get_string('group'),
+                'callback_data' => "/newevent 2",
+                ]];
+            } else {
+                $keyboard['inline_keyboard'][] = [[
+                'text' => get_string('personal'),
+                'callback_data' => "/newevent 0 0 0",
+                ]];
+            }
+        } else if ($courseid === null && $type) {
+            $step = 'course';
+            $params['text'] = '📚 ' . get_string('selectacourse');
+            $courses = enrol_get_users_courses($userid);
+            foreach ($courses as $course) {
+                $keyboard['inline_keyboard'][] = [[
+                'text' => format_string($course->fullname),
+                'callback_data' => "/newevent {$type} " . $course->id,
+                ]];
+            }
+        } else if ($groupid === null && $type == 2 && $courseid) {
+            $step = 'group';
+            $params['text'] = '📖 ' . get_string('selectagroup');
+            $context = context_course::instance($courseid);
+            $groups = groups_get_all_groups($courseid, $userid);
+            foreach ($groups as $group) {
+                $keyboard['inline_keyboard'][] = [[
+                'text' => format_string($group->name . ($group->description ? " - {$group->description}" : null)),
+                'callback_data' => "/newevent 2 {$courseid} " . $group->id,
+                ]];
+            }
+        } else if ($time === null) {
+            $step = 'get_time';
+            $params['text'] = '⏰ ' . get_string('enter', 'message_telegram') . ' ' .
+            get_string(
+                'and',
+                'moodle',
+                ['one' => get_string('eventdate', 'calendar'), 'two' => get_string('eventstarttime', 'calendar')]
+            ) .
+            PHP_EOL . get_string('enter_time', 'message_telegram');
+            $lastmsgid = 0;
+        } else if ($duration === null) {
+            $step = 'get_duration';
+            $params['text'] = '⏱️ ' . get_string('enter', 'message_telegram') . ' ' . get_string('durationminutes', 'calendar');
+        } else if ($name === null) {
+            $step = 'get_name';
+            $params['text'] = '✏️ ' . get_string('enter', 'message_telegram') . ' ' . get_string('eventname', 'calendar');
+        } else {
+            if ($courseid) {
+                    $context = context_course::instance($courseid);
+                if (!has_capability('moodle/calendar:manageentries', $context, $userid)) {
+                    $courseid = false;
+                    $groupid = false;
+                    $type = 0;
+                }
+                if (!has_capability('moodle/calendar:managegroupentries', $context, $userid)) {
+                    $groupid = false;
+                    $type = 0;
+                }
+            }
+            $event = new stdClass();
+            $event->name        = $name;
+            $event->description = '';
+            $event->format      = FORMAT_HTML;
+            $event->courseid    = $courseid ? $courseid : '';
+            $event->groupid     = $groupid ? $groupid : '';
+            $event->userid      = $userid;
+            $event->modulename  = '';
+            $event->instance    = 0;
+            $event->eventtype   = $types[$type] ?? 'user';
+            $event->timestart   = $time;
+            $event->timeduration = $duration * 60;
+            $calendarevent = calendar_event::create($event);
+            if ($calendarevent) {
+                $params['text'] = '✅ ' . get_string('eventcalendareventcreated', 'calendar');
+            } else {
+                $params['text'] = '❌ ' . get_string('erroraddingevent', 'calendar');
+            }
+            $step = "done";
+        }
+
+        $params['reply_markup'] = json_encode($keyboard);
+        $params['message_id'] = $data->callback_query->message->message_id;
+        $response = $tg->send_api_command('editMessageText', $params);
     } else if (strpos($data->callback_query->data, '/message') === 0 && $userid) {
         preg_match('/^\/message(?: (\d+))?(?: (\d+))?(?: (\d+))?/', $data->callback_query->data, $matches);
         $courseid = isset($matches[1]) ? (int)$matches[1] : null;
@@ -664,6 +892,7 @@ if (isset($data->message)) {
             );
         }
     }
+
     if ($record) {
         $record->lastmsgid    = $lastmsgid;
         $record->lastdata     = $lastdata;

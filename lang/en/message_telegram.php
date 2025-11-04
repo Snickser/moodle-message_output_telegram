@@ -93,6 +93,8 @@ BTC 1GFTTPCgRTC8yYL1gU7wBZRfhRNRBdLZsq<br>
 TRX TRGMc3b63Lus6ehLasbbHxsb2rHky5LbPe<br>
 <iframe src="https://yoomoney.ru/quickpay/fundraise/button?billNumber=143H2JO3LLE.240720"
 width="330" height="50" frameborder="0" allowtransparency="true" scrolling="no"></iframe>';
+$string['enter'] = 'Enter';
+$string['enter_time'] = 'The date and time are specified in a mnemonic or formatted standard';
 $string['firstregister'] = 'First, register on the site ';
 $string['fullmessagehtml'] = 'Use fullmessagehtml';
 $string['notconfigured'] = 'The Telegram server hasn\'t been configured so Telegram messages cannot be sent';
