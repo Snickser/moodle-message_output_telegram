@@ -255,6 +255,26 @@ if (isset($data->message)) {
             'reply_markup' => json_encode($keyboard),
             ]
         );
+    } else if (strpos($text, '/students') === 0 && $userid) {
+        $courses = enrol_get_users_courses($userid);
+        $buttons = [];
+        foreach ($courses as $course) {
+            $buttons[] = [[
+                'text' => format_string($course->fullname),
+                'callback_data' => '/students ' . $course->id,
+            ]];
+        }
+        $keyboard = [
+        'inline_keyboard' => $buttons,
+        ];
+        $response = $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $fromid,
+            'text' => '📊 ' . get_string('selectacourse') . ($buttons ? null : "\n\n" . get_string('none')),
+            'reply_markup' => json_encode($keyboard),
+            ]
+        );
     } else if (strpos($text, '/enrols') === 0 && $userid) {
         $courses = enrol_get_users_courses($userid);
         $text = '';
@@ -633,6 +653,27 @@ if (isset($data->message)) {
             $user->lang = $lang;
             user_update_user($user, false, true);
         }
+    } else if (strpos($data->callback_query->data, '/students') === 0 && $userid) {
+        $text = '🎓 ' . get_string('students') . PHP_EOL . PHP_EOL;
+        $courseid = (int)substr($data->callback_query->data, 10);
+        $context = context_course::instance($courseid);
+        if (has_capability('moodle/course:viewparticipants', $context, $userid)) {
+            $groups = groups_get_all_groups($courseid, $userid);
+            foreach ($groups as $group) {
+                $students = get_enrolled_users($context, false, $group->id, '*');
+                foreach ($students as $student) {
+                    profile_load_custom_fields($student);
+                    $text .= '• ' . fullname($student, true) . " - {$student->email}" .
+                    ($student->phone2 ? " {$student->phone2}" : null ) .
+                    ($student->profile['telegram_username'] ? ' @' . $student->profile['telegram_username'] : null) .
+                    ' | ' . format_string($group->name) .
+                    PHP_EOL;
+                }
+            }
+        } else {
+            $text .= get_string('no');
+        }
+        $tg->send_message($text, $userid);
     } else if (strpos($data->callback_query->data, '/progress') === 0 && $userid) {
         $progress = [
         '⬜️',
