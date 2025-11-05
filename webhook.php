@@ -666,6 +666,7 @@ if (isset($data->message)) {
                     $text .= '• ' . fullname($student, true) . " - {$student->email}" .
                     ($student->phone2 ? " {$student->phone2}" : null ) .
                     ($student->profile['telegram_username'] ? ' @' . $student->profile['telegram_username'] : null) .
+                    ($student->profile['birthday'] ? ' ' . userdate($student->profile['birthday'], '%d.%m.%Y') : null) .
                     ' | ' . format_string($group->name) .
                     PHP_EOL;
                 }
