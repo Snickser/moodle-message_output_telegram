@@ -74,6 +74,9 @@ $string['firstregister'] = 'Сначала зарегистрируйтесь н
 $string['notconfigured'] = 'Сервер Telegram не настроен, поэтому сообщения Telegram не могут быть отправлены';
 $string['pluginname'] = 'Telegram';
 $string['removetelegram'] = 'Отключиться от Telegram';
+$string['reportenabler'] = 'Включить отчет о персональных данных пользователей';
+$string['reportenabler_desc1'] = '<font color=red>Обратите внимание, что персональные данные пользователей передаются на сторонние серверы Telegram, это может нарушать законы вашей страны.</font>';
+$string['reportenabler_desc2'] = 'Эта опция позволяет преподавателям просматривать персональные данные студентов курса.';
 $string['setupinstructions'] = 'Создайте новый бот Telegram, используя Botfather. Перейдите по ссылке Botfather ниже и откройте Telegram.
 Используйте команду "/newbot" в Telegram для начала создания бота. Вам надо будет задать название бота, например "{$a->name}" и уникальное имя бота, например "{$a->username}". Полное описание <a href="https://docs.moodle.org/33/en/Telegram_message_processor" target="_blank">читаем здесь</a>.';
 $string['sitebotname'] = 'Название бота для сайта';

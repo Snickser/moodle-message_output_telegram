@@ -27,6 +27,7 @@ require_once(__DIR__ . '/../../../config.php'); // @codingStandardsIgnoreLine
 require_once(__DIR__ . '/lib.php');
 
 require_once($CFG->dirroot . '/calendar/lib.php');
+require_once($CFG->dirroot . '/enrol/locallib.php');
 require_once($CFG->libdir . '/completionlib.php');
 use core_completion\progress;
 
@@ -168,6 +169,7 @@ if (isset($data->message)) {
             $text .= PHP_EOL . get_string('botuseridhelp', 'message_telegram');
         }
 
+        $hasbotstudents = true;
         $courses = enrol_get_all_users_courses($userid, true, '*');
         $roleids = array_map('intval', explode(',', $config->sitebotmsgroles));
         foreach ($courses as $course) {
@@ -181,6 +183,10 @@ if (isset($data->message)) {
             }
             if (!$hasrole) {
                 continue;
+            }
+            if ($config->sitebotenablereports && $hasbotstudents) {
+                $text .= PHP_EOL . get_string('botstudents', 'message_telegram');
+                $hasbotstudents = false;
             }
             $groups = groups_get_all_groups($course->id);
             foreach ($groups as $group) {
@@ -255,7 +261,7 @@ if (isset($data->message)) {
             'reply_markup' => json_encode($keyboard),
             ]
         );
-    } else if (strpos($text, '/students') === 0 && $userid) {
+    } else if (strpos($text, '/students') === 0 && $userid && $config->sitebotenablereports) {
         $courses = enrol_get_users_courses($userid);
         $buttons = [];
         foreach ($courses as $course) {
@@ -271,7 +277,7 @@ if (isset($data->message)) {
             'sendMessage',
             [
             'chat_id' => $fromid,
-            'text' => '📊 ' . get_string('selectacourse') . ($buttons ? null : "\n\n" . get_string('none')),
+            'text' => '📚 ' . get_string('selectacourse') . ($buttons ? null : "\n\n" . get_string('none')),
             'reply_markup' => json_encode($keyboard),
             ]
         );
@@ -281,9 +287,7 @@ if (isset($data->message)) {
         foreach ($courses as $course) {
             $context = context_course::instance($course->id);
             $completion = new completion_info($course);
-            if ($completion->is_enabled()) {
-                $progress = \core_completion\progress::get_course_progress_percentage($course, $userid) ?? 0;
-            }
+            $progress = \core_completion\progress::get_course_progress_percentage($course, $userid) ?? 0;
             $url = $CFG->wwwroot . '/course/view.php?id=' . $course->id;
             $text .= PHP_EOL . '• ' . "<a href='{$url}'>" . format_string($course->fullname) . '</a>' .
             (floor($progress) ? ' (' . floor($progress) . '%)' : null);
@@ -653,28 +657,99 @@ if (isset($data->message)) {
             $user->lang = $lang;
             user_update_user($user, false, true);
         }
-    } else if (strpos($data->callback_query->data, '/students') === 0 && $userid) {
+    } else if (strpos($data->callback_query->data, '/students') === 0 && $userid && $config->sitebotenablereports) {
+        preg_match('/^\/students(?: (\d+))?(?: (\d+))?/', $data->callback_query->data, $matches);
+        $courseid = isset($matches[1]) ? (int)$matches[1] : null;
+        $accept   = isset($matches[2]) ? (int)$matches[2] : null;
+
+        if ($courseid) {
+            $tg->send_api_command(
+                'deleteMessage',
+                [
+                'chat_id' => $fromid,
+                'message_id' => $data->callback_query->message->message_id,
+                ]
+            );
+        }
+
         $text = '🎓 ' . get_string('students') . PHP_EOL . PHP_EOL;
-        $courseid = (int)substr($data->callback_query->data, 10);
+
         $context = context_course::instance($courseid);
         if (has_capability('moodle/course:viewparticipants', $context, $userid)) {
-            $groups = groups_get_all_groups($courseid, $userid);
-            foreach ($groups as $group) {
-                $students = get_enrolled_users($context, false, $group->id, '*');
-                foreach ($students as $student) {
-                    profile_load_custom_fields($student);
-                    $text .= '• ' . fullname($student, true) . " - {$student->email}" .
-                    ($student->phone2 ? " {$student->phone2}" : null ) .
-                    ($student->profile['telegram_username'] ? ' @' . $student->profile['telegram_username'] : null) .
-                    ($student->profile['birthday'] ? ' ' . userdate($student->profile['birthday'], '%d.%m.%Y') : null) .
-                    ' | ' . format_string($group->name) .
-                    PHP_EOL;
+            if ($accept == 1) {
+                $step = 'done';
+                $groups = groups_get_all_groups($courseid, $userid);
+                foreach ($groups as $group) {
+                    $students = get_enrolled_users($context, false, $group->id, '*');
+                    foreach ($students as $student) {
+                        profile_load_custom_fields($student);
+                        $lastaccess = $DB->get_field('user_lastaccess', 'timeaccess', [
+                        'userid' => $student->id,
+                        'courseid' => $courseid,
+                        ]);
+                        $course = get_course($courseid);
+                        $completion = new completion_info($course);
+                        $progress = round(\core_completion\progress::get_course_progress_percentage($course, $student->id), 1);
+
+                        $instances = enrol_get_instances($courseid, true);
+                        foreach ($instances as $instance) {
+                            $userenrol = $DB->get_record('user_enrolments', [
+                                'enrolid' => $instance->id,
+                                'userid' => $student->id,
+                            ]);
+
+                            $now = time();
+                            if ($userenrol) {
+                                if ($userenrol->status == ENROL_USER_SUSPENDED) {
+                                    $text .= '⛔';
+                                } else if ($userenrol->timestart > $now) {
+                                    $text .= '🅿️';
+                                } else if ($userenrol->timeend != 0 && $userenrol->timeend <= $now) {
+                                    $text .= '⏰';
+                                } else {
+                                    $text .= '🟢';
+                                }
+                            }
+                        }
+
+                        $text .= ' ' . fullname($student, true) .
+                        ($student->profile['telegram_username'] ? ' @' . $student->profile['telegram_username'] : null) .
+                        ' | ' . format_string($group->name) .
+                        ' | ' . ($lastaccess ? userdate($lastaccess, '%d.%m.%Y %H:%M') : get_string('never')) .
+                        ($progress ? " | {$progress}%" : null) .
+                        PHP_EOL;
+                    }
                 }
+                $tg->send_message($text, $userid);
+            } else if ($accept === 0) {
+                $step = 'cancel';
+            } else {
+                $step = 'accept';
+                $keyboard = [
+                'inline_keyboard' => [[
+                [
+                'text' => '⚠️ ' . get_string('policyaccept'),
+                'callback_data' => "/students {$courseid} 1",
+                ],
+                [
+                'text' => '❌ ' . get_string('cancel'),
+                'callback_data' => "/students {$courseid} 0",
+                ],
+                ]],
+                ];
+                $response = $tg->send_api_command(
+                    'sendMessage',
+                    [
+                    'chat_id' => $fromid,
+                    'text' => '⁉️ ' . format_string(get_string('reportenabler_desc1', 'message_telegram')),
+                    'reply_markup' => json_encode($keyboard),
+                    ]
+                );
             }
         } else {
             $text .= get_string('no');
+            $tg->send_message($text, $userid);
         }
-        $tg->send_message($text, $userid);
     } else if (strpos($data->callback_query->data, '/progress') === 0 && $userid) {
         $progress = [
         '⬜️',
