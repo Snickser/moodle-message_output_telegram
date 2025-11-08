@@ -95,6 +95,7 @@ TRX TRGMc3b63Lus6ehLasbbHxsb2rHky5LbPe<br>
 <iframe src="https://yoomoney.ru/quickpay/fundraise/button?billNumber=143H2JO3LLE.240720"
 width="330" height="50" frameborder="0" allowtransparency="true" scrolling="no"></iframe>';
 $string['enter'] = 'Enter';
+$string['enter_phone'] = 'For better interaction with curators, please provide your mobile phone number.';
 $string['enter_time'] = 'The date and time are specified in mnemonic or one of the standard formats, for example: YY-MM-DD HH:MM';
 $string['firstregister'] = 'First, register on the site ';
 $string['fullmessagehtml'] = 'Use fullmessagehtml';
@@ -114,6 +115,8 @@ Use the "/newbot" command in Telegram to start creating the bot. You will need t
 unique bot username, for example "{$a->username}". Full documentation
 <a href="https://docs.moodle.org/33/en/Telegram_message_processor" target="_blank">here</a>.';
 $string['setwebhook'] = 'Setup Telegram webhook';
+$string['provide'] = '📱 Provide a phone number';
+$string['provide_help'] = 'Provide a phone number';
 $string['sitebotname'] = 'Bot name for site';
 $string['sitebotpay'] = 'Payment token';
 $string['sitebotpaycosts'] = 'Predefined amounts';

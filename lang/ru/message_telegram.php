@@ -69,10 +69,13 @@ $string['connectinstructions'] = 'После того, как вы нажмёт�
 $string['connectme'] = '<br><p style="color: blue;"><b>> Подключить свой аккаунт к Telegram <</b></p>';
 $string['connectmemenu'] = '⚠️ Подключить свой аккаунт к Telegram';
 $string['enter'] = 'Введите';
+$string['enter_phone'] = 'Для лучшего взаимодействия с кураторами, пожалуйста, укажите номер своего мобильного телефона в профиле на портале, или нажмите кнопку внизу.';
 $string['enter_time'] = 'Дата и время указываются в мнемоническом или в одном из стандартных форматов, например: YY-MM-DD HH:MM';
 $string['firstregister'] = 'Сначала зарегистрируйтесь на сайте, и подключите уведомления через Телеграм. {$a}';
 $string['notconfigured'] = 'Сервер Telegram не настроен, поэтому сообщения Telegram не могут быть отправлены';
 $string['pluginname'] = 'Telegram';
+$string['provide'] = '☎️ Отправить номер телефона';
+$string['provide_help'] = 'Нажмите кнопку';
 $string['removetelegram'] = 'Отключиться от Telegram';
 $string['reportenabler'] = 'Включить отчет о персональных данных пользователей';
 $string['reportenabler_desc1'] = '<font color=red>Обратите внимание, что персональные данные пользователей передаются на сторонние серверы Telegram, это может нарушать законы вашей страны.</font>';

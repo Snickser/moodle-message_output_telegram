@@ -55,14 +55,14 @@ $langs = get_string_manager()->get_list_of_translations();
 $tg = new message_telegram\manager();
 
 if (isset($data->message)) {
-    $fromid = clean_param($data->message->from->id, PARAM_INT);
-    $chatid = clean_param($data->message->chat->id, PARAM_INT);
-    $text = clean_param($data->message->text, PARAM_TEXT);
-    $username = clean_param($data->message->from->username, PARAM_TEXT);
+    $fromid = clean_param($data->message->from->id ?? null, PARAM_INT);
+    $chatid = clean_param($data->message->chat->id ?? null, PARAM_INT);
+    $text = clean_param($data->message->text ?? null, PARAM_TEXT);
+    $username = clean_param($data->message->from->username ?? null, PARAM_TEXT);
 
     $record = $DB->get_record('message_telegram', ['chatid' => $chatid]);
-    $lastmsgid = clean_param($data->message->message_id, PARAM_TEXT);
-    $lastdata = clean_param($data->message->text, PARAM_TEXT);
+    $lastmsgid = clean_param($data->message->message_id ?? null, PARAM_TEXT);
+    $lastdata = $text;
     $step = 'command';
 
     $userids = $tg->get_userids_by_chatid($fromid);
@@ -89,7 +89,51 @@ if (isset($data->message)) {
     }
 
     if (strpos($text, '/start') === 0) {
-        $response = $tg->set_webhook_chatid($fromid, $text, $username);
+        $tg->set_webhook_chatid($fromid, $text, $username);
+        if (!$USER->phone2) {
+            $keyboard = [
+            'keyboard' => [
+            [
+            ['text' => get_string('provide', 'message_telegram'), 'request_contact' => true],
+            ],
+            ],
+            'resize_keyboard' => true,
+            'one_time_keyboard' => true,
+            'input_field_placeholder' => get_string('provide_help', 'message_telegram'),
+            ];
+            $text = get_string('welcometosite', 'moodle', ['firstname' => $data->message->from->first_name]) .
+            PHP_EOL . get_string('enter_phone', 'message_telegram');
+        } else {
+            $keyboard = [
+            'keyboard' => [
+            ['/info', '/lang'],
+            ['/help'],
+            ],
+            'resize_keyboard' => true,
+            'one_time_keyboard' => false,
+            'input_field_placeholder' => get_string('placeholdertypeorselect'),
+            ];
+            $text = get_string('welcomeback', 'moodle', ['firstname' => $data->message->from->first_name]);
+        }
+        $replymarkup = json_encode($keyboard);
+        $response = $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $fromid,
+            'text' => $text,
+            'reply_markup' => $replymarkup,
+            ]
+        );
+    } else if ($userid && isset($data->message->contact->phone_number)) {
+        if ($data->message->contact->user_id == $fromid) {
+            $phone = clean_param($data->message->contact->phone_number, PARAM_TEXT);
+            if ($phone) {
+                $DB->set_field('user', 'phone2', $phone, ['id' => $userid]);
+                $response = send_menu($tg, $fromid, get_string('thanks') . ' 🙂');
+            }
+        } else {
+            $tg->send_message('😕 ' . get_string('unknownuser'), $userid);
+        }
     } else if (strpos($text, '/pay') === 0 && $config->sitebotpay) {
         if (!$cost = (int)substr($text, 5)) {
             $numbers = array_map('trim', explode(',', $config->sitebotpaycosts));
@@ -541,22 +585,7 @@ if (isset($data->message)) {
         $lastmsgid = $response->result->message_id;
         $lastdata = $record->lastdata;
     } else if ($text && $userid) {
-        $response = $tg->send_api_command(
-            'sendMessage',
-            [
-            'chat_id' => $fromid,
-            'text' => get_string('botidontknow', 'message_telegram'),
-            'reply_markup' => json_encode([
-            'keyboard' => [
-            ['/info', '/lang'],
-            ['/help'],
-            ],
-            'resize_keyboard' => true,
-            'one_time_keyboard' => false,
-            'input_field_placeholder' => get_string('placeholdertypeorselect'),
-            ]),
-            ]
-        );
+        $response = send_menu($tg, $fromid, get_string('botidontknow', 'message_telegram'));
     } else if ($text) {
         $tg->send_api_command(
             'sendMessage',
@@ -689,7 +718,8 @@ if (isset($data->message)) {
                         ]);
                         $course = get_course($courseid);
                         $completion = new completion_info($course);
-                        $progress = round(\core_completion\progress::get_course_progress_percentage($course, $student->id), 1);
+                        $progress = \core_completion\progress::get_course_progress_percentage($course, $student->id) ?? 0;
+                        $progress = round($progress, 1);
 
                         $instances = enrol_get_instances($courseid, true);
                         foreach ($instances as $instance) {
@@ -706,6 +736,8 @@ if (isset($data->message)) {
                                     $text .= '🅿️';
                                 } else if ($userenrol->timeend != 0 && $userenrol->timeend <= $now) {
                                     $text .= '⏰';
+                                } else if (time() - $lastaccess > 86400 * 7) {
+                                    $text .= '🟡';
                                 } else {
                                     $text .= '🟢';
                                 }
