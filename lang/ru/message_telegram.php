@@ -88,4 +88,5 @@ $string['sitebottokennotsetup'] = 'Токен бота для сайта дол�
 $string['sitebotusername'] = 'Ник бота для сайта';
 $string['telegrambottoken'] = 'Токен бота Telegram';
 $string['telegramchatid'] = 'ID чата Telegram';
+$string['warnreport_desc'] = 'Выводить предупреждение перед выдачей отчёта.';
 $string['welcome'] = '✅ Ваш аккаунт успешно подключен!';
