@@ -514,7 +514,7 @@ if (isset($data->message)) {
     } else if (isset($text) && $userid && $record->laststep == 'get_time') {
         $timestamp = strtotime($text);
         if ($timestamp < time()) {
-            $timestamp = time() + 86400;
+            $timestamp = time() + 86400 * 2;
         }
 
         $keyboard = [
@@ -691,6 +691,10 @@ if (isset($data->message)) {
         $courseid = isset($matches[1]) ? (int)$matches[1] : null;
         $accept   = isset($matches[2]) ? (int)$matches[2] : null;
 
+        if (!$config->sitebotwarnreport) {
+            $accept = 1;
+        }
+
         if ($courseid) {
             $tg->send_api_command(
                 'deleteMessage',
@@ -705,7 +709,7 @@ if (isset($data->message)) {
 
         $context = context_course::instance($courseid);
         if (has_capability('moodle/course:viewparticipants', $context, $userid)) {
-            if ($accept == 1) {
+            if ($courseid && $accept == 1) {
                 $step = 'done';
                 $groups = groups_get_all_groups($courseid, $userid);
                 foreach ($groups as $group) {

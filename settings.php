@@ -182,6 +182,14 @@ if ($ADMIN->fulltree) {
         $options
     ));
 
+    $settings->add(new admin_setting_configcheckbox(
+        'message_telegram/sitebotwarnreport',
+        get_string('warning'),
+        get_string('warnreport_desc', 'message_telegram'),
+        true,
+        true
+    ));
+
     $settings->add(new admin_setting_heading(
         'message_telegram_standart',
         get_string('configuration', 'core'),

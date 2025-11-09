@@ -133,4 +133,5 @@ $string['telegramwebhook'] = 'Webhook';
 $string['telegramwebhookdump'] = 'Dump webhook data to log';
 $string['tgext'] = 'Path to external sender';
 
+$string['warnreport_desc'] = 'Display warning before print report.';
 $string['welcome'] = '✅ Your account has been successfully linked!';
