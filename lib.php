@@ -86,7 +86,7 @@ function private_answer($tg, $botname, $chatid, $messageid, $start = null) {
     if ($start) {
         $text = get_string('botanswer1', 'message_telegram');
     } else {
-        $text = get_string('botabswer2', 'message_telegram');
+        $text = get_string('botanswer2', 'message_telegram');
     }
 
     $replymarkup = [
@@ -187,4 +187,32 @@ function notify_users(int $courseid, int $groupid, int $userid, $text) {
         message_send($eventdata);
     }
     return true;
+}
+
+/**
+ * Добавляет меню.
+ *
+ * @param object $tg        Экземпляр клиента Telegram API с методом send_api_command.
+ * @param int    $chatid    Идентификатор чата, куда отправляется сообщение.
+ * @param string $text      Текст сообщения.
+ * @return string Возвращает строку.
+ */
+function send_menu($tg, $chatid, $text) {
+    $response = $tg->send_api_command(
+        'sendMessage',
+        [
+        'chat_id' => $chatid,
+        'text' => $text,
+        'reply_markup' => json_encode([
+        'keyboard' => [
+        ['/info', '/lang'],
+        ['/help'],
+        ],
+        'resize_keyboard' => true,
+        'one_time_keyboard' => false,
+        'input_field_placeholder' => get_string('placeholdertypeorselect'),
+        ]),
+        ]
+    );
+    return $response;
 }

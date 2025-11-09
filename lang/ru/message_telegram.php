@@ -69,11 +69,17 @@ $string['connectinstructions'] = 'После того, как вы нажмёт�
 $string['connectme'] = '<br><p style="color: blue;"><b>> Подключить свой аккаунт к Telegram <</b></p>';
 $string['connectmemenu'] = '⚠️ Подключить свой аккаунт к Telegram';
 $string['enter'] = 'Введите';
-$string['enter_time'] = 'Дата и время указываются в мнемоническом или стандартном формате, например: YY-MM-DD HH:MM';
+$string['enter_phone'] = 'Для лучшего взаимодействия с кураторами, пожалуйста, укажите номер своего мобильного телефона в профиле на портале, или нажмите кнопку внизу.';
+$string['enter_time'] = 'Дата и время указываются в мнемоническом или в одном из стандартных форматов, например: YY-MM-DD HH:MM';
 $string['firstregister'] = 'Сначала зарегистрируйтесь на сайте, и подключите уведомления через Телеграм. {$a}';
 $string['notconfigured'] = 'Сервер Telegram не настроен, поэтому сообщения Telegram не могут быть отправлены';
 $string['pluginname'] = 'Telegram';
+$string['provide'] = '☎️ Отправить номер телефона';
+$string['provide_help'] = 'Нажмите кнопку';
 $string['removetelegram'] = 'Отключиться от Telegram';
+$string['reportenabler'] = 'Включить отчёт о персональных данных пользователей';
+$string['reportenabler_desc1'] = '<font color=red>Обратите внимание, что персональные данные пользователей передаются на сторонние серверы Telegram, это может нарушать законы вашей страны.</font>';
+$string['reportenabler_desc2'] = 'Эта опция позволяет преподавателям просматривать персональные данные студентов курса.';
 $string['setupinstructions'] = 'Создайте новый бот Telegram, используя Botfather. Перейдите по ссылке Botfather ниже и откройте Telegram.
 Используйте команду "/newbot" в Telegram для начала создания бота. Вам надо будет задать название бота, например "{$a->name}" и уникальное имя бота, например "{$a->username}". Полное описание <a href="https://docs.moodle.org/33/en/Telegram_message_processor" target="_blank">читаем здесь</a>.';
 $string['sitebotname'] = 'Название бота для сайта';
@@ -82,4 +88,5 @@ $string['sitebottokennotsetup'] = 'Токен бота для сайта дол�
 $string['sitebotusername'] = 'Ник бота для сайта';
 $string['telegrambottoken'] = 'Токен бота Telegram';
 $string['telegramchatid'] = 'ID чата Telegram';
+$string['warnreport_desc'] = 'Выводить предупреждение перед выдачей отчёта.';
 $string['welcome'] = '✅ Ваш аккаунт успешно подключен!';

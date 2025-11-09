@@ -170,6 +170,26 @@ if ($ADMIN->fulltree) {
         $roles
     ));
 
+    $options = [
+    0 => get_string('no'),
+    1 => get_string('yes'),
+    ];
+    $settings->add(new admin_setting_configselect(
+        'message_telegram/sitebotenablereports',
+        get_string('reportenabler', 'message_telegram'),
+        get_string('reportenabler_desc1', 'message_telegram') . ' ' . get_string('reportenabler_desc2', 'message_telegram'),
+        0,
+        $options
+    ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'message_telegram/sitebotwarnreport',
+        get_string('warning'),
+        get_string('warnreport_desc', 'message_telegram'),
+        true,
+        true
+    ));
+
     $settings->add(new admin_setting_heading(
         'message_telegram_standart',
         get_string('configuration', 'core'),
