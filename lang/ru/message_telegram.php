@@ -77,7 +77,7 @@ $string['pluginname'] = 'Telegram';
 $string['provide'] = '☎️ Отправить номер телефона';
 $string['provide_help'] = 'Нажмите кнопку';
 $string['removetelegram'] = 'Отключиться от Telegram';
-$string['reportenabler'] = 'Включить отчет о персональных данных пользователей';
+$string['reportenabler'] = 'Включить отчёт о персональных данных пользователей';
 $string['reportenabler_desc1'] = '<font color=red>Обратите внимание, что персональные данные пользователей передаются на сторонние серверы Telegram, это может нарушать законы вашей страны.</font>';
 $string['reportenabler_desc2'] = 'Эта опция позволяет преподавателям просматривать персональные данные студентов курса.';
 $string['setupinstructions'] = 'Создайте новый бот Telegram, используя Botfather. Перейдите по ссылке Botfather ниже и откройте Telegram.
