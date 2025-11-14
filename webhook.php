@@ -90,7 +90,7 @@ if (isset($data->message)) {
 
     if (strpos($text, '/start') === 0) {
         $tg->set_webhook_chatid($fromid, $text, $username);
-        if (!$USER->phone2) {
+        if (!$USER->phone2 && $userid) {
             $keyboard = [
             'keyboard' => [
             [
@@ -101,7 +101,7 @@ if (isset($data->message)) {
             'one_time_keyboard' => true,
             'input_field_placeholder' => get_string('provide_help', 'message_telegram'),
             ];
-            $text = get_string('welcometosite', 'moodle', ['firstname' => $data->message->from->first_name]) .
+            $text = get_string('welcometosite', 'moodle', ['firstname' => fullname($user)]) .
             PHP_EOL . get_string('enter_phone', 'message_telegram');
         } else {
             $keyboard = [
@@ -199,7 +199,7 @@ if (isset($data->message)) {
             }
         }
         $tg->send_message($list, $userid);
-    } else if (strpos($text, '/help') === 0) {
+    } else if (strpos($text, '/help') === 0 && $userid) {
         $text = null;
         if ($userid) {
             $text = get_string('bothelp', 'message_telegram');
