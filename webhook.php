@@ -101,7 +101,7 @@ if (isset($data->message)) {
             'one_time_keyboard' => true,
             'input_field_placeholder' => get_string('provide_help', 'message_telegram'),
             ];
-            $text = get_string('welcometosite', 'moodle', ['firstname' => $data->message->from->first_name]) .
+            $text = get_string('welcometosite', 'moodle', ['firstname' => fullname($user)]) .
             PHP_EOL . get_string('enter_phone', 'message_telegram');
         } else {
             $keyboard = [
