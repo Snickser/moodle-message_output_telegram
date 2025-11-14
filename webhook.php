@@ -54,6 +54,9 @@ $langs = get_string_manager()->get_list_of_translations();
 
 $tg = new message_telegram\manager();
 
+$user = null;
+$userid = null;
+
 if (isset($data->message)) {
     $fromid = clean_param($data->message->from->id ?? null, PARAM_INT);
     $chatid = clean_param($data->message->chat->id ?? null, PARAM_INT);
@@ -77,8 +80,10 @@ if (isset($data->message)) {
         }
     }
 
-    $lang = get_user_preferences('message_processor_telegram_lang', null, $userid);
-    force_current_language($lang);
+    if ($userid) {
+        $lang = get_user_preferences('message_processor_telegram_lang', null, $userid);
+        force_current_language($lang);
+    }
 
     if ($chatid < 0) {
         if ($user) {
@@ -89,8 +94,8 @@ if (isset($data->message)) {
     }
 
     if (strpos($text, '/start') === 0) {
-        $tg->set_webhook_chatid($fromid, $text, $username);
-        if (!$USER->phone2 && $userid) {
+        $newuser = $tg->set_webhook_chatid($fromid, $text, $username);
+        if (empty($user->phone2) && ($user || $newuser)) {
             $keyboard = [
             'keyboard' => [
             [
@@ -101,8 +106,12 @@ if (isset($data->message)) {
             'one_time_keyboard' => true,
             'input_field_placeholder' => get_string('provide_help', 'message_telegram'),
             ];
-            $text = get_string('welcometosite', 'moodle', ['firstname' => fullname($user)]) .
-            PHP_EOL . get_string('enter_phone', 'message_telegram');
+            if ($user) {
+                $text = get_string('welcometosite', 'moodle', ['firstname' => fullname($user)]);
+            } else {
+                $text = get_string('welcometosite', 'moodle', ['firstname' => $data->message->from->first_name]);
+            }
+            $text .= PHP_EOL . get_string('enter_phone', 'message_telegram');
         } else {
             $keyboard = [
             'keyboard' => [
@@ -113,8 +122,13 @@ if (isset($data->message)) {
             'one_time_keyboard' => false,
             'input_field_placeholder' => get_string('placeholdertypeorselect'),
             ];
-            $text = get_string('welcomeback', 'moodle', ['firstname' => $data->message->from->first_name]);
+            if ($user) {
+                $text = get_string('welcomeback', 'moodle', ['firstname' => fullname($user)]);
+            } else {
+                $text = get_string('welcometosite', 'moodle', ['firstname' => $data->message->from->first_name]);
+            }
         }
+
         $replymarkup = json_encode($keyboard);
         $response = $tg->send_api_command(
             'sendMessage',
