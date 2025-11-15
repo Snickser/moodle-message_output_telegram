@@ -200,8 +200,8 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect(
         'message_telegram/sitebotusernamefield',
         get_string('usernamefield', 'message_telegram'),
-        get_string('usernamefield_desc', 'message_telegram'),
-        null,
+        get_string('customfield', 'message_telegram'),
+        '',
         $options
     ));
 
