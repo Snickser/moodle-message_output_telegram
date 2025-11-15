@@ -190,6 +190,22 @@ if ($ADMIN->fulltree) {
         true
     ));
 
+    $options = [
+    'phone1' => get_string('phone1'),
+    'phone2' => get_string('phone2'),
+    ];
+    $fields = profile_get_custom_fields();
+    foreach ($fields as $f) {
+        $options['profile_field_' . $f->shortname] = $f->name;
+    }
+    $settings->add(new admin_setting_configselect(
+        'message_telegram/sitebotphonefield',
+        get_string('phonefield', 'message_telegram'),
+        null,
+        'phone2',
+        $options
+    ));
+
     $settings->add(new admin_setting_heading(
         'message_telegram_standart',
         get_string('configuration', 'core'),

@@ -77,6 +77,7 @@ if (isset($data->message)) {
         }
         if ($user = $DB->get_record('user', ['id' => $userid])) {
             \core\session\manager::set_user($user);
+            profile_load_data($user);
         }
     }
 
@@ -95,7 +96,8 @@ if (isset($data->message)) {
 
     if (strpos($text, '/start') === 0) {
         $newuser = $tg->set_webhook_chatid($fromid, $text, $username);
-        if (empty($user->phone2) && ($user || $newuser)) {
+
+        if (empty($user->{$config->sitebotphonefield}) && ($user || $newuser)) {
             $keyboard = [
             'keyboard' => [
             [
@@ -141,9 +143,34 @@ if (isset($data->message)) {
     } else if ($userid && isset($data->message->contact->phone_number)) {
         if ($data->message->contact->user_id == $fromid) {
             $phone = clean_param($data->message->contact->phone_number, PARAM_TEXT);
-            if ($phone) {
-                $DB->set_field('user', 'phone2', $phone, ['id' => $userid]);
+            $phone = trim($phone);
+
+            if ($phone && ($config->sitebotphonefield == 'phone1' || $config->sitebotphonefield == 'phone2')) {
+                $DB->set_field('user', $config->sitebotphonefield, $phone, ['id' => $userid]);
                 $response = send_menu($tg, $fromid, get_string('thanks') . ' 🙂');
+            } else if ($phone && $config->sitebotphonefield) {
+                $shortname = preg_replace('/^profile_field_/', '', $config->sitebotphonefield);
+                if ($shortname) {
+                    $field = $DB->get_record('user_info_field', ['shortname' => $shortname]);
+                    $existing = $DB->get_record('user_info_data', [
+                    'userid'  => $userid,
+                    'fieldid' => $field->id,
+                    ]);
+                    if ($existing) {
+                        $existing->data = $phone;
+                        $existing->dataformat = 0;
+                        $DB->update_record('user_info_data', $existing);
+                    } else {
+                        $record = (object)[
+                        'userid'     => $userid,
+                        'fieldid'    => $field->id,
+                        'data'       => $phone,
+                        'dataformat' => 0,
+                        ];
+                        $DB->insert_record('user_info_data', $record);
+                    }
+                    $response = send_menu($tg, $fromid, get_string('thanks') . ' 🙂');
+                }
             }
         } else {
             $tg->send_message('😕 ' . get_string('unknownuser'), $userid);
