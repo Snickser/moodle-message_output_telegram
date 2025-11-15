@@ -789,9 +789,11 @@ if (isset($data->message)) {
                             }
                         }
 
-                        $text .= ' ' . fullname($student, true) .
-                        ($student->profile['telegram_username'] ? ' @' . $student->profile['telegram_username'] : null) .
-                        ' | ' . format_string($group->name) .
+                        $text .= ' ' . fullname($student, true);
+                        if ($config->sitebotusernamefield && $student->profile[$config->sitebotusernamefield]) {
+                            $text .= ' @' . $student->profile[$config->sitebotusernamefield];
+                        }
+                        $text .= ' | ' . format_string($group->name) .
                         ' | ' . ($lastaccess ? userdate($lastaccess, '%d.%m.%Y %H:%M') : get_string('never')) .
                         ($progress ? " | {$progress}%" : null) .
                         PHP_EOL;

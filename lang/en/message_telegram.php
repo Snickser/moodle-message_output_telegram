@@ -133,6 +133,8 @@ $string['telegramlogdump'] = 'Dump message to log';
 $string['telegramwebhook'] = 'Webhook';
 $string['telegramwebhookdump'] = 'Dump webhook data to log';
 $string['tgext'] = 'Path to external sender';
+$string['usernamefield'] = 'Username store field';
+$string['usernamefield_desc'] = 'Default short name for extended user profile field is "telegram_username".';
 
 $string['warnreport_desc'] = 'Display warning before print report.';
 $string['welcome'] = '✅ Your account has been successfully linked!';

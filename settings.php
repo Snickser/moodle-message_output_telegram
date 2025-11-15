@@ -29,7 +29,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading(
         'message_telegram_head',
         '',
-        get_string('customfield', 'message_telegram')
+        '',
     ));
 
     $telegrammanager = new message_telegram\manager();
@@ -188,6 +188,21 @@ if ($ADMIN->fulltree) {
         get_string('warnreport_desc', 'message_telegram'),
         true,
         true
+    ));
+
+    $options = [
+        '' => get_string('no'),
+    ];
+    $fields = profile_get_custom_fields();
+    foreach ($fields as $f) {
+        $options[$f->shortname] = format_string($f->name);
+    }
+    $settings->add(new admin_setting_configselect(
+        'message_telegram/sitebotusernamefield',
+        get_string('usernamefield', 'message_telegram'),
+        get_string('usernamefield_desc', 'message_telegram'),
+        null,
+        $options
     ));
 
     $options = [

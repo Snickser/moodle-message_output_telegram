@@ -411,7 +411,10 @@ class manager {
         if (empty($username)) {
             return false;
         }
-        if ($field = $DB->get_record('user_info_field', ['shortname' => 'telegram_username'])) {
+        if (empty($this->config('sitebotusernamefield'))) {
+            return false;
+        }
+        if ($field = $DB->get_record('user_info_field', ['shortname' => $this->config('sitebotusernamefield')])) {
             $record = $DB->get_record('user_info_data', ['userid' => $userid, 'fieldid' => $field->id]);
             if ($record) {
                 if ($record->data != $username) {
