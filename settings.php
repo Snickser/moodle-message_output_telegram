@@ -230,7 +230,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect(
         'message_telegram/sitebotphonefield',
         get_string('phonefield', 'message_telegram'),
-        null,
+        get_string('phonefield_desc', 'message_telegram'),
         'phone2',
         $options
     ));
