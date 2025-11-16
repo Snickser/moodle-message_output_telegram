@@ -99,6 +99,21 @@ if ($ADMIN->fulltree) {
         PARAM_TEXT
     ));
 
+    $options = [
+        '' => get_string('no'),
+    ];
+    $fields = profile_get_custom_fields();
+    foreach ($fields as $f) {
+        $options[$f->shortname] = format_string($f->name);
+    }
+    $settings->add(new admin_setting_configselect(
+        'message_telegram/sitebotusernamefield',
+        get_string('usernamefield', 'message_telegram'),
+        get_string('customfield', 'message_telegram'),
+        '',
+        $options
+    ));
+
     $settings->add(new admin_setting_heading(
         'message_telegram_webhook',
         get_string('telegramwebhook', 'message_telegram'),
@@ -191,17 +206,16 @@ if ($ADMIN->fulltree) {
     ));
 
     $options = [
-        '' => get_string('no'),
     ];
     $fields = profile_get_custom_fields();
     foreach ($fields as $f) {
         $options[$f->shortname] = format_string($f->name);
     }
-    $settings->add(new admin_setting_configselect(
-        'message_telegram/sitebotusernamefield',
-        get_string('usernamefield', 'message_telegram'),
-        get_string('customfield', 'message_telegram'),
-        '',
+    $settings->add(new admin_setting_configmultiselect(
+        'message_telegram/sitebotreportfields',
+        get_string('reportfields', 'message_telegram'),
+        null,
+        [],
         $options
     ));
 

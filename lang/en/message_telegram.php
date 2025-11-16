@@ -106,6 +106,7 @@ $string['parse_text'] = 'Text only';
 $string['parsemode'] = 'Parse mode';
 $string['pluginname'] = 'Telegram';
 $string['removetelegram'] = 'Remove Telegram connection';
+$string['reportfields'] = 'Fields in report';
 $string['reportenabler'] = 'Enable users personal data report';
 $string['reportenabler_desc1'] = '<font color=red>Please note that users personal data is transferred to third-party Telegram servers, this may violate the law of your country.</font>';
 $string['reportenabler_desc2'] = 'This option enables teachers to view personal data of course students.';

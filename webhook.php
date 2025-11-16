@@ -793,6 +793,11 @@ if (isset($data->message)) {
                         if ($config->sitebotusernamefield && $student->profile[$config->sitebotusernamefield]) {
                             $text .= ' @' . $student->profile[$config->sitebotusernamefield];
                         }
+
+                        foreach (explode(',', $config->sitebotreportfields) as $field) {
+                            $student->profile[$field] ? $text .= ' | ' . $student->profile[$field] : null;
+                        }
+
                         $text .= ' | ' . format_string($group->name) .
                         ' | ' . ($lastaccess ? userdate($lastaccess, '%d.%m.%Y %H:%M') : get_string('never')) .
                         ($progress ? " | {$progress}%" : null) .
