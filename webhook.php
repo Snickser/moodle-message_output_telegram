@@ -54,6 +54,9 @@ $langs = get_string_manager()->get_list_of_translations();
 
 $tg = new message_telegram\manager();
 
+$user = null;
+$userid = null;
+
 if (isset($data->message)) {
     $fromid = clean_param($data->message->from->id ?? null, PARAM_INT);
     $chatid = clean_param($data->message->chat->id ?? null, PARAM_INT);
@@ -74,11 +77,14 @@ if (isset($data->message)) {
         }
         if ($user = $DB->get_record('user', ['id' => $userid])) {
             \core\session\manager::set_user($user);
+            profile_load_data($user);
         }
     }
 
-    $lang = get_user_preferences('message_processor_telegram_lang', null, $userid);
-    force_current_language($lang);
+    if ($userid) {
+        $lang = get_user_preferences('message_processor_telegram_lang', null, $userid);
+        force_current_language($lang);
+    }
 
     if ($chatid < 0) {
         if ($user) {
@@ -89,8 +95,9 @@ if (isset($data->message)) {
     }
 
     if (strpos($text, '/start') === 0) {
-        $tg->set_webhook_chatid($fromid, $text, $username);
-        if (!$USER->phone2 && $userid) {
+        $newuser = $tg->set_webhook_chatid($fromid, $text, $username);
+
+        if (empty($user->{$config->sitebotphonefield}) && ($user || $newuser)) {
             $keyboard = [
             'keyboard' => [
             [
@@ -101,8 +108,12 @@ if (isset($data->message)) {
             'one_time_keyboard' => true,
             'input_field_placeholder' => get_string('provide_help', 'message_telegram'),
             ];
-            $text = get_string('welcometosite', 'moodle', ['firstname' => fullname($user)]) .
-            PHP_EOL . get_string('enter_phone', 'message_telegram');
+            if ($user) {
+                $text = get_string('welcometosite', 'moodle', ['firstname' => fullname($user)]);
+            } else {
+                $text = get_string('welcometosite', 'moodle', ['firstname' => $data->message->from->first_name]);
+            }
+            $text .= PHP_EOL . get_string('enter_phone', 'message_telegram');
         } else {
             $keyboard = [
             'keyboard' => [
@@ -113,8 +124,13 @@ if (isset($data->message)) {
             'one_time_keyboard' => false,
             'input_field_placeholder' => get_string('placeholdertypeorselect'),
             ];
-            $text = get_string('welcomeback', 'moodle', ['firstname' => $data->message->from->first_name]);
+            if ($user) {
+                $text = get_string('welcomeback', 'moodle', ['firstname' => fullname($user)]);
+            } else {
+                $text = get_string('welcometosite', 'moodle', ['firstname' => $data->message->from->first_name]);
+            }
         }
+
         $replymarkup = json_encode($keyboard);
         $response = $tg->send_api_command(
             'sendMessage',
@@ -127,9 +143,34 @@ if (isset($data->message)) {
     } else if ($userid && isset($data->message->contact->phone_number)) {
         if ($data->message->contact->user_id == $fromid) {
             $phone = clean_param($data->message->contact->phone_number, PARAM_TEXT);
-            if ($phone) {
-                $DB->set_field('user', 'phone2', $phone, ['id' => $userid]);
+            $phone = trim($phone);
+
+            if ($phone && ($config->sitebotphonefield == 'phone1' || $config->sitebotphonefield == 'phone2')) {
+                $DB->set_field('user', $config->sitebotphonefield, $phone, ['id' => $userid]);
                 $response = send_menu($tg, $fromid, get_string('thanks') . ' 🙂');
+            } else if ($phone && $config->sitebotphonefield) {
+                $shortname = preg_replace('/^profile_field_/', '', $config->sitebotphonefield);
+                if ($shortname) {
+                    $field = $DB->get_record('user_info_field', ['shortname' => $shortname]);
+                    $existing = $DB->get_record('user_info_data', [
+                    'userid'  => $userid,
+                    'fieldid' => $field->id,
+                    ]);
+                    if ($existing) {
+                        $existing->data = $phone;
+                        $existing->dataformat = 0;
+                        $DB->update_record('user_info_data', $existing);
+                    } else {
+                        $record = (object)[
+                        'userid'     => $userid,
+                        'fieldid'    => $field->id,
+                        'data'       => $phone,
+                        'dataformat' => 0,
+                        ];
+                        $DB->insert_record('user_info_data', $record);
+                    }
+                    $response = send_menu($tg, $fromid, get_string('thanks') . ' 🙂');
+                }
             }
         } else {
             $tg->send_message('😕 ' . get_string('unknownuser'), $userid);
@@ -748,11 +789,19 @@ if (isset($data->message)) {
                             }
                         }
 
-                        $text .= ' ' . fullname($student, true) .
-                        ($student->profile['telegram_username'] ? ' @' . $student->profile['telegram_username'] : null) .
-                        ' | ' . format_string($group->name) .
-                        ' | ' . ($lastaccess ? userdate($lastaccess, '%d.%m.%Y %H:%M') : get_string('never')) .
-                        ($progress ? " | {$progress}%" : null) .
+                        $text .= ' ' . fullname($student, true);
+                        if ($config->sitebotusernamefield && $student->profile[$config->sitebotusernamefield]) {
+                            $text .= ' @' . $student->profile[$config->sitebotusernamefield];
+                        }
+
+                        foreach (explode(',', $config->sitebotreportfields) as $field) {
+                            $student->{$field} ? $text .= ' | ' . format_string($student->{$field}) : null;
+                            $student->profile[$field] ? $text .= ' | ' . format_string($student->profile[$field]) : null;
+                        }
+
+                        $text .= ' | ' . format_string($group->name) .
+                        ' - ' . ($lastaccess ? userdate($lastaccess, '%d.%m.%Y %H:%M') : get_string('never')) .
+                        ($progress ? " - {$progress}%" : null) .
                         PHP_EOL;
                     }
                 }

@@ -29,7 +29,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading(
         'message_telegram_head',
         '',
-        get_string('customfield', 'message_telegram')
+        '',
     ));
 
     $telegrammanager = new message_telegram\manager();
@@ -97,6 +97,21 @@ if ($ADMIN->fulltree) {
         get_string('configsitebotusername', 'message_telegram'),
         null,
         PARAM_TEXT
+    ));
+
+    $options = [
+        '' => get_string('no'),
+    ];
+    $fields = profile_get_custom_fields();
+    foreach ($fields as $f) {
+        $options[$f->shortname] = format_string($f->name);
+    }
+    $settings->add(new admin_setting_configselect(
+        'message_telegram/sitebotusernamefield',
+        get_string('usernamefield', 'message_telegram'),
+        get_string('customfield', 'message_telegram'),
+        '',
+        $options
     ));
 
     $settings->add(new admin_setting_heading(
@@ -188,6 +203,41 @@ if ($ADMIN->fulltree) {
         get_string('warnreport_desc', 'message_telegram'),
         true,
         true
+    ));
+
+    $options = [
+        'email' => get_string('email'),
+        'phone1' => get_string('phone1'),
+        'phone2' => get_string('phone2'),
+        'city' => get_string('city'),
+        'country' => get_string('country'),
+    ];
+    $fields = profile_get_custom_fields();
+    foreach ($fields as $f) {
+        $options[$f->shortname] = format_string($f->name);
+    }
+    $settings->add(new admin_setting_configmultiselect(
+        'message_telegram/sitebotreportfields',
+        get_string('reportfields', 'message_telegram'),
+        null,
+        [],
+        $options
+    ));
+
+    $options = [
+    'phone1' => get_string('phone1'),
+    'phone2' => get_string('phone2'),
+    ];
+    $fields = profile_get_custom_fields();
+    foreach ($fields as $f) {
+        $options['profile_field_' . $f->shortname] = format_string($f->name);
+    }
+    $settings->add(new admin_setting_configselect(
+        'message_telegram/sitebotphonefield',
+        get_string('phonefield', 'message_telegram'),
+        get_string('phonefield_desc', 'message_telegram'),
+        'phone2',
+        $options
     ));
 
     $settings->add(new admin_setting_heading(

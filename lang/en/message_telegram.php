@@ -106,6 +106,7 @@ $string['parse_text'] = 'Text only';
 $string['parsemode'] = 'Parse mode';
 $string['pluginname'] = 'Telegram';
 $string['removetelegram'] = 'Remove Telegram connection';
+$string['reportfields'] = 'Fields in report';
 $string['reportenabler'] = 'Enable users personal data report';
 $string['reportenabler_desc1'] = '<font color=red>Please note that users personal data is transferred to third-party Telegram servers, this may violate the law of your country.</font>';
 $string['reportenabler_desc2'] = 'This option enables teachers to view personal data of course students.';
@@ -115,6 +116,8 @@ Use the "/newbot" command in Telegram to start creating the bot. You will need t
 unique bot username, for example "{$a->username}". Full documentation
 <a href="https://docs.moodle.org/33/en/Telegram_message_processor" target="_blank">here</a>.';
 $string['setwebhook'] = 'Setup Telegram webhook';
+$string['phonefield'] = 'Phone number save field';
+$string['phonefield_desc'] = 'This field will be filled automatically after the student submits their contact information.';
 $string['provide'] = '📱 Provide a phone number';
 $string['provide_help'] = 'Provide a phone number';
 $string['sitebotname'] = 'Bot name for site';
@@ -132,6 +135,8 @@ $string['telegramlogdump'] = 'Dump message to log';
 $string['telegramwebhook'] = 'Webhook';
 $string['telegramwebhookdump'] = 'Dump webhook data to log';
 $string['tgext'] = 'Path to external sender';
+$string['usernamefield'] = 'Username save field';
+$string['usernamefield_desc'] = 'Default short name for extended user profile field is "telegram_username".';
 
 $string['warnreport_desc'] = 'Display warning before print report.';
 $string['welcome'] = '✅ Your account has been successfully linked!';
