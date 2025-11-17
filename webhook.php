@@ -795,12 +795,13 @@ if (isset($data->message)) {
                         }
 
                         foreach (explode(',', $config->sitebotreportfields) as $field) {
-                            $student->profile[$field] ? $text .= ' | ' . $student->profile[$field] : null;
+                            $student->{$field} ? $text .= ' | ' . format_string($student->{$field}) : null;
+                            $student->profile[$field] ? $text .= ' | ' . format_string($student->profile[$field]) : null;
                         }
 
                         $text .= ' | ' . format_string($group->name) .
-                        ' | ' . ($lastaccess ? userdate($lastaccess, '%d.%m.%Y %H:%M') : get_string('never')) .
-                        ($progress ? " | {$progress}%" : null) .
+                        ' - ' . ($lastaccess ? userdate($lastaccess, '%d.%m.%Y %H:%M') : get_string('never')) .
+                        ($progress ? " - {$progress}%" : null) .
                         PHP_EOL;
                     }
                 }

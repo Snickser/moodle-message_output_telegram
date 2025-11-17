@@ -206,6 +206,11 @@ if ($ADMIN->fulltree) {
     ));
 
     $options = [
+        'email' => get_string('email'),
+        'phone1' => get_string('phone1'),
+        'phone2' => get_string('phone2'),
+        'city' => get_string('city'),
+        'country' => get_string('country'),
     ];
     $fields = profile_get_custom_fields();
     foreach ($fields as $f) {
