@@ -30,7 +30,6 @@ $string['botanswer1'] = '🤔 Ответил бы в привате, но мы �
 $string['botanswer2'] = '👍 Ответил в приват';
 $string['botcertdownload'] = '📥 Скачать';
 $string['botcertificates'] = '/certificates - выданные сертификаты';
-$string['botmsgall'] = '🔺 Всем студентам курса';
 $string['botcerts'] = '📜 <b>Ваши сертификаты</b>
 
 ';
@@ -57,6 +56,7 @@ $string['bothelp_anonymous'] = '👓 Подсказки
 $string['botidontknow'] = 'Не знаю что это такое 🤷🏻 /help';
 $string['botlang'] = '🈯 Выбрать язык ({$a})';
 $string['botmessagehelp'] = '/message - отправить групповое сообщение';
+$string['botmsgall'] = '🔺 Всем студентам курса';
 $string['botpay'] = '🏦 Выберите сумму {$a}';
 $string['botpaydesc'] = 'На поддержание учебной платформы';
 $string['botpaytitle'] = '🕉 Пожертвование 🕉';
