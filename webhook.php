@@ -746,16 +746,18 @@ if (isset($data->message)) {
             );
         }
 
-        $text = '🎓 ' . get_string('students') . PHP_EOL . PHP_EOL;
+        $page = '🎓 ' . get_string('students') . PHP_EOL . PHP_EOL;
 
         $context = context_course::instance($courseid);
         if (has_capability('moodle/course:viewparticipants', $context, $userid)) {
             if ($courseid && $accept == 1) {
                 $step = 'done';
                 $groups = groups_get_all_groups($courseid, $userid);
+                $num = 1;
                 foreach ($groups as $group) {
                     $students = get_enrolled_users($context, false, $group->id, '*');
                     foreach ($students as $student) {
+                        $page .= $num++ . '. ';
                         profile_load_custom_fields($student);
                         $lastaccess = $DB->get_field('user_lastaccess', 'timeaccess', [
                         'userid' => $student->id,
@@ -767,6 +769,7 @@ if (isset($data->message)) {
                         $progress = round($progress, 1);
 
                         $instances = enrol_get_instances($courseid, true);
+                        $text = null;
                         foreach ($instances as $instance) {
                             $userenrol = $DB->get_record('user_enrolments', [
                                 'enrolid' => $instance->id,
@@ -803,9 +806,17 @@ if (isset($data->message)) {
                         ' - ' . ($lastaccess ? userdate($lastaccess, '%d.%m.%Y %H:%M') : get_string('never')) .
                         ($progress ? " - {$progress}%" : null) .
                         PHP_EOL;
+
+                        if (mb_strlen($text) + mb_strlen($page) < 4093) {
+                            $page .= $text;
+                        } else {
+                            $page .= '...';
+                            $tg->send_message($page, $userid);
+                            $page = $text;
+                        }
                     }
                 }
-                $tg->send_message($text, $userid);
+                $tg->send_message($page, $userid);
             } else if ($accept === 0) {
                 $step = 'cancel';
             } else {
