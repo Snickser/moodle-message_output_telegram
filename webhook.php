@@ -749,7 +749,16 @@ if (isset($data->message)) {
 
         $page = '🎓 ' . get_string('students') . PHP_EOL . PHP_EOL;
         $context = context_course::instance($courseid);
-        if (has_capability('moodle/course:viewparticipants', $context, $userid)) {
+
+        $hasrole = false;
+        foreach (explode(',', $config->sitebotmsgroles) as $roleid) {
+            if (user_has_role_assignment($userid, $roleid, $context->id)) {
+                $hasrole = true;
+                break;
+            }
+        }
+
+        if (has_capability('moodle/course:viewparticipants', $context, $userid) && $hasrole) {
             if ($courseid && $groupid !== null && $accept == 1) {
                 $step = 'done';
                 $num = 1;
@@ -867,7 +876,7 @@ if (isset($data->message)) {
                 );
             }
         } else {
-            $page .= get_string('no');
+            $page = '💁🏻 ' . get_string('none');
             $tg->send_message($page, $userid);
         }
     } else if (strpos($data->callback_query->data, '/progress') === 0 && $userid) {

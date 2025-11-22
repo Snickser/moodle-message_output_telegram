@@ -65,7 +65,7 @@ $string['botuserid'] = '👑 User ID: {$a}';
 $string['botuseridhelp'] = '/userid - select user';
 $string['configfullmessagehtml'] = 'Get message from "$eventdata->fullmessagehtml" (if available), or from "fullmessage" if not set.';
 $string['configparsemode'] = 'Formatting options: Text or HTML.';
-$string['configsitebotmsgroles'] = 'Who is allowed to send mass messages to course groups.';
+$string['configsitebotmsgroles'] = 'Who is allowed to send mass messages to course groups and use reports.';
 $string['configsitebotname'] = 'This will be filled in automatically when you save the bot token.';
 $string['configsitebotpay'] = 'Bot payment token for accepting payments.';
 $string['configsitebotpaycosts'] = 'Separated by commas.';
@@ -112,7 +112,7 @@ $string['provide_help'] = 'Provide a phone number';
 $string['removetelegram'] = 'Remove Telegram connection';
 $string['reportenabler'] = 'Enable users personal data report';
 $string['reportenabler_desc1'] = '<font color=red>Please note that users personal data is transferred to third-party Telegram servers, this may violate the law of your country.</font>';
-$string['reportenabler_desc2'] = 'This option enables teachers to view personal data of course students.';
+$string['reportenabler_desc2'] = 'This option enables selected roles to view personal data of course students.';
 $string['reportfields'] = 'Fields in report';
 $string['requirehttps'] = 'Site must use HTTPS for Telegram\'s webhook function.';
 $string['setupinstructions'] = 'Create a new Telegram Bot using Botfather. Click the Botfather link below and open it in Telegram.
