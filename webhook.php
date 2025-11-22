@@ -728,9 +728,10 @@ if (isset($data->message)) {
             user_update_user($user, false, true);
         }
     } else if (strpos($data->callback_query->data, '/students') === 0 && $userid && $config->sitebotenablereports) {
-        preg_match('/^\/students(?: (\d+))?(?: (\d+))?/', $data->callback_query->data, $matches);
+        preg_match('/^\/students(?: (\d+))?(?: (-?\d+))?(?: (\d+))?/', $data->callback_query->data, $matches);
         $courseid = isset($matches[1]) ? (int)$matches[1] : null;
-        $accept   = isset($matches[2]) ? (int)$matches[2] : null;
+        $groupid  = isset($matches[2]) ? (int)$matches[2] : null;
+        $accept   = isset($matches[3]) ? (int)$matches[3] : null;
 
         if (!$config->sitebotwarnreport) {
             $accept = 1;
@@ -747,76 +748,99 @@ if (isset($data->message)) {
         }
 
         $page = '🎓 ' . get_string('students') . PHP_EOL . PHP_EOL;
-
         $context = context_course::instance($courseid);
         if (has_capability('moodle/course:viewparticipants', $context, $userid)) {
-            if ($courseid && $accept == 1) {
+            if ($courseid && $groupid !== null && $accept == 1) {
                 $step = 'done';
-                $groups = groups_get_all_groups($courseid, $userid);
                 $num = 1;
-                foreach ($groups as $group) {
-                    $students = get_enrolled_users($context, false, $group->id, '*');
-                    foreach ($students as $student) {
-                        $page .= $num++ . '. ';
-                        profile_load_custom_fields($student);
-                        $lastaccess = $DB->get_field('user_lastaccess', 'timeaccess', [
-                        'userid' => $student->id,
-                        'courseid' => $courseid,
+                $students = get_enrolled_users($context, false, $groupid, '*');
+                foreach ($students as $student) {
+                    $page .= $num++ . '. ';
+                    profile_load_custom_fields($student);
+                    $lastaccess = $DB->get_field('user_lastaccess', 'timeaccess', [
+                    'userid' => $student->id,
+                    'courseid' => $courseid,
+                    ]);
+                    $course = get_course($courseid);
+                    $completion = new completion_info($course);
+                    $progress = \core_completion\progress::get_course_progress_percentage($course, $student->id) ?? 0;
+                    $progress = round($progress, 1);
+
+                    $instances = enrol_get_instances($courseid, true);
+                    $text = null;
+                    foreach ($instances as $instance) {
+                        $userenrol = $DB->get_record('user_enrolments', [
+                            'enrolid' => $instance->id,
+                            'userid' => $student->id,
                         ]);
-                        $course = get_course($courseid);
-                        $completion = new completion_info($course);
-                        $progress = \core_completion\progress::get_course_progress_percentage($course, $student->id) ?? 0;
-                        $progress = round($progress, 1);
 
-                        $instances = enrol_get_instances($courseid, true);
-                        $text = null;
-                        foreach ($instances as $instance) {
-                            $userenrol = $DB->get_record('user_enrolments', [
-                                'enrolid' => $instance->id,
-                                'userid' => $student->id,
-                            ]);
-
-                            $now = time();
-                            if ($userenrol) {
-                                if ($userenrol->status == ENROL_USER_SUSPENDED) {
-                                    $text .= '⛔';
-                                } else if ($userenrol->timestart > $now) {
+                        $now = time();
+                        if ($userenrol) {
+                            if ($userenrol->status == ENROL_USER_SUSPENDED) {
+                                $text .= '⛔';
+                            } else if ($userenrol->timestart > $now) {
                                     $text .= '🅿️';
-                                } else if ($userenrol->timeend != 0 && $userenrol->timeend <= $now) {
-                                    $text .= '⏰';
-                                } else if (time() - $lastaccess > 86400 * 7) {
-                                    $text .= '🟡';
-                                } else {
-                                    $text .= '🟢';
-                                }
+                            } else if ($userenrol->timeend != 0 && $userenrol->timeend <= $now) {
+                                $text .= '⏰';
+                            } else if (time() - $lastaccess > 86400 * 7) {
+                                $text .= '🟡';
+                            } else {
+                                $text .= '🟢';
                             }
                         }
+                    }
 
-                        $text .= ' ' . fullname($student, true);
-                        if ($config->sitebotusernamefield && $student->profile[$config->sitebotusernamefield]) {
-                            $text .= ' @' . $student->profile[$config->sitebotusernamefield];
-                        }
+                    $text .= ' ' . fullname($student, true);
+                    if ($config->sitebotusernamefield && $student->profile[$config->sitebotusernamefield]) {
+                        $text .= ' @' . $student->profile[$config->sitebotusernamefield];
+                    }
 
-                        foreach (explode(',', $config->sitebotreportfields) as $field) {
-                            $student->{$field} ? $text .= ' | ' . format_string($student->{$field}) : null;
-                            $student->profile[$field] ? $text .= ' | ' . format_string($student->profile[$field]) : null;
-                        }
+                    foreach (explode(',', $config->sitebotreportfields) as $field) {
+                        $student->{$field} ? $text .= ' | ' . format_string($student->{$field}) : null;
+                        $student->profile[$field] ? $text .= ' | ' . format_string($student->profile[$field]) : null;
+                    }
 
-                        $text .= ' | ' . format_string($group->name) .
-                        ' - ' . ($lastaccess ? userdate($lastaccess, '%d.%m.%Y %H:%M') : get_string('never')) .
-                        ($progress ? " - {$progress}%" : null) .
-                        PHP_EOL;
+                    $text .= ' | ' .
+                    ($lastaccess ? userdate($lastaccess, '%d.%m.%Y %H:%M') : get_string('never')) .
+                    ($progress ? " - {$progress}%" : null) .
+                    PHP_EOL;
 
-                        if (mb_strlen($text) + mb_strlen($page) < 4093) {
-                            $page .= $text;
-                        } else {
-                            $page .= '...';
-                            $tg->send_message($page, $userid);
-                            $page = $text;
-                        }
+                    if (mb_strlen($text) + mb_strlen($page) < 4093) {
+                        $page .= $text;
+                    } else {
+                        $page .= '...';
+                        $tg->send_message($page, $userid);
+                        $page = $text;
                     }
                 }
                 $tg->send_message($page, $userid);
+            } else if (!$groupid && $courseid) {
+                $step = 'getgroup';
+                $groups = groups_get_all_groups($courseid, $userid);
+                foreach ($groups as $group) {
+                        $keyboard['inline_keyboard'][] = [[
+                        'text' => format_string($group->name . ($group->description ? " - {$group->description}" : null)),
+                        'callback_data' => "/students {$courseid} {$group->id}",
+                        ]];
+                }
+                if (has_capability('moodle/site:accessallgroups', $context, $userid)) {
+                    $keyboard['inline_keyboard'][] = [[
+                    'text' => '✖️ ' . get_string('groupsnone'),
+                    'callback_data' => "/students {$courseid} -1",
+                    ]];
+                    $keyboard['inline_keyboard'][] = [[
+                    'text' => '✳️ ' . get_string('allparticipants'),
+                    'callback_data' => "/students {$courseid} 0",
+                    ]];
+                }
+                $response = $tg->send_api_command(
+                    'sendMessage',
+                    [
+                    'chat_id' => $fromid,
+                    'text' => '📖 ' . get_string('selectagroup'),
+                    'reply_markup' => json_encode($keyboard),
+                    ]
+                );
             } else if ($accept === 0) {
                 $step = 'cancel';
             } else {
@@ -825,11 +849,11 @@ if (isset($data->message)) {
                 'inline_keyboard' => [[
                 [
                 'text' => '⚠️ ' . get_string('policyaccept'),
-                'callback_data' => "/students {$courseid} 1",
+                'callback_data' => "/students {$courseid} {$groupid} 1",
                 ],
                 [
                 'text' => '❌ ' . get_string('cancel'),
-                'callback_data' => "/students {$courseid} 0",
+                'callback_data' => "/students {$courseid} {$groupid} 0",
                 ],
                 ]],
                 ];
@@ -843,8 +867,8 @@ if (isset($data->message)) {
                 );
             }
         } else {
-            $text .= get_string('no');
-            $tg->send_message($text, $userid);
+            $page .= get_string('no');
+            $tg->send_message($page, $userid);
         }
     } else if (strpos($data->callback_query->data, '/progress') === 0 && $userid) {
         $progress = [
