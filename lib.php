@@ -82,7 +82,7 @@ function message_telegram_extend_navigation_user_settings($navigation, $user, $c
  *
  * @return mixed Результат выполнения метода send_api_command (ответ Telegram API).
  */
-function private_answer($tg, $botname, $chatid, $messageid, $start = null) {
+function telegram_private_answer($tg, $botname, $chatid, $messageid, $start = null) {
     if ($start) {
         $text = get_string('botanswer1', 'message_telegram');
     } else {
@@ -118,7 +118,7 @@ function private_answer($tg, $botname, $chatid, $messageid, $start = null) {
  * @param int $userid Идентификатор пользователя в Moodle
  * @return array Массив сертификатов пользователя
  */
-function get_user_certificates(int $userid) {
+function telegram_get_user_certificates(int $userid) {
     global $DB, $CFG;
 
     $sql = "SELECT ci.id, ci.timecreated, ci.code, t.name
@@ -152,7 +152,7 @@ function get_user_certificates(int $userid) {
  *
  * @return bool Возвращает true после успешного добавления сообщений в очередь.
  */
-function notify_users(int $courseid, int $groupid, int $userid, $text) {
+function telegram_notify_users(int $courseid, int $groupid, int $userid, $text) {
     global $DB, $CFG;
 
     $from = $DB->get_record('user', ['id' => $userid], '*');
@@ -197,7 +197,7 @@ function notify_users(int $courseid, int $groupid, int $userid, $text) {
  * @param string $text      Текст сообщения.
  * @return string Возвращает строку.
  */
-function send_menu($tg, $chatid, $text) {
+function telegram_send_menu($tg, $chatid, $text) {
     $response = $tg->send_api_command(
         'sendMessage',
         [
