@@ -287,7 +287,24 @@ if (isset($data->message)) {
             $text .= "\n/pay - " . get_string('botpaytitle', 'message_telegram');
         }
 
-        $tg->send_message($text, $userid);
+        $keyboard = [
+            'keyboard' => [
+            ['/info', '/lang'],
+            ['/help'],
+            ],
+            'resize_keyboard' => true,
+            'one_time_keyboard' => false,
+            'input_field_placeholder' => get_string('placeholdertypeorselect'),
+        ];
+        $replymarkup = json_encode($keyboard);
+        $response = $tg->send_api_command(
+            'sendMessage',
+            [
+            'chat_id' => $fromid,
+            'text' => $text,
+            'reply_markup' => $replymarkup,
+            ]
+        );
     } else if (strpos($text, '/info') === 0) {
         $params = [
             'chat_id' => $fromid,
