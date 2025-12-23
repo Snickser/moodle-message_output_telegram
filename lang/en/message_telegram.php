@@ -55,8 +55,8 @@ $string['bothelp_anonymous'] = '👓 Helps
 /faq  - frequently asked questions';
 $string['botidontknow'] = 'I dont know what this is 🤷🏻 /help';
 $string['botlang'] = '🈯 Select language ({$a})';
-$string['botmsgall'] = 'Тo all students';
 $string['botmessagehelp'] = '/message - send group message';
+$string['botmsgall'] = 'Тo all students';
 $string['botpay'] = '🏦 Select amount {$a}';
 $string['botpaydesc'] = 'To support the learning platform';
 $string['botpaytitle'] = 'Donation 🕉';
@@ -65,7 +65,7 @@ $string['botuserid'] = '👑 User ID: {$a}';
 $string['botuseridhelp'] = '/userid - select user';
 $string['configfullmessagehtml'] = 'Get message from "$eventdata->fullmessagehtml" (if available), or from "fullmessage" if not set.';
 $string['configparsemode'] = 'Formatting options: Text or HTML.';
-$string['configsitebotmsgroles'] = 'Who is allowed to send mass messages to course groups.';
+$string['configsitebotmsgroles'] = 'Who is allowed to send mass messages to course groups and use reports.';
 $string['configsitebotname'] = 'This will be filled in automatically when you save the bot token.';
 $string['configsitebotpay'] = 'Bot payment token for accepting payments.';
 $string['configsitebotpaycosts'] = 'Separated by commas.';
@@ -104,22 +104,22 @@ $string['notconfigured'] = 'The Telegram server hasn\'t been configured so Teleg
 $string['parse_html'] = 'HTML format';
 $string['parse_text'] = 'Text only';
 $string['parsemode'] = 'Parse mode';
+$string['phonefield'] = 'Phone number save field';
+$string['phonefield_desc'] = 'This field will be filled automatically after the student submits their contact information.';
 $string['pluginname'] = 'Telegram';
+$string['provide'] = '📱 Provide a phone number';
+$string['provide_help'] = 'Provide a phone number';
 $string['removetelegram'] = 'Remove Telegram connection';
-$string['reportfields'] = 'Fields in report';
 $string['reportenabler'] = 'Enable users personal data report';
 $string['reportenabler_desc1'] = '<font color=red>Please note that users personal data is transferred to third-party Telegram servers, this may violate the law of your country.</font>';
-$string['reportenabler_desc2'] = 'This option enables teachers to view personal data of course students.';
+$string['reportenabler_desc2'] = 'This option enables selected roles to view personal data of course students.';
+$string['reportfields'] = 'Fields in report';
 $string['requirehttps'] = 'Site must use HTTPS for Telegram\'s webhook function.';
 $string['setupinstructions'] = 'Create a new Telegram Bot using Botfather. Click the Botfather link below and open it in Telegram.
 Use the "/newbot" command in Telegram to start creating the bot. You will need to specify a botname, for example "{$a->name}", and a
 unique bot username, for example "{$a->username}". Full documentation
 <a href="https://docs.moodle.org/33/en/Telegram_message_processor" target="_blank">here</a>.';
 $string['setwebhook'] = 'Setup Telegram webhook';
-$string['phonefield'] = 'Phone number save field';
-$string['phonefield_desc'] = 'This field will be filled automatically after the student submits their contact information.';
-$string['provide'] = '📱 Provide a phone number';
-$string['provide_help'] = 'Provide a phone number';
 $string['sitebotname'] = 'Bot name for site';
 $string['sitebotpay'] = 'Payment token';
 $string['sitebotpaycosts'] = 'Predefined amounts';
