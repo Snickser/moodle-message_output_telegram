@@ -24,7 +24,6 @@
 
 define('NO_MOODLE_COOKIES', true);
 define('NO_DEBUG_DISPLAY', true);
-define('AJAX_SCRIPT', true);
 
 require_once(__DIR__ . '/../../../config.php'); // @codingStandardsIgnoreLine
 
@@ -92,9 +91,9 @@ if (isset($data->message)) {
 
     if ($chatid < 0) {
         if ($user) {
-            telegram_private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id);
+            private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id);
         } else {
-            telegram_private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id, "?start");
+            private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id, "?start");
         }
     }
 
@@ -151,7 +150,7 @@ if (isset($data->message)) {
 
             if ($phone && ($config->sitebotphonefield == 'phone1' || $config->sitebotphonefield == 'phone2')) {
                 $DB->set_field('user', $config->sitebotphonefield, $phone, ['id' => $userid]);
-                $response = telegram_send_menu($tg, $fromid, get_string('thanks') . ' 🙂');
+                $response = send_menu($tg, $fromid, get_string('thanks') . ' 🙂');
             } else if ($phone && $config->sitebotphonefield) {
                 $shortname = preg_replace('/^profile_field_/', '', $config->sitebotphonefield);
                 if ($shortname) {
@@ -173,7 +172,7 @@ if (isset($data->message)) {
                         ];
                         $DB->insert_record('user_info_data', $record);
                     }
-                    $response = telegram_send_menu($tg, $fromid, get_string('thanks') . ' 🙂');
+                    $response = send_menu($tg, $fromid, get_string('thanks') . ' 🙂');
                 }
             }
         } else {
@@ -291,24 +290,7 @@ if (isset($data->message)) {
             $text .= "\n/pay - " . get_string('botpaytitle', 'message_telegram');
         }
 
-        $keyboard = [
-            'keyboard' => [
-            ['/info', '/lang'],
-            ['/help'],
-            ],
-            'resize_keyboard' => true,
-            'one_time_keyboard' => false,
-            'input_field_placeholder' => get_string('placeholdertypeorselect'),
-        ];
-        $replymarkup = json_encode($keyboard);
-        $response = $tg->send_api_command(
-            'sendMessage',
-            [
-            'chat_id' => $fromid,
-            'text' => $text,
-            'reply_markup' => $replymarkup,
-            ]
-        );
+        $tg->send_message($text, $userid);
     } else if (strpos($text, '/info') === 0) {
         $params = [
             'chat_id' => $fromid,
@@ -480,7 +462,7 @@ if (isset($data->message)) {
             ]
         );
     } else if (strpos($text, '/certificates') === 0 && $userid) {
-        $certs = telegram_get_user_certificates($userid);
+        $certs = get_user_certificates($userid);
         $text = get_string('botcerts', 'message_telegram');
         $buff = '';
         foreach ($certs as $cert) {
@@ -647,7 +629,7 @@ if (isset($data->message)) {
         $lastmsgid = $response->result->message_id;
         $lastdata = $record->lastdata;
     } else if ($text && $userid) {
-        $response = telegram_send_menu($tg, $fromid, get_string('botidontknow', 'message_telegram'));
+        $response = send_menu($tg, $fromid, get_string('botidontknow', 'message_telegram'));
     } else if ($text) {
         $tg->send_api_command(
             'sendMessage',
@@ -1147,10 +1129,10 @@ if (isset($data->message)) {
         $params['message_id'] = $data->callback_query->message->message_id;
         $response = $tg->send_api_command('editMessageText', $params);
         if ($notify) {
-            telegram_notify_users($courseid, $groupid, $userid, $data->callback_query->message->text);
+            notify_users($courseid, $groupid, $userid, $data->callback_query->message->text);
         }
     } else if (strpos($data->callback_query->data, '/getcert') === 0 && $userid) {
-        $certs = telegram_get_user_certificates($userid);
+        $certs = get_user_certificates($userid);
         if ($id = substr($data->callback_query->data, 9)) {
             $issue = \tool_certificate\template::get_issue_from_code($id);
             $context = \context_course::instance($issue->courseid, IGNORE_MISSING) ?: null;
