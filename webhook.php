@@ -1145,7 +1145,7 @@ if (isset($data->message)) {
                 $response = $tg->send_api_command('sendDocument', [
                     'chat_id' => $chatid,
                     'document' => $certurl,
-                    'caption' => get_string('botcertyour', 'message_telegram'),
+                    'caption' => $template->get_name() . "\n\n" . get_string('botcertyour', 'message_telegram'),
                 ]);
             }
         } else {
