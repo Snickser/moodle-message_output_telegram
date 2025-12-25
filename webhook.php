@@ -91,9 +91,9 @@ if (isset($data->message)) {
 
     if ($chatid < 0) {
         if ($user) {
-            private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id);
+            telegram_private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id);
         } else {
-            private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id, "?start");
+            telegram_private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id, "?start");
         }
     }
 
@@ -150,7 +150,7 @@ if (isset($data->message)) {
 
             if ($phone && ($config->sitebotphonefield == 'phone1' || $config->sitebotphonefield == 'phone2')) {
                 $DB->set_field('user', $config->sitebotphonefield, $phone, ['id' => $userid]);
-                $response = send_menu($tg, $fromid, get_string('thanks') . ' 🙂');
+                $response = telegram_send_menu($tg, $fromid, get_string('thanks') . ' 🙂');
             } else if ($phone && $config->sitebotphonefield) {
                 $shortname = preg_replace('/^profile_field_/', '', $config->sitebotphonefield);
                 if ($shortname) {
@@ -172,7 +172,7 @@ if (isset($data->message)) {
                         ];
                         $DB->insert_record('user_info_data', $record);
                     }
-                    $response = send_menu($tg, $fromid, get_string('thanks') . ' 🙂');
+                    $response = telegram_send_menu($tg, $fromid, get_string('thanks') . ' 🙂');
                 }
             }
         } else {
@@ -629,7 +629,7 @@ if (isset($data->message)) {
         $lastmsgid = $response->result->message_id;
         $lastdata = $record->lastdata;
     } else if ($text && $userid) {
-        $response = send_menu($tg, $fromid, get_string('botidontknow', 'message_telegram'));
+        $response = telegram_send_menu($tg, $fromid, get_string('botidontknow', 'message_telegram'));
     } else if ($text) {
         $tg->send_api_command(
             'sendMessage',
@@ -1133,7 +1133,7 @@ if (isset($data->message)) {
         $params['message_id'] = $data->callback_query->message->message_id;
         $response = $tg->send_api_command('editMessageText', $params);
         if ($notify) {
-            notify_users($courseid, $groupid, $userid, $data->callback_query->message->text);
+            telegram_notify_users($courseid, $groupid, $userid, $data->callback_query->message->text);
         }
     } else if (strpos($data->callback_query->data, '/getcert') === 0 && $userid) {
         $certs = telegram_get_user_certificates($userid);
