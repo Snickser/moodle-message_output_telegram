@@ -462,7 +462,7 @@ if (isset($data->message)) {
             ]
         );
     } else if (strpos($text, '/certificates') === 0 && $userid) {
-        $certs = get_user_certificates($userid);
+        $certs = telegram_get_user_certificates($userid);
         $text = get_string('botcerts', 'message_telegram');
         $buff = '';
         foreach ($certs as $cert) {
@@ -1136,7 +1136,7 @@ if (isset($data->message)) {
             notify_users($courseid, $groupid, $userid, $data->callback_query->message->text);
         }
     } else if (strpos($data->callback_query->data, '/getcert') === 0 && $userid) {
-        $certs = get_user_certificates($userid);
+        $certs = telegram_get_user_certificates($userid);
         if ($id = substr($data->callback_query->data, 9)) {
             $issue = \tool_certificate\template::get_issue_from_code($id);
             $context = \context_course::instance($issue->courseid, IGNORE_MISSING) ?: null;
