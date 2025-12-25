@@ -1070,7 +1070,11 @@ if (isset($data->message)) {
 
         $params['reply_markup'] = json_encode($keyboard);
         $params['message_id'] = $data->callback_query->message->message_id;
-        $response = $tg->send_api_command('editMessageText', $params);
+        if (isset($type)) {
+            $response = $tg->send_api_command('editMessageText', $params);
+        } else {
+            $response = $tg->send_api_command('sendMessage', $params);
+        }
     } else if (strpos($data->callback_query->data, '/message') === 0 && $userid) {
         preg_match('/^\/message(?: (\d+))?(?: (\d+))?(?: (\d+))?/', $data->callback_query->data, $matches);
         $courseid = isset($matches[1]) ? (int)$matches[1] : null;
