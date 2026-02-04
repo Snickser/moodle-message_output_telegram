@@ -26,6 +26,43 @@
 /**
  * Adds navigation items to user profile.
  *
+ * @param core_user\output\myprofile\tree $tree The myprofile tree object
+ * @param stdClass $user The user object
+ * @param bool $iscurrentuser Whether the user is the current user
+ * @param stdClass $course The course object
+ */
+function message_telegram_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
+    global $USER;
+
+    if ($USER->id !== $user->id) {
+        return;
+    }
+
+    $manager = new \message_telegram\manager();
+    $chatid = $manager->is_chatid_set($USER->id);
+
+    if ($chatid) {
+        $msg = get_string('alreadyconnected', 'message_telegram');
+    } else {
+        $msg = get_string('connectmemenu', 'message_telegram');
+    }
+
+    $url = new moodle_url('/message/notificationpreferences.php');
+    $category = new core_user\output\myprofile\category('telegram', get_string('pluginname', 'message_telegram'), null);
+    $node = new core_user\output\myprofile\node(
+        'telegram',
+        'message_telegram',
+        $msg,
+        null,
+        $url
+    );
+    $tree->add_category($category);
+    $tree->add_node($node);
+}
+
+/**
+ * Adds navigation items to user profile.
+ *
  * @param stdClass $navigation
  * @param stdClass $user The user object
  * @param stdClass $context
