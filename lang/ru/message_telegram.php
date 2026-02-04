@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['alreadyconnected'] = '✅ Ваш Telegram аккаунт подключен';
+$string['alreadyconnected'] = '✅ Ваш Телеграм аккаунт подключен';
 $string['botanswer1'] = '🤔 Ответил бы в привате, но мы пока не знакомы ☺ ️';
 $string['botanswer2'] = '👍 Ответил в приват';
 $string['botcertdownload'] = '📥 Скачать';
