@@ -135,6 +135,7 @@ $string['telegramlogdump'] = 'Dump message to log';
 $string['telegramwebhook'] = 'Webhook';
 $string['telegramwebhookdump'] = 'Dump webhook data to log';
 $string['tgext'] = 'Path to external sender';
+$string['unsetwebhook'] = 'Unset Telegram webhook';
 $string['usernamefield'] = 'Username save field';
 $string['usernamefield_desc'] = 'Default short name for extended user profile field is "telegram_username".';
 
