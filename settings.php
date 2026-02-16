@@ -116,6 +116,8 @@ if ($ADMIN->fulltree) {
     $url = new moodle_url('/message/output/telegram/telegramconnect.php', ['sesskey' => sesskey(), 'action' => 'setwebhook']);
     $link = html_writer::tag(
         'a',
+        get_config('message_telegram', 'webhook') ?
+        get_string('unsetwebhook', 'message_telegram') :
         get_string('setwebhook', 'message_telegram'),
         ['href' => $url, 'class' => 'btn btn-danger']
     );
