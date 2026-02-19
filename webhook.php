@@ -185,6 +185,7 @@ if (isset($data->message)) {
                 return [
                 'text' => $n,
                 'callback_data' => '/pay ' . $n,
+                'style' => 'primary',
                 ];
             }, $numbers);
             $keyboard = [
@@ -490,6 +491,7 @@ if (isset($data->message)) {
             'inline_keyboard' => [[[
             'text' => get_string('botcertdownload', 'message_telegram'),
             'callback_data' => '/getcert',
+            'style' => 'success',
             ]]],
             ];
         $params = [
