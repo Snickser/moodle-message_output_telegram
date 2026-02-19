@@ -314,10 +314,16 @@ if (isset($data->message)) {
     } else if (strpos($text, '/userid') === 0 && $userid) {
         $buttons = [];
         foreach ($userids as $id) {
+            if ($userid == $id) {
+                $color = 'success';
+            } else {
+                $color = '';
+            }
             $user = $DB->get_record('user', ['id' => $id]);
             $buttons[] = [[
                 'text' => fullname($user),
                 'callback_data' => '/userid ' . $id,
+                'style' => $color,
             ]];
         }
         $keyboard = [
@@ -408,7 +414,7 @@ if (isset($data->message)) {
 
         $keyboard = [
             'inline_keyboard' => [[
-            ['text' => '+ ' . get_string('newevent', 'calendar'), 'callback_data' => '/newevent'],
+            ['text' => '+ ' . get_string('newevent', 'calendar'), 'callback_data' => '/newevent', 'style' => 'success'],
             ]],
         ];
         $response = $tg->send_api_command(
@@ -422,10 +428,17 @@ if (isset($data->message)) {
         );
     } else if (strpos($text, '/lang') === 0 && $userid) {
         $buttons = [];
+        $clang = get_user_preferences('message_processor_telegram_lang', get_string('none'), $userid);
         foreach ($langs as $langcode => $name) {
+            if ($clang == $langcode) {
+                $color = 'primary';
+            } else {
+                $color = '';
+            }
             $buttons[] = [[
                 'text' => $name,
                 'callback_data' => '/lang ' . $langcode,
+                'style' => $color,
             ]];
         }
         $keyboard = [
@@ -436,7 +449,7 @@ if (isset($data->message)) {
             'text' => get_string(
                 'botlang',
                 'message_telegram',
-                get_user_preferences('message_processor_telegram_lang', get_string('none'), $userid),
+                $clang,
             ),
             'reply_markup' => json_encode($keyboard),
         ];
@@ -499,6 +512,7 @@ if (isset($data->message)) {
         [
             'text' => '✅  ' . get_string('apply'),
             'callback_data' => $record->lastdata . " {$text}",
+            'style' => 'primary',
         ],
         ]],
         ];
@@ -531,6 +545,7 @@ if (isset($data->message)) {
         [
             'text' => '✅  ' . get_string('apply'),
             'callback_data' => $record->lastdata . " {$timestamp}",
+            'style' => 'primary',
         ],
         ]],
         ];
@@ -566,6 +581,7 @@ if (isset($data->message)) {
         [
             'text' => '✅ ' . get_string('apply'),
             'callback_data' => $record->lastdata . " {$timestamp}",
+            'style' => 'primary',
         ],
         ]],
         ];
@@ -863,7 +879,7 @@ if (isset($data->message)) {
                 [
                 'text' => '⚠️ ' . get_string('policyaccept'),
                 'callback_data' => "/students {$courseid} {$groupid} 1",
-                'style' => 'success',
+                'style' => 'danger',
                 ],
                 [
                 'text' => '❌ ' . get_string('cancel'),
