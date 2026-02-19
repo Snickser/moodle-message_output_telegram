@@ -597,6 +597,7 @@ if (isset($data->message)) {
         [
             'text' => '✉️ ' . get_string('submit'),
             'callback_data' => $record->lastdata . ' 1',
+            'style' => 'success',
         ],
         [
             'text' => '❌ ' . get_string('cancel'),
@@ -862,6 +863,7 @@ if (isset($data->message)) {
                 [
                 'text' => '⚠️ ' . get_string('policyaccept'),
                 'callback_data' => "/students {$courseid} {$groupid} 1",
+                'style' => 'success',
                 ],
                 [
                 'text' => '❌ ' . get_string('cancel'),
