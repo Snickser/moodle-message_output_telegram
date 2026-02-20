@@ -81,7 +81,7 @@ $string['connectinstructions'] = 'Once you have clicked the link below, you will
 your Telegram account. In Telegram, click the "Start" button in the "{$a}" chat that opens to connect your account to Moodle.
 Once completed, come back to this page and click "Save changes". Full documentation
 <a href="https://docs.moodle.org/33/en/Telegram_message_processor#Configuring_user_preferences" target="_blank">here</a>.';
-$string['connectme'] = 'Connect my account to Telegram';
+$string['connectme'] = '<br><p style="color: blue;"><font size=+1><b>👉 Connect my account to Telegram 👈</b></font></p>';
 $string['connectmemenu'] = 'Connect my account to Telegram';
 $string['customfield'] = 'If there is an additional user profile field "telegram_username", it will be filled in automatically.';
 
@@ -135,6 +135,7 @@ $string['telegramlogdump'] = 'Dump message to log';
 $string['telegramwebhook'] = 'Webhook';
 $string['telegramwebhookdump'] = 'Dump webhook data to log';
 $string['tgext'] = 'Path to external sender';
+$string['unsetwebhook'] = 'Unset Telegram webhook';
 $string['usernamefield'] = 'Username save field';
 $string['usernamefield_desc'] = 'Default short name for extended user profile field is "telegram_username".';
 

@@ -38,11 +38,16 @@ function message_telegram_myprofile_navigation(core_user\output\myprofile\tree $
         return;
     }
 
+    $botname = get_config('message_telegram', 'sitebotname');
+    if (empty($botname)) {
+        return;
+    }
+
     $manager = new \message_telegram\manager();
     $chatid = $manager->is_chatid_set($USER->id);
 
     if ($chatid) {
-        $msg = get_string('alreadyconnected', 'message_telegram');
+        return;
     } else {
         $msg = get_string('connectmemenu', 'message_telegram');
     }
@@ -242,8 +247,8 @@ function telegram_send_menu($tg, $chatid, $text) {
         'text' => $text,
         'reply_markup' => json_encode([
         'keyboard' => [
-        ['/info', '/lang'],
-        ['/help'],
+        [['text' => '/info', 'style' => 'success'], ['text' => '/lang', 'style' => 'success'] ],
+        [['text' => '/help', 'style' => 'primary']],
         ],
         'resize_keyboard' => true,
         'one_time_keyboard' => false,

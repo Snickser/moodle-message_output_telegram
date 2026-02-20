@@ -66,7 +66,7 @@ $string['configsitebotname'] = 'Будет заполнено автоматич
 $string['configsitebottoken'] = 'Введите сюда токен бота сайта, полученный от Botfather.';
 $string['configsitebotusername'] = 'Будет заполнено автоматически, когда Вы сохраните токен бота.';
 $string['connectinstructions'] = 'После того, как вы нажмёте ссылку ниже, вам нужно будет разрешить открытие ссылки в Telegram с вашей учётной записью Telegram. В Telegram нажмите кнопку «Start» в открывшемся чате «{$a}», чтобы подключить свою учётную запись.<br>После завершения вернитесь на эту страницу и нажмите «Save changes (Сохранить изменения)». Полную инструкцию <a href="https://docs.moodle.org/33/en/Telegram_message_processor#Configuring_user_preferences" target="_blank">читаем здесь</a>.';
-$string['connectme'] = '<br><p style="color: blue;"><b>> Подключить свой аккаунт к Telegram <</b></p>';
+$string['connectme'] = '<br><p style="color: blue;"><font size=+1><b>👉 Подключить свой аккаунт к Телеграм 👈</b></font></p>';
 $string['connectmemenu'] = '⚠️ Подключить свой аккаунт к Telegram';
 $string['enter'] = 'Введите';
 $string['enter_phone'] = 'Для лучшего взаимодействия с кураторами, пожалуйста, укажите номер своего мобильного телефона в профиле на портале, или нажмите кнопку внизу.';
