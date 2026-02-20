@@ -93,7 +93,7 @@ if (isset($data->message)) {
         if ($user) {
             telegram_private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id);
         } else {
-            telegram_private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id, "?start");
+            telegram_private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id, "?start=0");
         }
     }
 
