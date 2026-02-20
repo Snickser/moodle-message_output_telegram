@@ -247,8 +247,8 @@ function telegram_send_menu($tg, $chatid, $text) {
         'text' => $text,
         'reply_markup' => json_encode([
         'keyboard' => [
-        ['/info', '/lang'],
-        ['/help'],
+        [['text' => '/info', 'style' => 'success'], ['text' => '/lang', 'style' => 'success'] ],
+        [['text' => '/help', 'style' => 'primary']],
         ],
         'resize_keyboard' => true,
         'one_time_keyboard' => false,

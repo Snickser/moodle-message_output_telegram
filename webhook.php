@@ -104,7 +104,7 @@ if (isset($data->message)) {
             $keyboard = [
             'keyboard' => [
             [
-            ['text' => get_string('provide', 'message_telegram'), 'request_contact' => true],
+            ['text' => get_string('provide', 'message_telegram'), 'request_contact' => true, 'style' => 'success'],
             ],
             ],
             'resize_keyboard' => true,
