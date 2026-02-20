@@ -120,8 +120,8 @@ if (isset($data->message)) {
         } else {
             $keyboard = [
             'keyboard' => [
-            ['/info', '/lang'],
-            ['/help'],
+            [['text' => '/info', 'style' => 'success'], ['text' => '/lang', 'style' => 'success'] ],
+            [['text' => '/help', 'style' => 'primary']],
             ],
             'resize_keyboard' => true,
             'one_time_keyboard' => false,
