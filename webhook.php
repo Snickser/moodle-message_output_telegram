@@ -41,6 +41,13 @@ $headers = getallheaders();
 $update = file_get_contents("php://input");
 $data = json_decode($update, false);
 
+// Validate JSON parsing - reject malformed JSON requests.
+if (json_last_error() !== JSON_ERROR_NONE || !is_object($data)) {
+    http_response_code(400);
+    echo "Invalid JSON";
+    die;
+}
+
 $config = get_config('message_telegram');
 
 if ($config->telegramwebhookdump) {
