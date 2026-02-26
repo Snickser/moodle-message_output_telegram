@@ -68,6 +68,8 @@ class manager {
      * Send the message to Telegram.
      * @param string $message The message contect to send to Slack.
      * @param int $userid The Moodle user id that is being sent to.
+     * @param bool $markdown
+     * @return bool True if message sent successfully.
      */
     public function send_message($message, $userid, $markdown = false) {
         global $CFG;
@@ -161,6 +163,7 @@ class manager {
 
     /**
      * Delete a message in Telegram.
+     * @param string $chatid The Telegram chat id.
      * @param int $messageid The message ID to delete.
      * @return object The response object.
      */
