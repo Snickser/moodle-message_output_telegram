@@ -106,7 +106,7 @@ class manager {
                 [
                  'chat_id' => $chatid,
                  'text' => $message,
-                 'parse_mode' => $markdown ? 'markdown' : $this->config('parsemode'),
+                 'parse_mode' => $markdown ? '' : $this->config('parsemode'),
                  'link_preview_options' => '{"is_disabled":true}',
                 ]
             );

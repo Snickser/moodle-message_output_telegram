@@ -134,8 +134,7 @@ class mistral_ai {
         $systemprompt = $this->systemprompt;
         if ($usercontext) {
             $systemprompt .= "\n\nUser context:\n" .
-                           "Name: {$usercontext['fullname']}\n" .
-                           "Format: Markdown for Telegram-bot.\n";
+                           "Name: {$usercontext['fullname']}\n";
         }
         $messages[] = [
             'role' => 'system',
