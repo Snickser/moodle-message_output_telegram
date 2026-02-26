@@ -36,6 +36,9 @@ require_once($CFG->libdir . '/filelib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class telegram_sender extends \core\task\scheduled_task {
+    /** @var array Configuration array */
+    private $curl;
+
     /**
      * Get a descriptive name for this task (shown to admins).
      *
@@ -143,6 +146,12 @@ class telegram_sender extends \core\task\scheduled_task {
                 unlink($file);
                 fclose($fh);
                 mtrace('delete forbidden ' . $chatid);
+            } else if (time() - filectime($file) > 3600) {
+                unlink($file);
+                fclose($fh);
+                mtrace('delete too old ' . $chatid);
+            } else {
+                mtrace(serialize($response));
             }
             return true;
         }

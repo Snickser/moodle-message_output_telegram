@@ -318,7 +318,7 @@ if (isset($data->message)) {
                 $response = $tg->send_temp_message($chatid);
                 // Send request to Mistral AI with conversation history.
                 $answer = $mistral->chat($question, $userid);
-                $tg->send_message($answer, $userid, true);
+                $tg->send_message($answer, $userid);
                 if (isset($response->result->message_id)) {
                     $tg->delete_message($chatid, $response->result->message_id);
                 }
