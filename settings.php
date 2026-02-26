@@ -38,6 +38,7 @@ if ($ADMIN->fulltree) {
     $sitebotsecret = $telegrammanager->config('sitebotsecret');
     $botname = $telegrammanager->config('sitebotname');
     $botusername = $telegrammanager->config('sitebotusername');
+    $mistralapikey = $telegrammanager->config('mistralapikey');
 
     if (empty($sitebotsecret)) {
         $sitebotsecret = bin2hex(random_bytes(32));
@@ -291,6 +292,50 @@ if ($ADMIN->fulltree) {
         get_string('configtgext', 'message_telegram'),
         '',
         PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_heading(
+        'message_telegram_mistral',
+        get_string('mistralsettings', 'message_telegram'),
+        get_string('mistralsettings_desc', 'message_telegram'),
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/mistralapikey',
+        get_string('mistralapikey', 'message_telegram'),
+        get_string('mistralapikey_desc', 'message_telegram'),
+        '',
+        PARAM_TEXT,
+        40
+    ));
+
+    $options = [
+    '' => get_string('default'),
+    ];
+    if ($mistralapikey) {
+        $mistral = new \message_telegram\mistral_ai();
+        $models = $mistral->get_available_models();
+        foreach ($models['data'] as $key => $value) {
+            if (!$value['capabilities']['completion_chat']) {
+                continue;
+            }
+            $options[$value['id']] = $value['id'] . ' (' . $value['description'] . ')';
+        }
+    }
+    $settings->add(new admin_setting_configselect(
+        'message_telegram/mistralmodel',
+        get_string('mistralmodel', 'message_telegram'),
+        get_string('mistralmodel_desc', 'message_telegram'),
+        'mistral-medium-latest',
+        $options
+    ));
+
+    $settings->add(new admin_setting_configtextarea(
+        'message_telegram/mistralprompt',
+        get_string('mistralprompt', 'message_telegram'),
+        get_string('mistralprompt_desc', 'message_telegram'),
+        get_string('mistralprompt_default', 'message_telegram'),
+        PARAM_TEXT,
     ));
 
     $settings->add(new admin_setting_heading(

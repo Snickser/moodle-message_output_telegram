@@ -26,8 +26,13 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['alreadyconnected'] = '✅ Ваш Телеграм аккаунт подключен';
+$string['askcleared'] = '🗑️ История переписки с ИИ очищена';
+$string['asknoquestion'] = '❓ Введите ваш вопрос после команды /ask
+
+/ask Привет, как дела?';
 $string['botanswer1'] = '🤔 Ответил бы в привате, но мы пока не знакомы ☺ ️';
 $string['botanswer2'] = '👍 Ответил в приват';
+$string['botask'] = '/ask - задать вопрос ИИ-ассистенту';
 $string['botcertdownload'] = '📥 Скачать';
 $string['botcertificates'] = '/certificates - выданные сертификаты';
 $string['botcerts'] = '📜 <b>Ваши сертификаты</b>
@@ -35,6 +40,7 @@ $string['botcerts'] = '📜 <b>Ваши сертификаты</b>
 ';
 $string['botcertselect'] = '📥 Выберите сертификат';
 $string['botcertyour'] = '💾 Ваш сертификат';
+$string['botclear'] = '/clear - очистить историю переписки с ИИ';
 $string['botenrols'] = '🎓 <b>Участие в курсах</b>';
 $string['botentertext'] = '✏  Введите текст сообщения';
 $string['botevents'] = '🗓 <b>Предстоящие события</b>
@@ -72,6 +78,19 @@ $string['enter'] = 'Введите';
 $string['enter_phone'] = 'Для лучшего взаимодействия с кураторами, пожалуйста, укажите номер своего мобильного телефона в профиле на портале, или нажмите кнопку внизу.';
 $string['enter_time'] = 'Дата и время указываются в мнемоническом или в одном из стандартных форматов, например: YY-MM-DD HH:MM';
 $string['firstregister'] = 'Сначала зарегистрируйтесь на сайте, и подключите уведомления через Телеграм. {$a}';
+$string['mistralapikey'] = 'API ключ Mistral';
+$string['mistralapikey_desc'] = 'Получите API ключ на https://console.mistral.ai/';
+$string['mistralconnectionerror'] = 'Ошибка подключения к Mistral AI';
+$string['mistralconnectionok'] = 'Подключение к Mistral AI успешно установлено';
+$string['mistralerror'] = 'Ошибка при получении ответа от AI';
+$string['mistralmodel'] = 'Модель Mistral';
+$string['mistralmodel_desc'] = 'Например: mistral-small-latest, mistral-medium-latest, mistral-large-latest';
+$string['mistralnotconfigured'] = '❌ ИИ-ассистент не настроен';
+$string['mistralprompt'] = 'Системный промпт';
+$string['mistralprompt_default'] = 'Вы — полезный ассистент образовательной платформы Moodle. Отвечайте на вопросы пользователей кратко и по делу.';
+$string['mistralprompt_desc'] = 'Инструкция для AI-ассистента';
+$string['mistralsettings'] = 'Mistral AI (чат-бот)';
+$string['mistralsettings_desc'] = 'Настройки интеграции с Mistral AI для ответов на вопросы пользователей через команду /ask';
 $string['notconfigured'] = 'Сервер Telegram не настроен, поэтому сообщения Telegram не могут быть отправлены';
 $string['pluginname'] = 'Telegram';
 $string['provide'] = '☎️ Отправить номер телефона';
@@ -88,5 +107,6 @@ $string['sitebottokennotsetup'] = 'Токен бота для сайта дол�
 $string['sitebotusername'] = 'Ник бота для сайта';
 $string['telegrambottoken'] = 'Токен бота Telegram';
 $string['telegramchatid'] = 'ID чата Telegram';
+$string['waitai'] = '⏳ Готовлю ответ...';
 $string['warnreport_desc'] = 'Выводить предупреждение перед выдачей отчёта.';
 $string['welcome'] = '✅ Ваш аккаунт успешно подключен!';
