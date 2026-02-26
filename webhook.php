@@ -41,6 +41,13 @@ $headers = getallheaders();
 $update = file_get_contents("php://input");
 $data = json_decode($update, false);
 
+// Validate JSON parsing - reject malformed JSON requests.
+if (json_last_error() !== JSON_ERROR_NONE || !is_object($data)) {
+    http_response_code(400);
+    echo "Invalid JSON";
+    die;
+}
+
 $config = get_config('message_telegram');
 
 if ($config->telegramwebhookdump) {
@@ -93,7 +100,7 @@ if (isset($data->message)) {
         if ($user) {
             telegram_private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id);
         } else {
-            telegram_private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id, "?start");
+            telegram_private_answer($tg, $config->sitebotusername, $chatid, $data->message->message_id, "?start=0");
         }
     }
 
@@ -120,8 +127,8 @@ if (isset($data->message)) {
         } else {
             $keyboard = [
             'keyboard' => [
-            ['/info', '/lang'],
-            ['/help'],
+            [['text' => '/info', 'style' => 'success'], ['text' => '/lang', 'style' => 'success'] ],
+            [['text' => '/help', 'style' => 'primary']],
             ],
             'resize_keyboard' => true,
             'one_time_keyboard' => false,
@@ -254,6 +261,10 @@ if (isset($data->message)) {
         if (file_exists($CFG->dirroot . '/admin/tool/certificate/lib.php')) {
             $text .= PHP_EOL . get_string('botcertificates', 'message_telegram');
         }
+        if (!empty($config->mistralapikey)) {
+            $text .= PHP_EOL . get_string('botask', 'message_telegram');
+            $text .= PHP_EOL . get_string('botclear', 'message_telegram');
+        }
         if (count($userids) > 1) {
             $text .= PHP_EOL . get_string('botuseridhelp', 'message_telegram');
         }
@@ -292,6 +303,36 @@ if (isset($data->message)) {
         }
 
         $tg->send_message($text, $userid);
+    } else if (strpos($text, '/ask') === 0 && $userid) {
+        $question = trim(substr($text, 5));
+
+        if (empty($question)) {
+            $tg->send_message(get_string('asknoquestion', 'message_telegram'), $userid);
+        } else {
+            // Check if Mistral AI is configured.
+            if (empty($config->mistralapikey)) {
+                $tg->send_message(get_string('mistralnotconfigured', 'message_telegram'), $userid);
+            } else {
+                $mistral = new \message_telegram\mistral_ai();
+                // Send temporary "thinking" message.
+                $response = $tg->send_temp_message($chatid);
+                // Send request to Mistral AI with conversation history.
+                $answer = $mistral->chat($question, $userid);
+                $tg->send_message($answer, $userid);
+                if (isset($response->result->message_id)) {
+                    $tg->delete_message($chatid, $response->result->message_id);
+                }
+            }
+        }
+    } else if (strpos($text, '/clear') === 0 && $userid) {
+        // Clear AI conversation history.
+        if (empty($config->mistralapikey)) {
+            $tg->send_message(get_string('mistralnotconfigured', 'message_telegram'), $userid);
+        } else {
+            $mistral = new \message_telegram\mistral_ai();
+            $mistral->clear_history($userid);
+            $tg->send_message(get_string('askcleared', 'message_telegram'), $userid);
+        }
     } else if (strpos($text, '/info') === 0) {
         $params = [
             'chat_id' => $fromid,

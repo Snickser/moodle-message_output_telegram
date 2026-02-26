@@ -68,8 +68,10 @@ class manager {
      * Send the message to Telegram.
      * @param string $message The message contect to send to Slack.
      * @param int $userid The Moodle user id that is being sent to.
+     * @param bool $markdown
+     * @return bool True if message sent successfully.
      */
-    public function send_message($message, $userid) {
+    public function send_message($message, $userid, $markdown = false) {
         global $CFG;
 
         if (empty($this->config('sitebottoken'))) {
@@ -80,7 +82,9 @@ class manager {
 
         $today = date("Y-m-d H:i:s");
 
-        if ($this->config('parsemode') == 'HTML') {
+        if ($markdown) {
+            $message = $message;
+        } else if ($this->config('parsemode') == 'HTML') {
             $message = strip_tags($message, "<b><strong><i><em><a><u><ins><code><pre><blockquote><tg-spoiler><tg-emoji>");
         } else if ($this->config('striptags')) {
             $message = html_to_text($message);
@@ -102,7 +106,7 @@ class manager {
                 [
                  'chat_id' => $chatid,
                  'text' => $message,
-                 'parse_mode' => $this->config('parsemode'),
+                 'parse_mode' => $markdown ? '' : $this->config('parsemode'),
                  'link_preview_options' => '{"is_disabled":true}',
                 ]
             );
@@ -135,6 +139,42 @@ class manager {
         }
 
         return (!empty($response) && isset($response->ok) && ($response->ok == true));
+    }
+
+    /**
+     * Send a temporary "thinking" message to Telegram.
+     * @param string $chatid The Telegram chat id.
+     * @param string $text The text of the temporary message.
+     * @return object The response object containing message_id.
+     */
+    public function send_temp_message($chatid, $text = null) {
+        if (!$text) {
+            $text = get_string('waitai', 'message_telegram');
+        }
+        return $this->send_api_command(
+            'sendMessage',
+            [
+                'chat_id' => $chatid,
+                'text' => $text,
+                'format' => 'html',
+            ],
+        );
+    }
+
+    /**
+     * Delete a message in Telegram.
+     * @param string $chatid The Telegram chat id.
+     * @param int $messageid The message ID to delete.
+     * @return object The response object.
+     */
+    public function delete_message($chatid, $messageid) {
+        return $this->send_api_command(
+            'deleteMessage',
+            [
+                'chat_id' => $chatid,
+                'message_id' => $messageid,
+            ]
+        );
     }
 
     /**
@@ -175,7 +215,7 @@ class manager {
             $url = new \moodle_url($this->redirect_uri(), ['action' => 'removechatid', 'userid' => $userid,
                 'sesskey' => sesskey()]);
             $configbutton = '<a target=_blank href="https://t.me/' . $this->config('sitebotusername') .
-            '?start">https://t.me/' . $this->config('sitebotusername') . '</a>' . '<br><br><a href="' . $url . '">' .
+            '?start=1">https://t.me/' . $this->config('sitebotusername') . '</a>' . '<br><br><a href="' . $url . '">' .
             get_string('removetelegram', 'message_telegram') . '</a>';
         }
 

@@ -26,8 +26,13 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['alreadyconnected'] = '✅ Your Telegram account is linked';
+$string['askcleared'] = '🗑️ AI conversation history cleared';
+$string['asknoquestion'] = '❓ Enter your question after /ask command
+
+/ask Hello, how are you?';
 $string['botanswer1'] = '🤔 I would reply privately, but we havent met yet ☺️';
 $string['botanswer2'] = '👍 I replied privately';
+$string['botask'] = '/ask - ask a question to AI assistant';
 $string['botcertdownload'] = '📥 Download';
 $string['botcertificates'] = '/certificates - issued certificates';
 $string['botcerts'] = '📜 Your certificates:
@@ -35,6 +40,7 @@ $string['botcerts'] = '📜 Your certificates:
 ';
 $string['botcertselect'] = '📥 Select a certificate';
 $string['botcertyour'] = '💾 Your certificate';
+$string['botclear'] = '/clear - clear AI conversation history';
 $string['botenrols'] = '🎓 Participation in courses:';
 $string['botentertext'] = '✏ ️ Enter your message text';
 $string['botevents'] = '🗓 Upcoming Events:
@@ -99,6 +105,19 @@ $string['enter_phone'] = 'For better interaction with curators, please provide y
 $string['enter_time'] = 'The date and time are specified in mnemonic or one of the standard formats, for example: YY-MM-DD HH:MM';
 $string['firstregister'] = 'First, register on the site ';
 $string['fullmessagehtml'] = 'Use fullmessagehtml';
+$string['mistralapikey'] = 'Mistral API key';
+$string['mistralapikey_desc'] = 'Get your API key at https://console.mistral.ai/';
+$string['mistralconnectionerror'] = 'Error connecting to Mistral AI';
+$string['mistralconnectionok'] = 'Successfully connected to Mistral AI';
+$string['mistralerror'] = 'Error getting response from AI';
+$string['mistralmodel'] = 'Mistral model';
+$string['mistralmodel_desc'] = 'e.g., mistral-small-latest, mistral-medium-latest, mistral-large-latest';
+$string['mistralnotconfigured'] = 'AI assistant is not configured';
+$string['mistralprompt'] = 'System prompt';
+$string['mistralprompt_default'] = 'You are a helpful assistant for the Moodle educational platform. Answer user questions briefly and to the point.';
+$string['mistralprompt_desc'] = 'Instructions for the AI assistant';
+$string['mistralsettings'] = 'Mistral AI (chatbot)';
+$string['mistralsettings_desc'] = 'Mistral AI integration settings for answering user questions via /ask command';
 $string['notconfigured'] = 'The Telegram server hasn\'t been configured so Telegram messages cannot be sent';
 
 $string['parse_html'] = 'HTML format';
@@ -139,5 +158,6 @@ $string['unsetwebhook'] = 'Unset Telegram webhook';
 $string['usernamefield'] = 'Username save field';
 $string['usernamefield_desc'] = 'Default short name for extended user profile field is "telegram_username".';
 
+$string['waitai'] = '⏳ Preparing an answer...';
 $string['warnreport_desc'] = 'Display warning before print report.';
 $string['welcome'] = '✅ Your account has been successfully linked!';
