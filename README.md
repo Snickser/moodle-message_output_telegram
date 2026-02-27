@@ -10,6 +10,7 @@ This plugin provides Moodle messaging provider for Telegram.
 - If there is an additional custom profile field "telegram_username", it will be filled in automatically.
 - Webhook mode (experimental!!)
 - BotMode functional (info, courses list, events, donate, etc.).
+- Mistral.AI integration (chat and voice transcribing).
 
 ---
 ![изображение](https://github.com/user-attachments/assets/8d2504a5-064f-4b35-8e3a-de8bc93fc8e8)

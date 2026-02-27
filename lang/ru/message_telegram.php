@@ -29,6 +29,7 @@ $string['alreadyconnected'] = '✅ Ваш Телеграм аккаунт под
 $string['askcleared'] = '🗑️ История переписки с ИИ очищена';
 $string['asknoquestion'] = '❓ Введите ваш вопрос после команды /ask
 
+Пример:
 /ask Привет, как дела?';
 $string['botanswer1'] = '🤔 Ответил бы в привате, но мы пока не знакомы ☺ ️';
 $string['botanswer2'] = '👍 Ответил в приват';
@@ -91,6 +92,8 @@ $string['mistralprompt_default'] = 'Вы — полезный ассистент
 $string['mistralprompt_desc'] = 'Инструкция для AI-ассистента';
 $string['mistralsettings'] = 'Mistral AI (чат-бот)';
 $string['mistralsettings_desc'] = 'Настройки интеграции с Mistral AI для ответов на вопросы пользователей через команду /ask';
+$string['mistraltranscriptionmodel'] = 'Модель транскрипции Mistral';
+$string['mistraltranscriptionmodel_desc'] = 'Например: voxtral-mini-latest';
 $string['notconfigured'] = 'Сервер Telegram не настроен, поэтому сообщения Telegram не могут быть отправлены';
 $string['pluginname'] = 'Telegram';
 $string['provide'] = '☎️ Отправить номер телефона';

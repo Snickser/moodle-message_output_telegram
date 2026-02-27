@@ -71,6 +71,7 @@ if (isset($data->message)) {
     $fromid = clean_param($data->message->from->id ?? null, PARAM_INT);
     $chatid = clean_param($data->message->chat->id ?? null, PARAM_INT);
     $text = clean_param($data->message->text ?? null, PARAM_TEXT);
+    $voice = clean_param($data->message->voice->file_id ?? null, PARAM_TEXT);
     $username = clean_param($data->message->from->username ?? null, PARAM_TEXT);
 
     $record = $DB->get_record('message_telegram', ['chatid' => $chatid]);
@@ -688,6 +689,38 @@ if (isset($data->message)) {
         $step = 'get_text';
         $lastmsgid = $response->result->message_id;
         $lastdata = $record->lastdata;
+    } else if ($voice && !empty($config->mistralapikey) && $userid) {
+        // Send temporary "thinking" message.
+        $tmpmsg = $tg->send_temp_message($chatid);
+        $response = $tg->send_api_command(
+            'getFile',
+            [
+                'chat_id' => $fromid,
+                'file_id' => $voice,
+            ]
+        );
+        if (!empty($response->result->file_path)) {
+            // Get voice file.
+            $filepath = clean_param($response->result->file_path, PARAM_TEXT);
+            $url = "https://api.telegram.org/file/bot{$config->sitebottoken}/{$filepath}";
+            $curl = new curl();
+            $file = $curl->get($url);
+            $tempfile = tempnam(make_temp_directory('message_telegram'), 'voice_');
+            file_put_contents($tempfile, $file);
+            // Send request to Mistral AI.
+            $mistral = new \message_telegram\mistral_ai();
+            $answer = $mistral->transcribe_audio_file($tempfile);
+            if (file_exists($tempfile)) {
+                unlink($tempfile);
+            }
+            $tg->send_message('/ask ' . $answer, $userid);
+        } else {
+            $tg->send_message(serialize($response), $userid);
+        }
+        // Delete tmp message.
+        if (isset($tmpmsg->result->message_id)) {
+            $tg->delete_message($chatid, $tmpmsg->result->message_id);
+        }
     } else if ($text && $userid) {
         $response = telegram_send_menu($tg, $fromid, get_string('botidontknow', 'message_telegram'));
     } else if ($text) {

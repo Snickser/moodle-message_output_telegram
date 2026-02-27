@@ -311,5 +311,72 @@ class mistral_ai {
         } catch (\Exception $e) {
             debugging('Failed to get Mistral models: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
+
+        return [];
+    }
+
+    /**
+     * Transcribe an audio file using Mistral AI.
+     *
+     * @param string $filepath Path to the audio file.
+     * @param string|null $language Language code (optional, auto-detect if not specified).
+     * @return string Transcribed text.
+     */
+    public function transcribe_audio_file(string $filepath, ?string $language = null): string {
+        global $CFG;
+
+        if (!$this->is_enabled()) {
+            return get_string('mistralnotconfigured', 'message_telegram');
+        }
+
+        // Check if file exists.
+        if (!file_exists($filepath)) {
+            return get_string('filenotfound', 'error');
+        }
+
+        // Get model from config (use whisper model for transcription).
+        $transcriptionmodel = !empty($this->config->mistraltranscriptionmodel)
+            ? $this->config->mistraltranscriptionmodel
+            : 'voxtral-mini-latest';
+
+        try {
+            // Prepare multipart form data for file upload.
+            $multipart = [
+                [
+                    'name' => 'model',
+                    'contents' => $transcriptionmodel,
+                ],
+                [
+                    'name' => 'file',
+                    'contents' => fopen($filepath, 'r'),
+                    'filename' => basename($filepath),
+                ],
+            ];
+
+            // Add language if specified.
+            if ($language) {
+                $multipart[] = [
+                    'name' => 'language',
+                    'contents' => $language,
+                ];
+            }
+
+            $response = $this->client->post('/v1/audio/transcriptions', [
+                'multipart' => $multipart,
+            ]);
+
+            $body = json_decode($response->getBody()->getContents(), true);
+
+            if (isset($body['text'])) {
+                return trim($body['text']);
+            }
+
+            // Log error if response is unexpected.
+            debugging('Mistral transcription error: ' . json_encode($body), DEBUG_DEVELOPER);
+            return get_string('mistralerror', 'message_telegram');
+        } catch (\Exception $e) {
+            debugging('Mistral transcription exception: ' . $e->getMessage(), DEBUG_DEVELOPER);
+            return get_string('mistralerror', 'message_telegram') . ': ' . $e->getMessage();
+        }
     }
 }
