@@ -311,6 +311,8 @@ class mistral_ai {
         } catch (\Exception $e) {
             debugging('Failed to get Mistral models: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
+
+        return [];
     }
 
     /**
