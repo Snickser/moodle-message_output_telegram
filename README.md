@@ -11,6 +11,7 @@ This plugin provides Moodle messaging provider for Telegram.
 - Webhook mode (experimental!!)
 - BotMode functional (info, courses list, events, donate, etc.).
 - Mistral.AI integration (chat and voice transcribing).
+- OpenRouter.AI integration (chat).
 
 ---
 ![изображение](https://github.com/user-attachments/assets/8d2504a5-064f-4b35-8e3a-de8bc93fc8e8)

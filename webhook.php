@@ -310,15 +310,28 @@ if (isset($data->message)) {
         if (empty($question)) {
             $tg->send_message(get_string('asknoquestion', 'message_telegram'), $userid);
         } else {
-            // Check if Mistral AI is configured.
-            if (empty($config->mistralapikey)) {
-                $tg->send_message(get_string('mistralnotconfigured', 'message_telegram'), $userid);
+            if ($config->aiprovider === 'mistral') {
+                // Check if Mistral AI is configured.
+                if (empty($config->mistralapikey)) {
+                    $tg->send_message(get_string('mistralnotconfigured', 'message_telegram'), $userid);
+                } else {
+                    $ai = new \message_telegram\mistral_ai();
+                }
+            } else if ($config->aiprovider === 'openrouter') {
+                // Check if OpenRouter AI is configured.
+                if (empty($config->openrouterapikey)) {
+                    $tg->send_message(get_string('openrouternotconfigured', 'message_telegram'), $userid);
+                } else {
+                    $ai = new \message_telegram\openrouter_ai();
+                }
             } else {
-                $mistral = new \message_telegram\mistral_ai();
+                $tg->send_message(get_string('ainotconfigured', 'message_telegram'), $userid);
+            }
+            if (isset($ai)) {
                 // Send temporary "thinking" message.
                 $response = $tg->send_temp_message($chatid);
-                // Send request to Mistral AI with conversation history.
-                $answer = $mistral->chat($question, $userid);
+                // Send request to AI with conversation history.
+                $answer = $ai->chat($question, $userid);
                 $tg->send_message($answer, $userid);
                 if (isset($response->result->message_id)) {
                     $tg->delete_message($chatid, $response->result->message_id);
@@ -327,11 +340,23 @@ if (isset($data->message)) {
         }
     } else if (strpos($text, '/clear') === 0 && $userid) {
         // Clear AI conversation history.
-        if (empty($config->mistralapikey)) {
-            $tg->send_message(get_string('mistralnotconfigured', 'message_telegram'), $userid);
+        if ($config->aiprovider === 'mistral') {
+            if (empty($config->mistralapikey)) {
+                $tg->send_message(get_string('mistralnotconfigured', 'message_telegram'), $userid);
+            } else {
+                $ai = new \message_telegram\mistral_ai();
+            }
+        } else if ($config->aiprovider === 'openrouter') {
+            if (empty($config->openrouterapikey)) {
+                $tg->send_message(get_string('openrouternotconfigured', 'message_telegram'), $userid);
+            } else {
+                $ai = new \message_telegram\openrouter_ai();
+            }
         } else {
-            $mistral = new \message_telegram\mistral_ai();
-            $mistral->clear_history($userid);
+            $tg->send_message(get_string('ainotconfigured', 'message_telegram'), $userid);
+        }
+        if (isset($ai)) {
+            $ai->clear_history($userid);
             $tg->send_message(get_string('askcleared', 'message_telegram'), $userid);
         }
     } else if (strpos($text, '/info') === 0) {

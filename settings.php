@@ -294,6 +294,32 @@ if ($ADMIN->fulltree) {
         PARAM_TEXT
     ));
 
+    // Get API keys for AI provider selection.
+    $openrouterapikey = $telegrammanager->config('openrouterapikey');
+
+    $settings->add(new admin_setting_heading(
+        'message_telegram_ai',
+        get_string('aiprovider', 'message_telegram'),
+        null,
+    ));
+
+    $options = [
+    '' => get_string('no'),
+    ];
+    if (!empty($openrouterapikey)) {
+        $options['openrouter'] = get_string('aiprovider_openrouter', 'message_telegram');
+    }
+    if (!empty($mistralapikey)) {
+        $options['mistral'] = get_string('aiprovider_mistral', 'message_telegram');
+    }
+    $settings->add(new admin_setting_configselect(
+        'message_telegram/aiprovider',
+        get_string('aiprovider', 'message_telegram'),
+        get_string('aiprovider_desc', 'message_telegram'),
+        '',
+        $options
+    ));
+
     $settings->add(new admin_setting_heading(
         'message_telegram_mistral',
         get_string('mistralsettings', 'message_telegram'),
@@ -315,12 +341,17 @@ if ($ADMIN->fulltree) {
     if ($mistralapikey) {
         $mistral = new \message_telegram\mistral_ai();
         $models = $mistral->get_available_models();
+        $sortedmodels = [];
         foreach ($models['data'] as $key => $value) {
             if (!$value['capabilities']['completion_chat']) {
                 continue;
             }
-            $options[$value['id']] = $value['id'] . ' (' . $value['description'] . ')';
+            $sortedmodels[$value['id']] = $value['id'] . ' (' . $value['description'] . ')';
         }
+        // Sort models alphabetically.
+        asort($sortedmodels);
+        // Merge with default option first.
+        $options = array_merge($options, $sortedmodels);
     }
     $settings->add(new admin_setting_configselect(
         'message_telegram/mistralmodel',
@@ -334,12 +365,17 @@ if ($ADMIN->fulltree) {
     '' => get_string('default'),
     ];
     if ($mistralapikey) {
+        $sortedmodels = [];
         foreach ($models['data'] as $key => $value) {
             if (!$value['capabilities']['audio_transcription']) {
                 continue;
             }
-            $options[$value['id']] = $value['id'] . ' (' . $value['description'] . ')';
+            $sortedmodels[$value['id']] = $value['id'] . ' (' . $value['description'] . ')';
         }
+        // Sort models alphabetically.
+        asort($sortedmodels);
+        // Merge with default option first.
+        $options = array_merge($options, $sortedmodels);
     }
     $settings->add(new admin_setting_configselect(
         'message_telegram/mistraltranscriptionmodel',
@@ -354,6 +390,72 @@ if ($ADMIN->fulltree) {
         get_string('mistralprompt', 'message_telegram'),
         get_string('mistralprompt_desc', 'message_telegram'),
         get_string('mistralprompt_default', 'message_telegram'),
+        PARAM_TEXT,
+    ));
+
+    $settings->add(new admin_setting_heading(
+        'message_telegram_openrouter',
+        get_string('openroutersettings', 'message_telegram'),
+        get_string('openroutersettings_desc', 'message_telegram'),
+    ));
+
+    $openrouterapikey = $telegrammanager->config('openrouterapikey');
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/openrouterapikey',
+        get_string('openrouterapikey', 'message_telegram'),
+        get_string('openrouterapikey_desc', 'message_telegram'),
+        '',
+        PARAM_TEXT,
+        40
+    ));
+
+    $options = [
+    '' => get_string('default'),
+    ];
+    if ($openrouterapikey) {
+        $openrouter = new \message_telegram\openrouter_ai();
+        $models = $openrouter->get_available_models();
+        $sortedmodels = [];
+        foreach ($models['data'] as $key => $value) {
+            $sortedmodels[$value['id']] = $value['id'];
+        }
+        // Sort models alphabetically.
+        asort($sortedmodels);
+        // Merge with default option first.
+        $options = array_merge($options, $sortedmodels);
+    }
+    $settings->add(new admin_setting_configselect(
+        'message_telegram/openroutermodel',
+        get_string('openroutermodel', 'message_telegram'),
+        get_string('openroutermodel_desc', 'message_telegram'),
+        'meta-llama/llama-3-8b-instruct:free',
+        $options
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/openroutertemperature',
+        get_string('openroutertemperature', 'message_telegram'),
+        get_string('openroutertemperature_desc', 'message_telegram'),
+        0.3,
+        PARAM_FLOAT,
+        50
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/openroutermaxtokens',
+        get_string('openroutermaxtokens', 'message_telegram'),
+        get_string('openroutermaxtokens_desc', 'message_telegram'),
+        2048,
+        PARAM_INT,
+        10
+    ));
+
+    $settings->add(new admin_setting_configtextarea(
+        'message_telegram/openrouterprompt',
+        get_string('openrouterprompt', 'message_telegram'),
+        get_string('openrouterprompt_desc', 'message_telegram'),
+        get_string('openrouterprompt_default', 'message_telegram'),
         PARAM_TEXT,
     ));
 
