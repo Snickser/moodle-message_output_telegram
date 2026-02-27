@@ -330,6 +330,25 @@ if ($ADMIN->fulltree) {
         $options
     ));
 
+    $options = [
+    '' => get_string('default'),
+    ];
+    if ($mistralapikey) {
+        foreach ($models['data'] as $key => $value) {
+            if (!$value['capabilities']['audio_transcription']) {
+                continue;
+            }
+            $options[$value['id']] = $value['id'] . ' (' . $value['description'] . ')';
+        }
+    }
+    $settings->add(new admin_setting_configselect(
+        'message_telegram/mistraltranscriptionmodel',
+        get_string('mistraltranscriptionmodel', 'message_telegram'),
+        get_string('mistraltranscriptionmodel_desc', 'message_telegram'),
+        'voxtral-mini-latest',
+        $options
+    ));
+
     $settings->add(new admin_setting_configtextarea(
         'message_telegram/mistralprompt',
         get_string('mistralprompt', 'message_telegram'),
