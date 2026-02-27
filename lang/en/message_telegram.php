@@ -29,6 +29,7 @@ $string['alreadyconnected'] = '✅ Your Telegram account is linked';
 $string['askcleared'] = '🗑️ AI conversation history cleared';
 $string['asknoquestion'] = '❓ Enter your question after /ask command
 
+Example:
 /ask Hello, how are you?';
 $string['botanswer1'] = '🤔 I would reply privately, but we havent met yet ☺️';
 $string['botanswer2'] = '👍 I replied privately';
