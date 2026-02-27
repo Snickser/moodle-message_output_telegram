@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 $string['alreadyconnected'] = '✅ Ваш Телеграм аккаунт подключен';
 $string['askcleared'] = '🗑️ История переписки с ИИ очищена';
 $string['asknoquestion'] = '❓ Введите ваш вопрос после команды /ask
-
+Например:
 /ask Привет, как дела?';
 $string['botanswer1'] = '🤔 Ответил бы в привате, но мы пока не знакомы ☺ ️';
 $string['botanswer2'] = '👍 Ответил в приват';
