@@ -330,6 +330,8 @@ if (isset($data->message)) {
             if (isset($ai)) {
                 // Send temporary "thinking" message.
                 $response = $tg->send_temp_message($chatid);
+                // Shows the typing indicator.
+                $tg->send_api_command('sendChatAction', ['chat_id' => $chatid, 'action' => 'typing']);
                 // Send request to AI with conversation history.
                 $answer = $ai->chat($question, $userid);
                 $tg->send_message($answer, $userid);
@@ -725,6 +727,8 @@ if (isset($data->message)) {
             ]
         );
         if (!empty($response->result->file_path)) {
+            // Shows the typing indicator.
+            $tg->send_api_command('sendChatAction', ['chat_id' => $chatid, 'action' => 'typing']);
             // Get voice file.
             $filepath = clean_param($response->result->file_path, PARAM_TEXT);
             $url = "https://api.telegram.org/file/bot{$config->sitebottoken}/{$filepath}";
@@ -1264,6 +1268,9 @@ if (isset($data->message)) {
                 $template && (\tool_certificate\permission::can_verify() ||
                 \tool_certificate\permission::can_view_issue($template, $issue, $context))
             ) {
+                // Shows the download indicator.
+                $tg->send_api_command('sendChatAction', ['chat_id' => $chatid, 'action' => 'upload_document']);
+                // Get and Upload.
                 $certurl = $template->get_issue_file($issue);
                 $response = $tg->send_api_command('sendDocument', [
                     'chat_id' => $chatid,
