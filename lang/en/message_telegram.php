@@ -25,6 +25,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['ainotconfigured'] = '❌ AI assistant is not configured';
+$string['aiprovider'] = 'AI provider';
+$string['aiprovider_desc'] = 'Select which AI provider to use for chatbot functionality (/ask command)';
+$string['aiprovider_mistral'] = 'Mistral AI';
+$string['aiprovider_openrouter'] = 'OpenRouter';
 $string['alreadyconnected'] = '✅ Your Telegram account is linked';
 $string['askcleared'] = '🗑️ AI conversation history cleared';
 $string['asknoquestion'] = '❓ Enter your question after /ask command
@@ -43,7 +48,7 @@ $string['botcertselect'] = '📥 Select a certificate';
 $string['botcertyour'] = '💾 Your certificate';
 $string['botclear'] = '/clear - clear AI conversation history';
 $string['botenrols'] = '🎓 Participation in courses:';
-$string['botentertext'] = '✏ ️ Enter your message text';
+$string['botentertext'] = '✏️ Enter your message text';
 $string['botevents'] = '🗓 Upcoming Events:
 
 ';
@@ -63,7 +68,7 @@ $string['bothelp_anonymous'] = '👓 Helps
 $string['botidontknow'] = 'I dont know what this is 🤷🏻 /help';
 $string['botlang'] = '🈯 Select language ({$a})';
 $string['botmessagehelp'] = '/message - send group message';
-$string['botmsgall'] = 'Тo all students';
+$string['botmsgall'] = 'To all students';
 $string['botpay'] = '🏦 Select amount {$a}';
 $string['botpaydesc'] = 'To support the learning platform';
 $string['botpaytitle'] = 'Donation 🕉';
@@ -91,7 +96,7 @@ Once completed, come back to this page and click "Save changes". Full documentat
 $string['connectme'] = '<br><p style="color: blue;"><font size=+1><b>👉 Connect my account to Telegram 👈</b></font></p>';
 $string['connectmemenu'] = 'Connect my account to Telegram';
 $string['customfield'] = 'If there is an additional user profile field "telegram_username", it will be filled in automatically.';
-
+$string['default'] = 'Default';
 $string['donate'] = '<div>Plugin version: {$a->release} ({$a->versiondisk})</br>
 You can find new versions of the plugin at <a href=https://github.com/Snickser/moodle-message_output_telegram>GitHub.com</a>
 <img src="https://img.shields.io/github/v/release/Snickser/moodle-message_output_telegram.svg"><br>
@@ -104,7 +109,7 @@ width="330" height="50" frameborder="0" allowtransparency="true" scrolling="no">
 $string['enter'] = 'Enter';
 $string['enter_phone'] = 'For better interaction with curators, please provide your mobile phone number.';
 $string['enter_time'] = 'The date and time are specified in mnemonic or one of the standard formats, for example: YY-MM-DD HH:MM';
-$string['firstregister'] = 'First, register on the site ';
+$string['firstregister'] = 'First, register on the site and enable notifications via Telegram. {$a}';
 $string['fullmessagehtml'] = 'Use fullmessagehtml';
 $string['mistralapikey'] = 'Mistral API key';
 $string['mistralapikey_desc'] = 'Get your API key at https://console.mistral.ai/';
@@ -122,7 +127,23 @@ $string['mistralsettings_desc'] = 'Mistral AI integration settings for answering
 $string['mistraltranscriptionmodel'] = 'Mistral transcription model';
 $string['mistraltranscriptionmodel_desc'] = 'e.g., voxtral-mini-latest';
 $string['notconfigured'] = 'The Telegram server hasn\'t been configured so Telegram messages cannot be sent';
-
+$string['openrouterapikey'] = 'OpenRouter API key';
+$string['openrouterapikey_desc'] = 'Get your API key at https://openrouter.ai/keys';
+$string['openrouterconnectionerror'] = 'Error connecting to OpenRouter';
+$string['openrouterconnectionok'] = 'Successfully connected to OpenRouter';
+$string['openroutererror'] = 'Error getting response from AI';
+$string['openroutermaxtokens'] = 'Max tokens';
+$string['openroutermaxtokens_desc'] = 'Maximum number of tokens in the response';
+$string['openroutermodel'] = 'OpenRouter model';
+$string['openroutermodel_desc'] = 'e.g., meta-llama/llama-3-8b-instruct:free (free), google/gemma-2-9b-it:free (free), openai/gpt-4o-mini (paid)';
+$string['openrouternotconfigured'] = 'AI assistant is not configured';
+$string['openrouterprompt'] = 'System prompt';
+$string['openrouterprompt_default'] = 'You are a helpful assistant for the Moodle educational platform. Answer user questions briefly and to the point.';
+$string['openrouterprompt_desc'] = 'Instructions for the AI assistant';
+$string['openroutersettings'] = 'OpenRouter (chatbot)';
+$string['openroutersettings_desc'] = 'OpenRouter integration settings for answering user questions via /ask command. OpenRouter provides access to multiple AI models from different providers.';
+$string['openroutertemperature'] = 'Temperature';
+$string['openroutertemperature_desc'] = 'Controls randomness: lower values make output more focused, higher values more creative (0.0-2.0)';
 $string['parse_html'] = 'HTML format';
 $string['parse_text'] = 'Text only';
 $string['parsemode'] = 'Parse mode';
@@ -136,12 +157,11 @@ $string['reportenabler'] = 'Enable users personal data report';
 $string['reportenabler_desc1'] = '<font color=red>Please note that users personal data is transferred to third-party Telegram servers, this may violate the law of your country.</font>';
 $string['reportenabler_desc2'] = 'This option enables selected roles to view personal data of course students.';
 $string['reportfields'] = 'Fields in report';
-$string['requirehttps'] = 'Site must use HTTPS for Telegram\'s webhook function.';
+$string['setwebhook'] = 'Setup Telegram webhook';
 $string['setupinstructions'] = 'Create a new Telegram Bot using Botfather. Click the Botfather link below and open it in Telegram.
 Use the "/newbot" command in Telegram to start creating the bot. You will need to specify a botname, for example "{$a->name}", and a
 unique bot username, for example "{$a->username}". Full documentation
 <a href="https://docs.moodle.org/33/en/Telegram_message_processor" target="_blank">here</a>.';
-$string['setwebhook'] = 'Setup Telegram webhook';
 $string['sitebotname'] = 'Bot name for site';
 $string['sitebotpay'] = 'Payment token';
 $string['sitebotpaycosts'] = 'Predefined amounts';
@@ -160,7 +180,8 @@ $string['tgext'] = 'Path to external sender';
 $string['unsetwebhook'] = 'Unset Telegram webhook';
 $string['usernamefield'] = 'Username save field';
 $string['usernamefield_desc'] = 'Default short name for extended user profile field is "telegram_username".';
-
+$string['wait'] = '🕑 Please wait, the file is loading...';
 $string['waitai'] = '⏳ Preparing an answer...';
+$string['warning'] = 'Warning';
 $string['warnreport_desc'] = 'Display warning before print report.';
 $string['welcome'] = '✅ Your account has been successfully linked!';
