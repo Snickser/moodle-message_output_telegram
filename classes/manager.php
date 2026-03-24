@@ -308,7 +308,10 @@ class manager {
      * Given a valid bot token, get the name and username of the bot.
      */
     public function update_bot_info() {
-        if (empty($this->config('sitebottoken'))) {
+        $processors = get_message_processors();
+        if (isset($processors['telegram']->enabled) && !$processors['telegram']->enabled) {
+            return false;
+        } else if (empty($this->config('sitebottoken'))) {
             return false;
         } else {
             $response = $this->send_api_command('getMe');
