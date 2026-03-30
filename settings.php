@@ -385,6 +385,24 @@ if ($ADMIN->fulltree) {
         $options
     ));
 
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/mistraltemperature',
+        get_string('aitemperature', 'message_telegram'),
+        get_string('aitemperature_desc', 'message_telegram'),
+        0.2,
+        PARAM_FLOAT,
+        50
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/mistralmaxtokens',
+        get_string('aimaxtokens', 'message_telegram'),
+        get_string('aimaxtokens_desc', 'message_telegram'),
+        2048,
+        PARAM_INT,
+        10
+    ));
+
     $settings->add(new admin_setting_configtextarea(
         'message_telegram/mistralprompt',
         get_string('mistralprompt', 'message_telegram'),
@@ -435,17 +453,17 @@ if ($ADMIN->fulltree) {
 
     $settings->add(new admin_setting_configtext(
         'message_telegram/openroutertemperature',
-        get_string('openroutertemperature', 'message_telegram'),
-        get_string('openroutertemperature_desc', 'message_telegram'),
-        0.3,
+        get_string('aitemperature', 'message_telegram'),
+        get_string('aitemperature_desc', 'message_telegram'),
+        0.2,
         PARAM_FLOAT,
         50
     ));
 
     $settings->add(new admin_setting_configtext(
         'message_telegram/openroutermaxtokens',
-        get_string('openroutermaxtokens', 'message_telegram'),
-        get_string('openroutermaxtokens_desc', 'message_telegram'),
+        get_string('aimaxtokens', 'message_telegram'),
+        get_string('aimaxtokens_desc', 'message_telegram'),
         2048,
         PARAM_INT,
         10
