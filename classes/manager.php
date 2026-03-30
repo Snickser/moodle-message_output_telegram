@@ -83,7 +83,10 @@ class manager {
         $today = date("Y-m-d H:i:s");
 
         if ($markdown) {
-            $message = $message;
+            $message = preg_replace('/^####\s+/m', '🔸 ', $message);
+            $message = preg_replace('/^###\s+/m', '🔹 ', $message);
+            $message = preg_replace('/\*\*(.*?)\*\*/s', '<b>$1</b>', $message);
+            $message = preg_replace('/\*(.*?)\*/s', '<i>$1</i>', $message);
         } else if ($this->config('parsemode') == 'HTML') {
             $message = strip_tags($message, "<b><strong><i><em><a><u><ins><code><pre><blockquote><tg-spoiler><tg-emoji>");
         } else if ($this->config('striptags')) {
@@ -106,7 +109,7 @@ class manager {
                 [
                  'chat_id' => $chatid,
                  'text' => $message,
-                 'parse_mode' => $markdown ? '' : $this->config('parsemode'),
+                 'parse_mode' => $this->config('parsemode'),
                  'link_preview_options' => '{"is_disabled":true}',
                 ]
             );
