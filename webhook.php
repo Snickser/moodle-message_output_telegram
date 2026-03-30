@@ -324,6 +324,16 @@ if (isset($data->message)) {
                 } else {
                     $ai = new \message_telegram\openrouter_ai();
                 }
+            } else if ($config->aiprovider === 'remote') {
+                $curl = new curl();
+                $options = [
+                'CURLOPT_TIMEOUT' => 30,
+                'CURLOPT_HTTPHEADER' => [
+                $config->airemoteheader . ': ' . $config->airemotekey,
+                ],
+                ];
+                $params = ['text' => $question, 'chat_id' => $chatid, 'prompt' => $config->airemoteprompt];
+                $curl->post($config->airemoteurl, $params, $options);
             } else {
                 $tg->send_message(get_string('ainotconfigured', 'message_telegram'), $userid);
             }
@@ -354,6 +364,16 @@ if (isset($data->message)) {
             } else {
                 $ai = new \message_telegram\openrouter_ai();
             }
+        } else if ($config->aiprovider === 'remote') {
+            $curl = new curl();
+            $options = [
+            'CURLOPT_TIMEOUT' => 30,
+            'CURLOPT_HTTPHEADER' => [
+                $config->airemoteheader . ': ' . $config->airemotekey,
+            ],
+            ];
+            $params = ['text' => '/clear', 'chat_id' => $chatid, 'prompt' => $config->airemoteprompt];
+            $curl->post($config->airemoteurl, $params, $options);
         } else {
             $tg->send_message(get_string('ainotconfigured', 'message_telegram'), $userid);
         }
@@ -759,7 +779,17 @@ if (isset($data->message)) {
             $tg->delete_message($chatid, $tmpmsg->result->message_id);
         }
     } else if ($text && $userid) {
-        if ($config->aiprovider == 'mistral' && !empty($config->mistralapikey)) {
+        if ($config->aiprovider == 'remote' && !empty($config->airemotekey)) {
+            $curl = new curl();
+            $options = [
+            'CURLOPT_TIMEOUT' => 30,
+            'CURLOPT_HTTPHEADER' => [
+                $config->airemoteheader . ': ' . $config->airemotekey,
+            ],
+            ];
+            $params = ['text' => $text, 'chat_id' => $chatid, 'prompt' => $config->airemoteprompt];
+            $curl->post($config->airemoteurl, $params, $options);
+        } else if ($config->aiprovider == 'mistral' && !empty($config->mistralapikey)) {
             // Send temporary "thinking" message.
             $tmpmsg = $tg->send_temp_message($chatid);
             // Shows the typing indicator.

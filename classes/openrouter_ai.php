@@ -74,7 +74,7 @@ class openrouter_ai {
         $this->model = !empty($this->config->openroutermodel) ?
         $this->config->openroutermodel : 'meta-llama/llama-3-8b-instruct:free';
         $this->temperature = isset($this->config->openroutertemperature) && $this->config->openroutertemperature !== ''
-            ? (float)$this->config->openroutertemperature : 0.3;
+            ? (float)$this->config->openroutertemperature : 0.2;
         $this->maxtokens = isset($this->config->openroutermaxtokens) && $this->config->openroutermaxtokens !== ''
             ? (int)$this->config->openroutermaxtokens : 2048;
 

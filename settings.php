@@ -305,6 +305,7 @@ if ($ADMIN->fulltree) {
 
     $options = [
     '' => get_string('no'),
+    'remote' => get_string('airemote', 'message_telegram'),
     ];
     if (!empty($openrouterapikey)) {
         $options['openrouter'] = get_string('aiprovider_openrouter', 'message_telegram');
@@ -318,6 +319,41 @@ if ($ADMIN->fulltree) {
         get_string('aiprovider_desc', 'message_telegram'),
         '',
         $options
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/airemoteheader',
+        get_string('airemoteheader', 'message_telegram'),
+        get_string('airemoteheader_desc', 'message_telegram'),
+        'x-api-moodle-telegram-bot-token',
+        PARAM_TEXT,
+        40
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/airemotekey',
+        get_string('airemotekey', 'message_telegram'),
+        get_string('airemotekey_desc', 'message_telegram'),
+        '',
+        PARAM_TEXT,
+        40
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'message_telegram/airemoteurl',
+        get_string('airemoteurl', 'message_telegram'),
+        get_string('airemoteurl_desc', 'message_telegram'),
+        '',
+        PARAM_TEXT,
+        40
+    ));
+
+    $settings->add(new admin_setting_configtextarea(
+        'message_telegram/airemoteprompt',
+        get_string('airemoteprompt', 'message_telegram'),
+        get_string('airemoteprompt_desc', 'message_telegram'),
+        get_string('airemoteprompt_default', 'message_telegram'),
+        PARAM_TEXT,
     ));
 
     $settings->add(new admin_setting_heading(

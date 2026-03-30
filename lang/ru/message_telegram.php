@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['ainotconfigured'] = '❌ AI-ассистент не настроен';
 $string['aiprovider'] = 'AI провайдер';
-$string['aiprovider_desc'] = 'Выберите, какой AI провайдер использовать для функционала чат-бота (команда /ask)';
+$string['aiprovider_desc'] = 'Выберите, какой AI провайдер использовать для функционала чат-бота (команда /ask). Remote webhook - для отправки запросов в другой сервис, например в n8n.';
 $string['aiprovider_mistral'] = 'Mistral AI';
 $string['aiprovider_openrouter'] = 'OpenRouter';
 $string['alreadyconnected'] = '✅ Ваш Телеграм аккаунт подключен';
