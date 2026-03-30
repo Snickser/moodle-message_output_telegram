@@ -324,6 +324,16 @@ if (isset($data->message)) {
                 } else {
                     $ai = new \message_telegram\openrouter_ai();
                 }
+            } else if ($config->aiprovider === 'remote') {
+                $curl = new curl();
+                $options = [
+                'CURLOPT_TIMEOUT' => 30,
+                'CURLOPT_HTTPHEADER' => [
+                $config->airemoteheader . ': ' . $config->airemotekey,
+                ],
+                ];
+                $params = ['text' => $question, 'chat_id' => $chatid, 'prompt' => $config->airemoteprompt];
+                $curl->post($config->airemoteurl, $params, $options);
             } else {
                 $tg->send_message(get_string('ainotconfigured', 'message_telegram'), $userid);
             }
@@ -354,6 +364,16 @@ if (isset($data->message)) {
             } else {
                 $ai = new \message_telegram\openrouter_ai();
             }
+        } else if ($config->aiprovider === 'remote') {
+            $curl = new curl();
+            $options = [
+            'CURLOPT_TIMEOUT' => 30,
+            'CURLOPT_HTTPHEADER' => [
+                $config->airemoteheader . ': ' . $config->airemotekey,
+            ],
+            ];
+            $params = ['text' => '/clear', 'chat_id' => $chatid, 'prompt' => $config->airemoteprompt];
+            $curl->post($config->airemoteurl, $params, $options);
         } else {
             $tg->send_message(get_string('ainotconfigured', 'message_telegram'), $userid);
         }
@@ -728,7 +748,7 @@ if (isset($data->message)) {
         );
         if (!empty($response->result->file_path)) {
             // Shows the typing indicator.
-            $tg->send_api_command('sendChatAction', ['chat_id' => $chatid, 'action' => 'typing']);
+            $tg->send_api_command('sendChatAction', ['chat_id' => $chatid, 'action' => 'upload_voice']);
             // Get voice file.
             $filepath = clean_param($response->result->file_path, PARAM_TEXT);
             $url = "https://api.telegram.org/file/bot{$config->sitebottoken}/{$filepath}";
@@ -738,11 +758,19 @@ if (isset($data->message)) {
             file_put_contents($tempfile, $file);
             // Send request to Mistral AI.
             $mistral = new \message_telegram\mistral_ai();
-            $answer = $mistral->transcribe_audio_file($tempfile);
+            $question = $mistral->transcribe_audio_file($tempfile);
             if (file_exists($tempfile)) {
                 unlink($tempfile);
             }
-            $tg->send_message('/ask ' . $answer, $userid);
+            if ($question) {
+                // Send transcribed text.
+                $tg->send_api_command('sendMessage', ['chat_id' => $chatid,
+                'text' => $question,
+                'reply_parameters' => '{"message_id":' . $lastmsgid . '}',
+                ]);
+            } else {
+                $tg->send_message(get_string('none'), $userid);
+            }
         } else {
             $tg->send_message(serialize($response), $userid);
         }
@@ -751,7 +779,32 @@ if (isset($data->message)) {
             $tg->delete_message($chatid, $tmpmsg->result->message_id);
         }
     } else if ($text && $userid) {
-        $response = telegram_send_menu($tg, $fromid, get_string('botidontknow', 'message_telegram'));
+        if ($config->aiprovider == 'remote' && !empty($config->airemotekey)) {
+            $curl = new curl();
+            $options = [
+            'CURLOPT_TIMEOUT' => 30,
+            'CURLOPT_HTTPHEADER' => [
+                $config->airemoteheader . ': ' . $config->airemotekey,
+            ],
+            ];
+            $params = ['text' => $text, 'chat_id' => $chatid, 'prompt' => $config->airemoteprompt];
+            $curl->post($config->airemoteurl, $params, $options);
+        } else if ($config->aiprovider == 'mistral' && !empty($config->mistralapikey)) {
+            // Send temporary "thinking" message.
+            $tmpmsg = $tg->send_temp_message($chatid);
+            // Shows the typing indicator.
+            $tg->send_api_command('sendChatAction', ['chat_id' => $chatid, 'action' => 'typing']);
+            // Send request to Mistral AI.
+            $mistral = new \message_telegram\mistral_ai();
+            $answer = $mistral->chat($text, $userid);
+            $tg->send_message($answer, $userid, true);
+            // Delete temp message.
+            if (isset($tmpmsg->result->message_id)) {
+                $tg->delete_message($chatid, $tmpmsg->result->message_id);
+            }
+        } else {
+            $response = telegram_send_menu($tg, $fromid, get_string('botidontknow', 'message_telegram'));
+        }
     } else if ($text) {
         $tg->send_api_command(
             'sendMessage',

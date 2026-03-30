@@ -83,7 +83,10 @@ class manager {
         $today = date("Y-m-d H:i:s");
 
         if ($markdown) {
-            $message = $message;
+            $message = preg_replace('/^####\s+/m', '🔸 ', $message);
+            $message = preg_replace('/^###\s+/m', '🔹 ', $message);
+            $message = preg_replace('/\*\*(.*?)\*\*/s', '<b>$1</b>', $message);
+            $message = preg_replace('/\*(.*?)\*/s', '<i>$1</i>', $message);
         } else if ($this->config('parsemode') == 'HTML') {
             $message = strip_tags($message, "<b><strong><i><em><a><u><ins><code><pre><blockquote><tg-spoiler><tg-emoji>");
         } else if ($this->config('striptags')) {
@@ -106,7 +109,7 @@ class manager {
                 [
                  'chat_id' => $chatid,
                  'text' => $message,
-                 'parse_mode' => $markdown ? '' : $this->config('parsemode'),
+                 'parse_mode' => $this->config('parsemode'),
                  'link_preview_options' => '{"is_disabled":true}',
                 ]
             );
@@ -308,7 +311,10 @@ class manager {
      * Given a valid bot token, get the name and username of the bot.
      */
     public function update_bot_info() {
-        if (empty($this->config('sitebottoken'))) {
+        $processors = get_message_processors();
+        if (isset($processors['telegram']->enabled) && !$processors['telegram']->enabled) {
+            return false;
+        } else if (empty($this->config('sitebottoken'))) {
             return false;
         } else {
             $response = $this->send_api_command('getMe');
