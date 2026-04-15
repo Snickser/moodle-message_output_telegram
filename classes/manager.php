@@ -318,7 +318,7 @@ class manager {
             return false;
         } else {
             $response = $this->send_api_command('getMe');
-            if ($response->ok) {
+            if (isset($response->ok) && $response->ok) {
                 $this->set_config('sitebotname', $response->result->first_name);
                 $this->set_config('sitebotusername', $response->result->username);
                 return true;
