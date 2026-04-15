@@ -321,6 +321,12 @@ if ($ADMIN->fulltree) {
         $options
     ));
 
+    $settings->add(new admin_setting_heading(
+        'message_telegram_airemote',
+        get_string('airemote', 'message_telegram'),
+        null,
+    ));
+
     $settings->add(new admin_setting_configtext(
         'message_telegram/airemoteheader',
         get_string('airemoteheader', 'message_telegram'),
