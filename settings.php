@@ -39,6 +39,7 @@ if ($ADMIN->fulltree) {
     $botname = $telegrammanager->config('sitebotname');
     $botusername = $telegrammanager->config('sitebotusername');
     $mistralapikey = $telegrammanager->config('mistralapikey');
+    $airemoteurl = $telegrammanager->config('airemoteurl');
 
     if (empty($sitebotsecret)) {
         $sitebotsecret = bin2hex(random_bytes(32));
@@ -305,8 +306,10 @@ if ($ADMIN->fulltree) {
 
     $options = [
     '' => get_string('no'),
-    'remote' => get_string('airemote', 'message_telegram'),
     ];
+    if (!empty($airemoteurl)) {
+        $options['remote'] = get_string('airemote', 'message_telegram');
+    }
     if (!empty($openrouterapikey)) {
         $options['openrouter'] = get_string('aiprovider_openrouter', 'message_telegram');
     }

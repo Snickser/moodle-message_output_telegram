@@ -9,9 +9,10 @@ This plugin provides Moodle messaging provider for Telegram.
 - Automatic disabling of the user's subscription when the user blocks the bot.
 - If there is an additional custom profile field "telegram_username", it will be filled in automatically.
 - Webhook mode (experimental!!)
-- BotMode functional (info, courses list, events, donate, etc.).
-- Mistral.AI integration (chat and voice transcribing).
-- OpenRouter.AI integration (chat).
+  - BotMode functional (info, courses list, events, donate, etc.).
+  - Mistral.AI integration (chat and voice transcribing).
+  - OpenRouter.AI integration (chat).
+  - Remote webhook AI integration (like n8n)
 
 ---
 ![изображение](https://github.com/user-attachments/assets/8d2504a5-064f-4b35-8e3a-de8bc93fc8e8)
