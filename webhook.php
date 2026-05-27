@@ -382,7 +382,7 @@ if (isset($data->message)) {
         }
         if (isset($ai)) {
             $ai->clear_history($userid);
-            $tg->send_message(get_string('askcleared', 'message_telegram'), $userid);
+            $tg->send_message("🤖 \n\n" . get_string('askcleared', 'message_telegram'), $userid);
         }
     } else if (strpos($text, '/info') === 0) {
         $params = [
