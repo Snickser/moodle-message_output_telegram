@@ -347,7 +347,7 @@ if (isset($data->message)) {
                 $tg->send_api_command('sendChatAction', ['chat_id' => $chatid, 'action' => 'typing']);
                 // Send request to AI with conversation history.
                 $answer = $ai->chat($question, $userid);
-                $tg->send_message($answer, $userid);
+                $tg->send_message("🤖 \n\n" . $answer, $userid);
                 if (isset($response->result->message_id)) {
                     $tg->delete_message($chatid, $response->result->message_id);
                 }
@@ -800,7 +800,7 @@ if (isset($data->message)) {
             // Send request to Mistral AI.
             $mistral = new \message_telegram\mistral_ai();
             $answer = $mistral->chat($text, $userid);
-            $tg->send_message($answer, $userid, true);
+            $tg->send_message("🤖 \n\n" . $answer, $userid, true);
             // Delete temp message.
             if (isset($tmpmsg->result->message_id)) {
                 $tg->delete_message($chatid, $tmpmsg->result->message_id);
