@@ -25,11 +25,25 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['aimaxtokens'] = 'Max tokens';
+$string['aimaxtokens_desc'] = 'Maximum number of tokens in the response';
 $string['ainotconfigured'] = '❌ AI assistant is not configured';
 $string['aiprovider'] = 'AI provider';
 $string['aiprovider_desc'] = 'Select which AI provider to use for chatbot functionality (/ask command)';
 $string['aiprovider_mistral'] = 'Mistral AI';
 $string['aiprovider_openrouter'] = 'OpenRouter';
+$string['airemote'] = 'Remote webhook AI';
+$string['airemoteheader'] = 'Header';
+$string['airemoteheader_desc'] = 'Header';
+$string['airemotekey'] = 'Key';
+$string['airemotekey_desc'] = 'Key';
+$string['airemoteprompt'] = 'System prompt';
+$string['airemoteprompt_default'] = 'You are a helpful assistant for the Moodle educational platform. Answer user questions briefly and to the point.';
+$string['airemoteprompt_desc'] = 'System prompt';
+$string['airemoteurl'] = 'URL webhook';
+$string['airemoteurl_desc'] = 'URL webhook';
+$string['aitemperature'] = 'Temperature';
+$string['aitemperature_desc'] = 'Controls randomness: lower values make output more focused, higher values more creative (0.0-2.0)';
 $string['alreadyconnected'] = '✅ Your Telegram account is linked';
 $string['askcleared'] = '🗑️ AI conversation history cleared';
 $string['asknoquestion'] = '❓ Enter your question after /ask command
@@ -133,8 +147,6 @@ $string['openrouterapikey_desc'] = 'Get your API key at https://openrouter.ai/ke
 $string['openrouterconnectionerror'] = 'Error connecting to OpenRouter';
 $string['openrouterconnectionok'] = 'Successfully connected to OpenRouter';
 $string['openroutererror'] = 'Error getting response from AI';
-$string['aimaxtokens'] = 'Max tokens';
-$string['aimaxtokens_desc'] = 'Maximum number of tokens in the response';
 $string['openroutermodel'] = 'OpenRouter model';
 $string['openroutermodel_desc'] = 'e.g., meta-llama/llama-3-8b-instruct:free (free), google/gemma-2-9b-it:free (free), openai/gpt-4o-mini (paid)';
 $string['openrouternotconfigured'] = 'AI assistant is not configured';
@@ -143,8 +155,6 @@ $string['openrouterprompt_default'] = 'You are a helpful assistant for the Moodl
 $string['openrouterprompt_desc'] = 'Instructions for the AI assistant';
 $string['openroutersettings'] = 'OpenRouter (chatbot)';
 $string['openroutersettings_desc'] = 'OpenRouter integration settings for answering user questions via /ask command. OpenRouter provides access to multiple AI models from different providers.';
-$string['aitemperature'] = 'Temperature';
-$string['aitemperature_desc'] = 'Controls randomness: lower values make output more focused, higher values more creative (0.0-2.0)';
 $string['parse_html'] = 'HTML format';
 $string['parse_text'] = 'Text only';
 $string['parsemode'] = 'Parse mode';
@@ -158,11 +168,11 @@ $string['reportenabler'] = 'Enable users personal data report';
 $string['reportenabler_desc1'] = '<font color=red>Please note that users personal data is transferred to third-party Telegram servers, this may violate the law of your country.</font>';
 $string['reportenabler_desc2'] = 'This option enables selected roles to view personal data of course students.';
 $string['reportfields'] = 'Fields in report';
-$string['setwebhook'] = 'Setup Telegram webhook';
 $string['setupinstructions'] = 'Create a new Telegram Bot using Botfather. Click the Botfather link below and open it in Telegram.
 Use the "/newbot" command in Telegram to start creating the bot. You will need to specify a botname, for example "{$a->name}", and a
 unique bot username, for example "{$a->username}". Full documentation
 <a href="https://docs.moodle.org/33/en/Telegram_message_processor" target="_blank">here</a>.';
+$string['setwebhook'] = 'Setup Telegram webhook';
 $string['sitebotname'] = 'Bot name for site';
 $string['sitebotpay'] = 'Payment token';
 $string['sitebotpaycosts'] = 'Predefined amounts';
@@ -186,13 +196,3 @@ $string['waitai'] = '⏳ Preparing an answer...';
 $string['warning'] = 'Warning';
 $string['warnreport_desc'] = 'Display warning before print report.';
 $string['welcome'] = '✅ Your account has been successfully linked!';
-$string['airemote'] = 'Remote webhook AI';
-$string['airemoteheader'] = 'Header';
-$string['airemoteheader_desc'] = 'Header';
-$string['airemotekey'] = 'Key';
-$string['airemotekey_desc'] = 'Key';
-$string['airemoteurl'] = 'URL webhook';
-$string['airemoteurl_desc'] = 'URL webhook';
-$string['airemoteprompt'] = 'System prompt';
-$string['airemoteprompt_default'] = 'You are a helpful assistant for the Moodle educational platform. Answer user questions briefly and to the point.';
-$string['airemoteprompt_desc'] = 'System prompt';

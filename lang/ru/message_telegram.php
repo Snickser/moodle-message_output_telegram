@@ -152,9 +152,9 @@ $string['reportenabler'] = 'Включить отчёт о персональн�
 $string['reportenabler_desc1'] = '<font color=red>Обратите внимание, что персональные данные пользователей передаются на сторонние серверы Telegram, это может нарушать законы вашей страны.</font>';
 $string['reportenabler_desc2'] = 'Эта опция позволяет выбранным ролям просматривать персональные данные студентов курса.';
 $string['reportfields'] = 'Поля в отчёте';
-$string['setwebhook'] = 'Установить Telegram webhook';
 $string['setupinstructions'] = 'Создайте новый бот Telegram, используя Botfather. Перейдите по ссылке Botfather ниже и откройте Telegram.
 Используйте команду "/newbot" в Telegram для начала создания бота. Вам надо будет задать название бота, например "{$a->name}" и уникальное имя бота, например "{$a->username}". Полное описание <a href="https://docs.moodle.org/33/en/Telegram_message_processor" target="_blank">читаем здесь</a>.';
+$string['setwebhook'] = 'Установить Telegram webhook';
 $string['sitebotname'] = 'Название бота для сайта';
 $string['sitebotpay'] = 'Токен оплаты';
 $string['sitebotpaycosts'] = 'Предопределённые суммы';
