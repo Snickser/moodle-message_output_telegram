@@ -54,7 +54,8 @@ $string['botevents'] = '🗓 <b>Предстоящие события</b>
 ';
 $string['botfaq'] = '⁉️ Часто задаваемые вопросы:';
 $string['botfaqtext'] = '';
-$string['bothelp'] = '👓 Подсказки
+$string['bothelp'] = '👓 <b>Подсказки</b>
+
 /info - информация о платформе
 /lang - переключение языка
 /faq - часто задаваемые вопросы
@@ -98,11 +99,12 @@ $string['donate'] = '<div>Версия плагина: {$a->release} ({$a->versi
 Вы можете найти новые версии плагина на <a href=https://github.com/Snickser/moodle-message_output_telegram>GitHub.com</a>
 <img src="https://img.shields.io/github/v/release/Snickser/moodle-message_output_telegram.svg"><br>
 Пожалуйста, отправьте мне немного <a href="https://yoomoney.ru/fundraise/143H2JO3LLE.240720">доната</a>😊</div>
+<iframe src="https://yoomoney.ru/quickpay/fundraise/button?billNumber=143H2JO3LLE.240720"
+width="330" height="35" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
 TON UQA1vhoJmBLgzTHKbJuuscr6UPwnP9TEH3eJYFKIiVgUIaro<br>
 BTC 1GFTTPCgRTC8yYL1gU7wBZRfhRNRBdLZsq<br>
 TRX TRGMc3b63Lus6ehLasbbHxsb2rHky5LbPe<br>
-<iframe src="https://yoomoney.ru/quickpay/fundraise/button?billNumber=143H2JO3LLE.240720"
-width="330" height="50" frameborder="0" allowtransparency="true" scrolling="no"></iframe>';
+';
 $string['enter'] = 'Введите';
 $string['enter_phone'] = 'Для лучшего взаимодействия с кураторами, пожалуйста, укажите номер своего мобильного телефона в профиле на портале, или нажмите кнопку внизу.';
 $string['enter_time'] = 'Дата и время указываются в мнемоническом или в одном из стандартных форматов, например: YY-MM-DD HH:MM';
@@ -150,9 +152,9 @@ $string['reportenabler'] = 'Включить отчёт о персональн�
 $string['reportenabler_desc1'] = '<font color=red>Обратите внимание, что персональные данные пользователей передаются на сторонние серверы Telegram, это может нарушать законы вашей страны.</font>';
 $string['reportenabler_desc2'] = 'Эта опция позволяет выбранным ролям просматривать персональные данные студентов курса.';
 $string['reportfields'] = 'Поля в отчёте';
-$string['setwebhook'] = 'Установить Telegram webhook';
 $string['setupinstructions'] = 'Создайте новый бот Telegram, используя Botfather. Перейдите по ссылке Botfather ниже и откройте Telegram.
 Используйте команду "/newbot" в Telegram для начала создания бота. Вам надо будет задать название бота, например "{$a->name}" и уникальное имя бота, например "{$a->username}". Полное описание <a href="https://docs.moodle.org/33/en/Telegram_message_processor" target="_blank">читаем здесь</a>.';
+$string['setwebhook'] = 'Установить Telegram webhook';
 $string['sitebotname'] = 'Название бота для сайта';
 $string['sitebotpay'] = 'Токен оплаты';
 $string['sitebotpaycosts'] = 'Предопределённые суммы';

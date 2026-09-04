@@ -128,8 +128,11 @@ if (isset($data->message)) {
         } else {
             $keyboard = [
             'keyboard' => [
-            [['text' => '/info', 'style' => 'success'], ['text' => '/lang', 'style' => 'success'] ],
-            [['text' => '/help', 'style' => 'primary']],
+            [
+             ['text' => '/info', 'style' => 'success'],
+             ['text' => '/help', 'style' => 'primary'],
+             ['text' => '/lang', 'style' => 'success'],
+            ],
             ],
             'resize_keyboard' => true,
             'one_time_keyboard' => false,
@@ -344,7 +347,7 @@ if (isset($data->message)) {
                 $tg->send_api_command('sendChatAction', ['chat_id' => $chatid, 'action' => 'typing']);
                 // Send request to AI with conversation history.
                 $answer = $ai->chat($question, $userid);
-                $tg->send_message($answer, $userid);
+                $tg->send_message("🤖 \n\n" . $answer, $userid);
                 if (isset($response->result->message_id)) {
                     $tg->delete_message($chatid, $response->result->message_id);
                 }
@@ -379,7 +382,7 @@ if (isset($data->message)) {
         }
         if (isset($ai)) {
             $ai->clear_history($userid);
-            $tg->send_message(get_string('askcleared', 'message_telegram'), $userid);
+            $tg->send_message("🤖 \n\n" . get_string('askcleared', 'message_telegram'), $userid);
         }
     } else if (strpos($text, '/info') === 0) {
         $params = [
@@ -467,8 +470,10 @@ if (isset($data->message)) {
         );
     } else if (strpos($text, '/enrols') === 0 && $userid) {
         $courses = enrol_get_users_courses($userid);
+        $cid = [];
         $text = '';
         foreach ($courses as $course) {
+            $cid[$course->id] = true;
             $context = context_course::instance($course->id);
             $completion = new completion_info($course);
             $progress = \core_completion\progress::get_course_progress_percentage($course, $userid) ?? 0;
@@ -476,7 +481,24 @@ if (isset($data->message)) {
             $text .= PHP_EOL . '• ' . "<a href='{$url}'>" . format_string($course->fullname) . '</a>' .
             (floor($progress) ? ' (' . floor($progress) . '%)' : null);
         }
-        if (!$courses) {
+
+        $sql = "
+SELECT DISTINCT c.id, c.fullname
+FROM mdl_course_modules_completion cmc
+JOIN mdl_course_modules cm ON cm.id = cmc.coursemoduleid
+JOIN mdl_course c ON c.id = cm.course
+WHERE cmc.userid = :userid
+ORDER BY c.fullname;
+";
+        $completed = $DB->get_records_sql($sql, ['userid' => $userid]);
+        foreach ($completed as $course) {
+            if ($cid[$course->id]) {
+                continue;
+            }
+            $text .= PHP_EOL . '• ' . format_string(get_course($course->id)->fullname);
+        }
+
+        if (!$courses && !$completed) {
             $text = PHP_EOL . get_string('no') . PHP_EOL;
         }
         $tg->send_message(get_string('botenrols', 'message_telegram') . PHP_EOL . $text, $userid);
@@ -797,7 +819,7 @@ if (isset($data->message)) {
             // Send request to Mistral AI.
             $mistral = new \message_telegram\mistral_ai();
             $answer = $mistral->chat($text, $userid);
-            $tg->send_message($answer, $userid, true);
+            $tg->send_message("🤖 \n\n" . $answer, $userid, true);
             // Delete temp message.
             if (isset($tmpmsg->result->message_id)) {
                 $tg->delete_message($chatid, $tmpmsg->result->message_id);

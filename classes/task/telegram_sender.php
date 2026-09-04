@@ -135,6 +135,9 @@ class telegram_sender extends \core\task\scheduled_task {
             mtrace($response->result->message_id);
             unlink($file);
             fclose($fh);
+            $fname = $CFG->tempdir . '/telegram.log';
+            file_put_contents($fname, date("Y-m-d H:i:s ") . 'send ' . $chatid .
+            "\n", FILE_APPEND | LOCK_EX);
             return false;
         } else {
             // Delete file and chatid if forbidden.
@@ -146,9 +149,12 @@ class telegram_sender extends \core\task\scheduled_task {
                 unlink($file);
                 fclose($fh);
                 mtrace('delete forbidden ' . $chatid);
-            } else if (time() - filectime($file) > 3600) {
+            } else if (time() - filectime($file) > 86400) {
                 unlink($file);
                 fclose($fh);
+                $fname = $CFG->tempdir . '/telegram.log';
+                file_put_contents($fname, date("Y-m-d H:i:s ") . 'delete too old ' . $chatid .
+                "\n", FILE_APPEND | LOCK_EX);
                 mtrace('delete too old ' . $chatid);
             } else {
                 mtrace(serialize($response));
